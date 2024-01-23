@@ -1,5 +1,5 @@
 
-use database mentor_management_system;
+use mentor_management_system;
 
 insert into student(name,usn,password,phone_no,email) values
 ('abhinava','1js21cs006','jaishreeram','9483735676','abhi@gmail.com'),
