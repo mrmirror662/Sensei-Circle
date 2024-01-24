@@ -5,8 +5,6 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import * as db from './database.js';
 
-//for url encoding
-let urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 dotenv.config();
 
@@ -15,24 +13,21 @@ dotenv.config();
 //constants
 const PORT_NO = process.env.PORT_NO;
 let app = express();
-app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
-// Get the client
 
-// Create the connection to database
-const connection = await mysql.createConnection({
-    host: process.env.host,
-    user: process.env.user,
-    database: process.env.db,
-    password: process.env.password
-});
+
 
 
 const internalErrorJSON = { flag: 500, msg: 'server error' };
-
-
+const GenErrorJSON = function (msg) {
+    return { flag: 404, msg: msg };
+}
+const GenSuccessJSON = function (msg) {
+    return { flag: 200, msg: msg };
+}
 app.get('/signup', function (req, res) {
     res.sendFile('index_test.html', { root: "." });
 
@@ -42,7 +37,6 @@ app.get('/login', function (req, res) {
 
 });
 app.post("/signup", async function (req, res) {
-    console.log(req.body);
     const usn = req.body.usn;
     const name = req.body.name;
     const password = req.body.password;
@@ -50,7 +44,7 @@ app.post("/signup", async function (req, res) {
     const email = req.body.email;
 
     if (!usn || !name || !password || !phone_no || !email) {
-        res.json({ flag: "404", msg: "No value entered in one of the fields" });
+        res.json(GenErrorJSON("No value entered in one of the fields"));
         res.end();// end the response
 
         return;
@@ -59,7 +53,7 @@ app.post("/signup", async function (req, res) {
     try {
         let studentExists = await db.StudentExists(usn);
         if (studentExists) {
-            res.json({ flag: "404", msg: "account already exists" });
+            res.json(GenErrorJSON("account already exists"));
             res.end();// end the response
             return;
         }
@@ -79,7 +73,7 @@ app.post("/signup", async function (req, res) {
         res.end();// end the response
         return;
     }
-    res.json({ flag: "200", msg: "new accound signed up" });
+    res.json(GenSuccessJSON("new accound signed up"));
     res.end();
 });
 app.post("/login", async function (req, res) {
@@ -96,11 +90,13 @@ app.post("/login", async function (req, res) {
     }
 
     if (!usn) {
-        res.json({ flag: "404", msg: "incorrect usn" }); // end the response
+        res.json(GenErrorJSON("incorrect usn"));
+        res.end(); // end the response
         return;
     }
-    if (studentExists) {
-        res.json({ flag: "404", msg: "user does not exist" }); // end the response
+    if (!studentExists) {
+        res.json(GenErrorJSON("user does not exist"));
+        res.end();// end the response
         return;
     }
     let studentCheckPassword = false;
@@ -112,10 +108,15 @@ app.post("/login", async function (req, res) {
         res.end();// end the response
         return;
     }
-    res.json({ flag: "200", msg: "account found" });
+    if (!studentCheckPassword) {
+        res.json(GenErrorJSON("incorrect password"));
+        res.end();// end the response
+        return;
+    }
+    res.json(GenSuccessJSON("account found"));
     res.end();
 });
-let server = app.listen(3000, function () {
+let server = app.listen(PORT_NO, function () {
     let host = server.address().address;
     let port = server.address().port;
 });
