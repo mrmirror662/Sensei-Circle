@@ -15,9 +15,9 @@ app.use(bodyParser.json());
 // Get the client
 const connection = await mysql.createConnection({
     host: 'localhost',
-    user: 'bk',
+    user: 'root',
     database: 'mentor_management_system',
-    password: '1964'
+    password: 'Manwithoutlove@1024'
 });
 
 
@@ -40,10 +40,16 @@ app.post("/signup", async function (req, res) {
     const password = req.body.password;
     const phone_no = req.body.phone_no;
     const email = req.body.email;
-    let q_ = `select usn from student where usn='${usn}';`;
+    
+    if(!usn || !name || !password || !phone_no || !email){
+        res.json({ flag: "404", msg: "No value entered in one of the fields" }); // end the response
+        return;
+    } 
+
+    let q_ = 'select usn from student where usn=?';
     console.log(q_);
     const [results1, fields1] = await connection.query(
-        q_
+        q_,[usn]
     );
     console.log(results1.length);
     if (results1.length !== 0) {
@@ -51,10 +57,10 @@ app.post("/signup", async function (req, res) {
         return;
     }
     try {
-        let q = `insert into student values('${name}','${usn}','${password}','${phone_no}','${email}');`;
+        let q = 'insert into student values(?,?,?,?,?)';
         const [results, fields] = await connection.query(
-            q
-        );
+            q ,[name,usn,password,phone_no,email]
+        )
     }
     catch (err) {
         console.log(err);
@@ -69,11 +75,16 @@ app.post("/login", async function (req, res) {
     console.log(req.body);
     const usn = req.body.usn;
     const password = req.body.password;
-    let q = `select * from student where usn='${usn}';`;
+    let q = 'select * from student where usn=?';
     console.log(q);
     const [results, fields] = await connection.query(
-        q
+        q,[usn]
     );
+    
+    if(!usn || results.length===0){
+        res.json({ flag: "404", msg: "incorrect usn" }); // end the response
+        return;
+    }
     console.log(results[0]["password"]);
     if (results[0]["password"] != password) {
         res.json({ flag: "404", msg: "incorrect password" }); // end the response
