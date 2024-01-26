@@ -8,9 +8,11 @@ dotenv.config();
 //shortcut
 let log = console.log;
 
-
 // Create the connection to database
 const connection = await init();
+let deleteInvtervalId = setInterval(deleteExpiredSessions, (10 * 60) * 1000)
+deleteExpiredSessions();
+
 async function init() {
 
     try {
@@ -20,8 +22,10 @@ async function init() {
             database: process.env.db,
             password: process.env.password
         });
-        console.log(`DB initialized with \nhost:${process.env.host}\nuser:${process.env.user}\ndb:${process.env.db}`)
+        console.log(`DB initialized with \nhost:${process.env.host}\nuser:${process.env.user}\ndb:${process.env.db}`);
+
         return c;
+
     }
     catch (err) {
         console.error(`error db initialization Error:${err}`);
@@ -92,7 +96,7 @@ function generateSessionID() {
 }
 export async function AddToSession(usn) {
     let session_id = generateSessionID();
-    let q = 'insert into student_session_info values(?,?);';
+    let q = 'insert into student_session_info values(?,?,now());';
 
     try {
         const [results, fields] = await connection.query(
@@ -153,8 +157,23 @@ export async function IsInSessionSID(session_id) {
         console.error("Error checking user", err);
         throw err;
     }
-} 
+}
+export async function deleteExpiredSessions() {
+    console.log("deleting expired sessions");
+    let q = 'delete from student_session_info  where t < now() - interval 30 minute;';
+    try {
+        const [results, fields] = await connection.query(
+            q
+        );
+    }
+    catch (err) {
+        console.error(err);
 
+        throw err;
+    }
+
+
+}
 
 
 export async function MentorExists(mentor_id) {
@@ -177,16 +196,16 @@ export async function MentorExists(mentor_id) {
 
 export async function InsertMentor(mentor) {
     let q = 'insert into mentor_credentials values(?,?);';
-    let q_='insert into mentor_information values(?,?,?,?,?);';
+    let q_ = 'insert into mentor_information values(?,?,?,?,?);';
 
     try {
         const [results, fields] = await connection.query(
             q, [mentor.mentor_id, mentor.password]
- 
+
         );
         const [results1, fields1] = await connection.query(
-            q_, [mentor.name,mentor.mentor_id ,mentor.phone_no, mentor.email,mentor.branch_id]
- 
+            q_, [mentor.name, mentor.mentor_id, mentor.phone_no, mentor.email, mentor.branch_id]
+
         );
     } catch (err) {
         console.error("Error inserting user", err);
