@@ -7,10 +7,12 @@ dotenv.config();
 
 //shortcut
 let log = console.log;
-let deleteInvtervalId = setInterval(deleteExpiredSessions, 1 * 3600 * 1000)
 
 // Create the connection to database
 const connection = await init();
+let deleteInvtervalId = setInterval(deleteExpiredSessions, (10 * 60) * 1000)
+deleteExpiredSessions();
+
 async function init() {
 
     try {
@@ -21,7 +23,6 @@ async function init() {
             password: process.env.password
         });
         console.log(`DB initialized with \nhost:${process.env.host}\nuser:${process.env.user}\ndb:${process.env.db}`);
-        deleteExpiredSessions();
 
         return c;
 
@@ -157,7 +158,22 @@ export async function IsInSessionSID(session_id) {
         throw err;
     }
 }
+export async function deleteExpiredSessions() {
+    console.log("deleting expired sessions");
+    let q = 'delete from student_session_info  where t < now() - interval 30 minute;';
+    try {
+        const [results, fields] = await connection.query(
+            q
+        );
+    }
+    catch (err) {
+        console.error(err);
 
+        throw err;
+    }
+
+
+}
 
 
 export async function MentorExists(mentor_id) {
