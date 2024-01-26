@@ -7,7 +7,7 @@ dotenv.config();
 
 //shortcut
 let log = console.log;
-
+let deleteInvtervalId = setInterval(deleteExpiredSessions, 1 * 3600 * 1000)
 
 // Create the connection to database
 const connection = await init();
@@ -20,8 +20,11 @@ async function init() {
             database: process.env.db,
             password: process.env.password
         });
-        console.log(`DB initialized with \nhost:${process.env.host}\nuser:${process.env.user}\ndb:${process.env.db}`)
+        console.log(`DB initialized with \nhost:${process.env.host}\nuser:${process.env.user}\ndb:${process.env.db}`);
+        deleteExpiredSessions();
+
         return c;
+
     }
     catch (err) {
         console.error(`error db initialization Error:${err}`);
@@ -91,7 +94,7 @@ function generateSessionID() {
 }
 export async function AddToSession(usn) {
     let session_id = generateSessionID();
-    let q = 'insert into student_session_info values(?,?);';
+    let q = 'insert into student_session_info values(?,?,now());';
 
     try {
         const [results, fields] = await connection.query(
@@ -150,4 +153,18 @@ export async function IsInSessionSID(session_id) {
         console.error("Error checking user", err);
         throw err;
     }
-} 
+}
+
+export async function deleteExpiredSessions() {
+    console.log("deleting expired sessions");
+    let q = 'delete from student_session_info  WHERE t < now() - interval 1 hour;'
+    try {
+        const [results, fields] = await connection.query(
+            q, [session_id]
+        );
+
+    } catch (err) {
+        console.error("Error checking user", err);
+        throw err;
+    }
+}
