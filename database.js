@@ -86,6 +86,7 @@ export async function StudentCheckPassword(student) {
 
 }
 
+
 function generateSessionID() {
     return Math.random().toString(36).substr(2, 8);
 }
@@ -116,11 +117,13 @@ export async function RemoveSession(session_id) {
     }
     catch (err) {
         console.error(err);
+
         throw err;
     }
 
 
 }
+
 export async function IsInSession(usn) {
     let q = 'select usn from student_session_info where usn=?';
 
@@ -151,3 +154,63 @@ export async function IsInSessionSID(session_id) {
         throw err;
     }
 } 
+
+
+
+export async function MentorExists(mentor_id) {
+    let q_ = 'select mentor_id from mentor_credentials where mentor_id=?';
+
+    try {
+        const [results, fields] = await connection.query(
+            q_, [mentor_id]
+        );
+        if (results.length !== 0)
+            return true;
+        return false;
+    } catch (err) {
+        console.error("Error checking user", err);
+        throw err;
+    }
+
+
+}
+
+export async function InsertMentor(mentor) {
+    let q = 'insert into mentor_credentials values(?,?);';
+    let q_='insert into mentor_information values(?,?,?,?,?);';
+
+    try {
+        const [results, fields] = await connection.query(
+            q, [mentor.mentor_id, mentor.password]
+ 
+        );
+        const [results1, fields1] = await connection.query(
+            q_, [mentor.name,mentor.mentor_id ,mentor.phone_no, mentor.email,mentor.branch_id]
+ 
+        );
+    } catch (err) {
+        console.error("Error inserting user", err);
+        throw err;
+    }
+}
+export async function MentorCheckPassword(mentor) {
+    let q_ = 'select mentor_id,password from mentor_credentials where mentor_id=?';
+
+    try {
+        const [results, fields] = await connection.query(
+            q_, [mentor.mentor_id]
+        );
+
+        if (results.length == 0) {
+            return false;
+        }
+        if (results[0]["password"] !== mentor.password) {
+            return false;
+        }
+        return true;
+    } catch (err) {
+        console.error("Error authenticating  user", err);
+        throw err;
+    }
+
+}
