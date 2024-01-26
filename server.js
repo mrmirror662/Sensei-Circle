@@ -28,15 +28,26 @@ const GenErrorJSON = function (msg) {
 const GenSuccessJSON = function (msg) {
     return { flag: 200, msg: msg };
 }
-app.get('/signup', function (req, res) {
-    res.sendFile('index_test.html', { root: "." });
+app.get('/student_signup', function (req, res) {
+    res.sendFile('/html/signup/student_signup.html', { root: "." });
 
 });
-app.get('/login', function (req, res) {
-    res.sendFile('dummy_login.html', { root: "." });
+app.get('/student_login', function (req, res) {
+    res.sendFile('/html/login/student_login.html', { root: "." });
 
 });
-app.post("/signup", async function (req, res) {
+
+app.get('/mentor_signup', function (req, res) {
+    res.sendFile('/html/signup/mentor_signup.html', { root: "." });
+
+});
+app.get('/mentor_login', function (req, res) {
+    res.sendFile('/html/login/mentor_login.html', { root: "." });
+
+});
+
+
+app.post("/student_signup", async function (req, res) {
     const usn = req.body.usn;
     const name = req.body.name;
     const password = req.body.password;
@@ -78,7 +89,7 @@ app.post("/signup", async function (req, res) {
     res.json(GenSuccessJSON("new accound signed up"));
     res.end();
 });
-app.post("/login", async function (req, res) {
+app.post("/student_login", async function (req, res) {
     const usn = req.body.usn;
     const password = req.body.password;
 
@@ -118,6 +129,103 @@ app.post("/login", async function (req, res) {
     res.json(GenSuccessJSON("account found"));
     res.end();
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.post("/mentor_signup", async function (req, res) {
+    const mentor_id = req.body.mentor_id;
+    const name = req.body.name;
+    const password = req.body.password;
+    const phone_no = req.body.phone_no;
+    const email = req.body.email;
+    const branch_id = req.body.branch_id;
+    console.log(req.body);
+    if (!mentor_id || !name || !password || !phone_no || !email || !branch_id) {
+        res.json(GenErrorJSON("No value entered in one of the fields"));
+        res.end();// end the response
+
+        return;
+    }
+
+    try {
+        let mentorExists = await db.MentorExists(mentor_id);
+        if (mentorExists) {
+            res.json(GenErrorJSON("account already exists"));
+            res.end();// end the response
+            return;
+        }
+
+    } catch (err) {
+        console.error(err);
+        res.json(internalErrorJSON);
+        return;
+    }
+
+    try {
+        db.InsertMentor({ name: name, mentor_id: mentor_id, password: password, email: email, phone_no: phone_no ,branch_id:branch_id});
+    }
+    catch (err) {
+        console.error(err);
+        res.json(internalErrorJSON);
+        res.end();// end the response
+        return;
+    }
+    res.json(GenSuccessJSON("new accound signed up"));
+    res.end();
+});
+app.post("/mentor_login", async function (req, res) {
+    const mentor_id = req.body.mentor_id;
+    const password = req.body.password;
+
+    let mentorExists = false;
+    try {
+        mentorExists = await db.MentorExists(mentor_id);
+    } catch (err) {
+        res.json(internalErrorJSON);
+        console.error(err);
+        return;
+    }
+
+    if (!mentor_id) {
+        res.json(GenErrorJSON("incorrect mentor id"));
+        res.end(); // end the response
+        return;
+    }
+    if (!mentorExists) {
+        res.json(GenErrorJSON("user does not exist"));
+        res.end();// end the response
+        return;
+    }
+    let mentorCheckPassword = false;
+    try {
+        mentorCheckPassword = await db.MentorCheckPassword({ mentor_id: mentor_id, password: password });
+    } catch (err) {
+        console.error(err);
+        res.json(internalErrorJSON);
+        res.end();// end the response
+        return;
+    }
+    if (!mentorCheckPassword) {
+        res.json(GenErrorJSON("incorrect password"));
+        res.end();// end the response
+        return;
+    }
+    res.json(GenSuccessJSON("account found"));
+    res.end();
+});
+
 let server = app.listen(PORT_NO, function () {
     let host = server.address().address;
     let port = server.address().port;
