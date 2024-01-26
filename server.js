@@ -53,10 +53,10 @@ app.post("/student_signup", async function (req, res) {
     const password = req.body.password;
     const phone_no = req.body.phone_no;
     const email = req.body.email;
-    const semester=Number(req.body.semester);
+    const semester = Number(req.body.semester);
     const branch_id = req.body.branch_id;
     console.log(req.body);
-    if (!usn || !name || !password || !phone_no || !email || !branch_id|| !semester) {
+    if (!usn || !name || !password || !phone_no || !email || !branch_id || !semester) {
         res.json(GenErrorJSON("No value entered in one of the fields"));
         res.end();// end the response
 
@@ -78,7 +78,7 @@ app.post("/student_signup", async function (req, res) {
     }
 
     try {
-        db.InsertStudent({ name: name, usn: usn, password: password, email: email, phone_no: phone_no ,semester:semester,branch_id:branch_id});
+        db.InsertStudent({ name: name, usn: usn, password: password, email: email, phone_no: phone_no, semester: semester, branch_id: branch_id });
     }
     catch (err) {
         console.error(err);
@@ -92,7 +92,7 @@ app.post("/student_signup", async function (req, res) {
 app.post("/student_login", async function (req, res) {
     const usn = req.body.usn;
     const password = req.body.password;
-
+    //check for account existance
     let studentExists = false;
     try {
         studentExists = await db.StudentExists(usn);
@@ -101,17 +101,19 @@ app.post("/student_login", async function (req, res) {
         console.error(err);
         return;
     }
-
+    //check for null usn
     if (!usn) {
         res.json(GenErrorJSON("incorrect usn"));
         res.end(); // end the response
         return;
     }
+
     if (!studentExists) {
         res.json(GenErrorJSON("user does not exist"));
         res.end();// end the response
         return;
     }
+    //check password
     let studentCheckPassword = false;
     try {
         studentCheckPassword = await db.StudentCheckPassword({ usn: usn, password: password });
@@ -126,8 +128,49 @@ app.post("/student_login", async function (req, res) {
         res.end();// end the response
         return;
     }
-    res.json(GenSuccessJSON("account found"));
-    res.end();
+
+    //add to session
+    try {
+        let isInSession = await db.IsInSession(usn);
+
+        if (isInSession) {
+            res.json({ flag: 404, msg: "already in session" });
+            res.end();
+            return;
+        }
+        let s_id = await db.AddToSession(usn);
+        res.json({ flag: 200, msg: "accound found", session_id: s_id });
+        res.end();
+    }
+    catch (err) {
+        console.error(err);
+        res.json(GenErrorJSON);
+        res.end();
+        return;
+    }
+
+});
+app.post("/logout", async function (req, res) {
+    let s_id = req.body.session_id;
+
+
+    try {
+        let isInSession = await db.IsInSessionSID(s_id);
+
+        if (!isInSession) {
+            res.json({ flag: 404, msg: "invalid session ID" });
+            res.end();
+            return;
+        }
+        db.RemoveSession(s_id);
+        res.json({ flag: 200, msg: "logged out!" });
+        res.end();
+    } catch (err) {
+        console.error(err);
+        res.json(GenErrorJSON);
+        res.end();
+        return;
+    }
 });
 
 

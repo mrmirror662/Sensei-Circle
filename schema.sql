@@ -15,3 +15,6 @@ create table if not exists academic_details(usn char(10) ,course_id char(10),IA1
 create table if not exists mentor_credentials( mentor_id char(10) primary key,password varchar(32));
 
 create table if not exists mentor_information(name varchar(255) , mentor_id char(10) primary key,phone_no char(10),email varchar(255),branch_id char(10), foreign key(mentor_id) references mentor_credentials(mentor_id) on delete cascade );
+
+create table if not exists student_session_info(session_id char(8) , usn char(10));
+
