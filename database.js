@@ -48,16 +48,16 @@ export async function StudentExists(usn) {
 
 export async function InsertStudent(student) {
     let q = 'insert into student_credentials values(?,?);';
-    let q_='insert into student_information values(?,?,?,?,?,?);';
+    let q_ = 'insert into student_information values(?,?,?,?,?,?);';
 
     try {
         const [results, fields] = await connection.query(
             q, [student.usn, student.password]
- 
+
         );
         const [results1, fields1] = await connection.query(
-            q_, [student.name,student.usn ,student.phone_no, student.email,student.branch_id,student.semester]
- 
+            q_, [student.name, student.usn, student.phone_no, student.email, student.branch_id, student.semester]
+
         );
     } catch (err) {
         console.error("Error inserting user", err);
@@ -85,3 +85,69 @@ export async function StudentCheckPassword(student) {
     }
 
 }
+
+function generateSessionID() {
+    return Math.random().toString(36).substr(2, 8);
+}
+export async function AddToSession(usn) {
+    let session_id = generateSessionID();
+    let q = 'insert into student_session_info values(?,?);';
+
+    try {
+        const [results, fields] = await connection.query(
+            q, [session_id, usn]
+        );
+    }
+    catch (err) {
+        console.error(err);
+        throw err;
+    }
+
+    return session_id;
+
+}
+export async function RemoveSession(session_id) {
+    let q = 'delete from student_session_info where session_id=?';
+
+    try {
+        const [results, fields] = await connection.query(
+            q, [session_id]
+        );
+    }
+    catch (err) {
+        console.error(err);
+        throw err;
+    }
+
+
+}
+export async function IsInSession(usn) {
+    let q = 'select usn from student_session_info where usn=?';
+
+    try {
+        const [results, fields] = await connection.query(
+            q, [usn]
+        );
+        if (results.length !== 0)
+            return true;
+        return false;
+    } catch (err) {
+        console.error("Error checking user", err);
+        throw err;
+    }
+}
+export async function IsInSessionSID(session_id) {
+    let q = 'select session_id from student_session_info where session_id=?';
+
+    try {
+        const [results, fields] = await connection.query(
+            q, [session_id]
+        );
+        if (results.length !== 0)
+            return true;
+        return false;
+    } catch (err) {
+        console.error("Error checking user", err);
+        throw err;
+    }
+} 

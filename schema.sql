@@ -12,4 +12,4 @@ create table if not exists course_information(course_id char(10) primary key,cou
 
 create table if not exists academic_details(usn char(10) ,course_id char(10),IA1 int,IA2 int,IA3 int,assignment_1 int,assignment_2 int,activity int,Total_internal_marks int, primary key(usn,course_id),foreign key (usn) references student_information(usn),foreign key (course_id) references course_information(course_id));
 
-
+create table if not exists student_session_info(session_id char(8) , usn char(10));
