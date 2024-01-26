@@ -29,7 +29,7 @@ async function init() {
     }
 }
 export async function StudentExists(usn) {
-    let q_ = 'select usn from student where usn=?';
+    let q_ = 'select usn from student_credentials where usn=?';
 
     try {
         const [results, fields] = await connection.query(
@@ -47,19 +47,25 @@ export async function StudentExists(usn) {
 }
 
 export async function InsertStudent(student) {
-    let q = 'insert into student values(?,?,?,?,?)';
+    let q = 'insert into student_credentials values(?,?);';
+    let q_='insert into student_information values(?,?,?,?,?,?);';
 
     try {
         const [results, fields] = await connection.query(
-            q, [student.name, student.usn, student.password, student.phone_no, student.email]
-        )
+            q, [student.usn, student.password]
+ 
+        );
+        const [results1, fields1] = await connection.query(
+            q_, [student.name,student.usn ,student.phone_no, student.email,student.branch_id,student.semester]
+ 
+        );
     } catch (err) {
         console.error("Error inserting user", err);
         throw err;
     }
 }
 export async function StudentCheckPassword(student) {
-    let q_ = 'select usn,password from student where usn=?';
+    let q_ = 'select usn,password from student_credentials where usn=?';
 
     try {
         const [results, fields] = await connection.query(

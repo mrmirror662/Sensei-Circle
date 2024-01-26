@@ -42,8 +42,10 @@ app.post("/signup", async function (req, res) {
     const password = req.body.password;
     const phone_no = req.body.phone_no;
     const email = req.body.email;
-
-    if (!usn || !name || !password || !phone_no || !email) {
+    const semester=Number(req.body.semester);
+    const branch_id = req.body.branch_id;
+    console.log(req.body);
+    if (!usn || !name || !password || !phone_no || !email || !branch_id|| !semester) {
         res.json(GenErrorJSON("No value entered in one of the fields"));
         res.end();// end the response
 
@@ -65,7 +67,7 @@ app.post("/signup", async function (req, res) {
     }
 
     try {
-        db.InsertStudent({ name: name, usn: usn, password: password, email: email, phone_no: phone_no });
+        db.InsertStudent({ name: name, usn: usn, password: password, email: email, phone_no: phone_no ,semester:semester,branch_id:branch_id});
     }
     catch (err) {
         console.error(err);
