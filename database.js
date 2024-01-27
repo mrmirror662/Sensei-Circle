@@ -32,7 +32,7 @@ async function init() {
     console.log(
       `DB initialized with \nhost:${process.env.host}\nuser:${process.env.user}\ndb:${process.env.db}`
     );
-
+    //TO:DO perform table checks;
     return c;
   } catch (err) {
     console.error(`error db initialization Error:${err}`);
