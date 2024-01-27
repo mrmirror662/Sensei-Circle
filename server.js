@@ -131,14 +131,14 @@ app.post("/student_login", async function (req, res) {
 
     //add to session
     try {
-        let isInSession = await db.IsInSession(usn);
+        let isInSession = await db.IsStudentInSession(usn);
 
         if (isInSession) {
             res.json({ flag: 404, msg: "already in session" });
             res.end();
             return;
         }
-        let s_id = await db.AddToSession(usn);
+        let s_id = await db.AddStudentToSession(usn);
         res.json({ flag: 200, msg: "accound found", session_id: s_id });
         res.end();
     }
@@ -150,19 +150,19 @@ app.post("/student_login", async function (req, res) {
     }
 
 });
-app.post("/logout", async function (req, res) {
+app.post("/student_logout", async function (req, res) {
     let s_id = req.body.session_id;
 
 
     try {
-        let isInSession = await db.IsInSessionSID(s_id);
+        let isInSession = await db.IsStudentInSessionSID(s_id);
 
         if (!isInSession) {
             res.json({ flag: 404, msg: "invalid session ID" });
             res.end();
             return;
         }
-        db.RemoveSession(s_id);
+        db.RemoveStudentSession(s_id);
         res.json({ flag: 200, msg: "logged out!" });
         res.end();
     } catch (err) {
@@ -265,8 +265,48 @@ app.post("/mentor_login", async function (req, res) {
         res.end();// end the response
         return;
     }
-    res.json(GenSuccessJSON("account found"));
-    res.end();
+    //add to session
+    try {
+        let isInSession = await db.IsMentorInSession(mentor_id);
+
+        if (isInSession) {
+            res.json({ flag: 404, msg: "already in session" });
+            res.end();
+            return;
+        }
+        let s_id = await db.AddMentorToSession(mentor_id);
+        res.json({ flag: 200, msg: "accound found", session_id: s_id });
+        res.end();
+    }
+    catch (err) {
+        console.error(err);
+        res.json(GenErrorJSON);
+        res.end();
+        return;
+    }
+});
+
+app.post("/mentor_logout", async function (req, res) {
+    let s_id = req.body.session_id;
+
+
+    try {
+        let isInSession = await db.IsMentorInSessionSID(s_id);
+
+        if (!isInSession) {
+            res.json({ flag: 404, msg: "invalid session ID" });
+            res.end();
+            return;
+        }
+        db.RemoveMentorSession(s_id);
+        res.json({ flag: 200, msg: "logged out!" });
+        res.end();
+    } catch (err) {
+        console.error(err);
+        res.json(GenErrorJSON);
+        res.end();
+        return;
+    }
 });
 
 let server = app.listen(PORT_NO, function () {

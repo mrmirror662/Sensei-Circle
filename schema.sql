@@ -18,3 +18,4 @@ create table if not exists mentor_information(name varchar(255) , mentor_id char
 
 create table if not exists student_session_info(session_id char(8) , usn char(10), t timestamp);
 
+create table if not exists mentor_session_info(session_id char(8) , mentor_id char(10), t timestamp);

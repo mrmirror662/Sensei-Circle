@@ -10,8 +10,11 @@ let log = console.log;
 
 // Create the connection to database
 const connection = await init();
-let deleteInvtervalId = setInterval(deleteExpiredSessions, (10 * 60) * 1000)
-deleteExpiredSessions();
+let deleteStudentIntervalId = setInterval(deleteExpiredStudentSessions, (10 * 60) * 1000)
+deleteExpiredStudentSessions();
+
+let deleteMentorIntervalId = setInterval(deleteExpiredMentorSessions, (10 * 60) * 1000)
+deleteExpiredMentorSessions();
 
 async function init() {
 
@@ -94,7 +97,7 @@ export async function StudentCheckPassword(student) {
 function generateSessionID() {
     return Math.random().toString(36).substr(2, 8);
 }
-export async function AddToSession(usn) {
+export async function AddStudentToSession(usn) {
     let session_id = generateSessionID();
     let q = 'insert into student_session_info values(?,?,now());';
 
@@ -111,7 +114,7 @@ export async function AddToSession(usn) {
     return session_id;
 
 }
-export async function RemoveSession(session_id) {
+export async function RemoveStudentSession(session_id) {
     let q = 'delete from student_session_info where session_id=?';
 
     try {
@@ -128,7 +131,7 @@ export async function RemoveSession(session_id) {
 
 }
 
-export async function IsInSession(usn) {
+export async function IsStudentInSession(usn) {
     let q = 'select usn from student_session_info where usn=?';
 
     try {
@@ -143,7 +146,7 @@ export async function IsInSession(usn) {
         throw err;
     }
 }
-export async function IsInSessionSID(session_id) {
+export async function IsStudentInSessionSID(session_id) {
     let q = 'select session_id from student_session_info where session_id=?';
 
     try {
@@ -158,7 +161,7 @@ export async function IsInSessionSID(session_id) {
         throw err;
     }
 }
-export async function deleteExpiredSessions() {
+export async function deleteExpiredStudentSessions() {
     console.log("deleting expired sessions");
     let q = 'delete from student_session_info  where t < now() - interval 30 minute;';
     try {
@@ -231,5 +234,87 @@ export async function MentorCheckPassword(mentor) {
         console.error("Error authenticating  user", err);
         throw err;
     }
+
+}
+
+
+export async function AddMentorToSession(mentor_id) {
+    let session_id = generateSessionID();
+    let q = 'insert into mentor_session_info values(?,?,now());';
+
+    try {
+        const [results, fields] = await connection.query(
+            q, [session_id, mentor_id]
+        );
+    }
+    catch (err) {
+        console.error(err);
+        throw err;
+    }
+
+    return session_id;
+
+}
+export async function RemoveMentorSession(session_id) {
+    let q = 'delete from mentor_session_info where session_id=?';
+
+    try {
+        const [results, fields] = await connection.query(
+            q, [session_id]
+        );
+    }
+    catch (err) {
+        console.error(err);
+
+        throw err;
+    }
+
+
+}
+
+export async function IsMentorInSession(mentor_id) {
+    let q = 'select mentor_id from mentor_session_info where mentor_id=?';
+
+    try {
+        const [results, fields] = await connection.query(
+            q, [mentor_id]
+        );
+        if (results.length !== 0)
+            return true;
+        return false;
+    } catch (err) {
+        console.error("Error checking user", err);
+        throw err;
+    }
+}
+export async function IsMentorInSessionSID(session_id) {
+    let q = 'select session_id from mentor_session_info where session_id=?';
+
+    try {
+        const [results, fields] = await connection.query(
+            q, [session_id]
+        );
+        if (results.length !== 0)
+            return true;
+        return false;
+    } catch (err) {
+        console.error("Error checking user", err);
+        throw err;
+    }
+}
+export async function deleteExpiredMentorSessions() {
+    console.log("deleting expired sessions");
+    let q = 'delete from mentor_session_info  where t < now() - interval 30 minute;';
+    try {
+        const [results, fields] = await connection.query(
+            q
+        );
+    }
+    catch (err) {
+        console.error(err);
+
+        throw err;
+    }
+
 
 }
