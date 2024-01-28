@@ -40,6 +40,9 @@ app.get("/course_information_fill", function (req, res) {
 app.get("/academic_details_fill", function (req, res) {
   res.sendFile("/html/academic_details_fill.html", { root: "." });
 });
+app.get("/academic_details_fetch", function (req, res) {
+  res.sendFile("/html/academic_details_fetch.html", { root: "." });
+});
 
 app.post("/student_signup", async function (req, res) {
   const usn = req.body.usn;
@@ -354,31 +357,29 @@ function replaceEmptyStringsWithNull(obj) {
     if (typeof obj[key] === "string" && obj[key].trim() === "") obj[key] = null;
     else if (typeof obj[key] === "string" && obj[key].trim() !== "") {
       obj[key] = Number(obj[key]);
-      sum += obj[key];
+      if (key !== "attendance") sum += obj[key];
     } else if (typeof obj[key] === "object" && obj[key] !== null)
       obj[key] = replaceEmptyStringsWithNull(obj[key]); // Recursive call for nested objects
   }
   obj.total = sum;
-  console.log(obj);
   return obj;
 }
 
 app.post("/academic_details_fill", async function (req, res) {
-
-    const session_id = req.body.session_id;
-    try {
-      let isInSession = await db.IsMentorInSessionSID(session_id);
-      if (!isInSession) {
-        res.json({ flag: 404, msg: "Invalid session id" });
-        res.end();
-        return;
-      }
-    } catch (err) {
-      console.error(err);
-      res.json(GenErrorJSON);
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
       res.end();
       return;
     }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON);
+    res.end();
+    return;
+  }
   console.log(req.body);
   let usn = req.body.usn;
   let course_id = req.body.course_id;
@@ -388,6 +389,7 @@ app.post("/academic_details_fill", async function (req, res) {
   let assignment_1 = req.body.assignment_1;
   let assignment_2 = req.body.assignment_2;
   let activity = req.body.activity;
+  let attendance = req.body.attendance;
   if (!course_id || !usn) {
     res.json(GenErrorJSON("One of the fields is incomplete."));
     res.end();
@@ -400,6 +402,7 @@ app.post("/academic_details_fill", async function (req, res) {
     ia_3: ia_3,
     assignment_1: assignment_1,
     assignment_2: assignment_2,
+    attendance: attendance,
     activity: activity,
   };
 
@@ -415,6 +418,45 @@ app.post("/academic_details_fill", async function (req, res) {
       db.AcademiaInsert(academia);
       res.json({ flag: 200, msg: "Successfully inserted" });
     }
+    res.end();
+    return;
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON);
+    res.end();
+    return;
+  }
+});
+
+app.post("/academic_details_fetch", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsStudentInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON);
+    res.end();
+    return;
+  }
+  console.log(req.body);
+
+  try {
+    const academic_details = await db.AcademiaFetch(session_id);
+    if (Object.keys(academic_details).length == 0) {
+      res.json({ flag: 404, msg: "No academic details" });
+      res.end();
+      return;
+    }
+    res.json({
+      flag: 200,
+      msg: "Fetch successful",
+      academic_details: academic_details,
+    });
     res.end();
     return;
   } catch (err) {
