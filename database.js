@@ -318,7 +318,7 @@ export async function AcademiaExists(usn, course_id) {
 
 export async function AcademiaInsert(academia) {
   let q =
-    "INSERT INTO academic_details (usn, course_id, IA1, IA2, IA3, assignment_1, assignment_2, activity, Total_internal_marks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE IA1 = IFNULL(VALUES(IA1), IA1),IA2 = IFNULL(VALUES(IA2), IA2),IA3 = IFNULL(VALUES(IA3), IA3),assignment_1 = IFNULL(VALUES(assignment_1), assignment_1),assignment_2 = IFNULL(VALUES(assignment_2), assignment_2),activity = IFNULL(VALUES(activity), activity),Total_internal_marks = IFNULL(VALUES(Total_internal_marks), Total_internal_marks);";
+    "INSERT INTO academic_details (usn, course_id, IA1, IA2, IA3, assignment_1, assignment_2, activity, Total_internal_marks,attendance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE IA1 = IFNULL(VALUES(IA1), IA1),IA2 = IFNULL(VALUES(IA2), IA2),IA3 = IFNULL(VALUES(IA3), IA3),assignment_1 = IFNULL(VALUES(assignment_1), assignment_1),assignment_2 = IFNULL(VALUES(assignment_2), assignment_2),activity = IFNULL(VALUES(activity), activity),Total_internal_marks = IFNULL(VALUES(Total_internal_marks), Total_internal_marks),attendance=IFNULL(VALUES(attendance),attendance);";
   try {
     const [results, fields] = await connection.query(q, [
       academia.usn,
@@ -330,9 +330,41 @@ export async function AcademiaInsert(academia) {
       academia.assignment_2,
       academia.activity,
       academia.total,
+      academia.attendance,
     ]);
   } catch (err) {
     console.error("Error inserting academia", err);
+    throw err;
+  }
+  let q_ =
+    "UPDATE academic_details SET Total_internal_marks= ifnull(IA1,0) + ifnull(IA2,0) + ifnull(IA3,0) + ifnull(assignment_1,0) +ifnull(assignment_2,0) + ifnull(activity,0) WHERE usn=? and course_id=?;";
+  try {
+    const [results, fields] = await connection.query(q_, [
+      academia.usn,
+      academia.course_id,
+    ]);
+  } catch (err) {
+    console.error("Error checking academia", err);
+    throw err;
+  }
+}
+
+export async function AcademiaFetch(session_id) {
+  let q =
+    "select a.* from academic_details a , student_session_info s where s.session_id=? and a.usn=s.usn";
+  try {
+    const [results, fields] = await connection.query(q, [session_id]);
+    console.log(results);
+    const combinedJson = results.reduce((op, currentObject, index) => {
+      // Use a dynamic key, for example, "item1", "item2", ...
+      const key = `course ${index + 1}`;
+      op[key] = currentObject;
+      return op;
+    }, {});
+    console.log(combinedJson);
+    return combinedJson;
+  } catch (err) {
+    console.error("Error checking academia", err);
     throw err;
   }
 }
