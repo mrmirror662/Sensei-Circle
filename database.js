@@ -264,6 +264,18 @@ export async function IsMentorInSessionSID(session_id) {
     throw err;
   }
 }
+export async function FetchMentorIDFromSID(session_id) {
+  let q = "select mentor_id from mentor_session_info where session_id=?";
+
+  try {
+    const [results, fields] = await connection.query(q, [session_id]);
+    if (results.length == 0) throw "session not found";
+    return results[0]["mentor_id"];
+  } catch (err) {
+    console.error("Error checking user", err);
+    throw err;
+  }
+}
 export async function deleteExpiredMentorSessions() {
   console.log("deleting expired sessions");
   let q =
@@ -365,6 +377,40 @@ export async function AcademiaFetch(session_id) {
     return combinedJson;
   } catch (err) {
     console.error("Error checking academia", err);
+    throw err;
+  }
+}
+export async function MentorStudentExists(mentor_id, usn) {
+  let q =
+    "select mentor_id,usn from student_mentor_table where mentor_id=? and usn=?";
+
+  try {
+    const [results, fields] = await connection.query(q, [mentor_id, usn]);
+    if (results.length !== 0) return true;
+    return false;
+  } catch (err) {
+    console.error("Error checking course", err);
+    throw err;
+  }
+}
+export async function RegisterStudentToMentor(mentor_id, usn) {
+  let q = "insert into student_mentor_table values(?,?)";
+  try {
+    const [results, fields] = await connection.query(q, [mentor_id, usn]);
+  } catch (err) {
+    console.error("Error inserting course", err);
+    throw err;
+  }
+}
+
+export async function FetchStudentDetailsFromMentorID(mentor_id) {
+  let q =
+    "select si.* from student_mentor_table sm, student_information si where sm.mentor_id = ? and sm.usn = si.usn;";
+  try {
+    const [results, fields] = await connection.query(q, [mentor_id]);
+    return results;
+  } catch (err) {
+    console.error("Error fetching student details ", err);
     throw err;
   }
 }

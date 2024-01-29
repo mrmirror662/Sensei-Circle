@@ -21,6 +21,7 @@ const GenErrorJSON = function (msg) {
 const GenSuccessJSON = function (msg) {
   return { flag: 200, msg: msg };
 };
+
 app.get("/student_signup", function (req, res) {
   res.sendFile("/html/signup/student_signup.html", { root: "." });
 });
@@ -43,7 +44,12 @@ app.get("/academic_details_fill", function (req, res) {
 app.get("/academic_details_fetch", function (req, res) {
   res.sendFile("/html/academic_details_fetch.html", { root: "." });
 });
-
+app.get("/mentor_register_student", async function (req, res) {
+  res.sendFile("/html/mentor_register_student.html", { root: "." });
+});
+app.get("/mentor_students_fetch", async function (req, res) {
+  res.sendFile("/html/mentor_students_fetch.html", { root: "." });
+});
 app.post("/student_signup", async function (req, res) {
   const usn = req.body.usn;
   const name = req.body.name;
@@ -412,17 +418,17 @@ app.post("/academic_details_fill", async function (req, res) {
   try {
     let academia_exists = await db.AcademiaExists(usn, course_id);
     if (academia_exists) {
-      db.AcademiaInsert(academia);
+      await db.AcademiaInsert(academia);
       res.json({ flag: 200, msg: "Successfully updated" });
     } else {
-      db.AcademiaInsert(academia);
+      await db.AcademiaInsert(academia);
       res.json({ flag: 200, msg: "Successfully inserted" });
     }
     res.end();
     return;
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON);
+    res.json(internalErrorJSON);
     res.end();
     return;
   }
@@ -439,7 +445,7 @@ app.post("/academic_details_fetch", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON);
+    res.json(internalErrorJSON);
     res.end();
     return;
   }
@@ -464,6 +470,73 @@ app.post("/academic_details_fetch", async function (req, res) {
     res.json(GenErrorJSON);
     res.end();
     return;
+  }
+});
+app.post("/mentor_register_student", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(internalErrorJSON);
+    res.end();
+    return;
+  }
+  const usn = req.body.usn;
+  const mentor_id = await db.FetchMentorIDFromSID(session_id);
+  if (!usn || !mentor_id) {
+    res.json(GenErrorJSON("invalid fields"));
+  }
+
+  try {
+    let mentorStudentExists = await db.MentorStudentExists(mentor_id, usn);
+
+    if (mentorStudentExists) {
+      res.json(GenErrorJSON("student already registered!"));
+      res.end();
+      return;
+    }
+    await db.RegisterStudentToMentor(mentor_id, usn);
+    res.json(GenSuccessJSON("student registered"));
+    res.end();
+  } catch (err) {
+    console.error("POST : ", err);
+    res.json(internalErrorJSON);
+    res.end();
+    return;
+  }
+});
+
+app.post("/mentor_students_fetch", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(internalErrorJSON);
+    res.end();
+    return;
+  }
+
+  const mentor_id = await db.FetchMentorIDFromSID(session_id);
+  try {
+    const studentDetails = await db.FetchStudentDetailsFromMentorID(mentor_id);
+    res.json(studentDetails);
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(internalErrorJSON);
+    res.end();
   }
 });
 
