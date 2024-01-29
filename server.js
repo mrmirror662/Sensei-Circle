@@ -163,7 +163,7 @@ app.post("/student_login", async function (req, res) {
     res.end();
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON);
+    res.json(internalErrorJSON);
     res.end();
     return;
   }
@@ -184,7 +184,7 @@ app.post("/student_logout", async function (req, res) {
     res.end();
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON);
+    res.json(internalErrorJSON);
     res.end();
     return;
   }
@@ -290,7 +290,7 @@ app.post("/mentor_login", async function (req, res) {
     res.end();
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON);
+    res.json(internalErrorJSON);
     res.end();
     return;
   }
@@ -312,7 +312,7 @@ app.post("/mentor_logout", async function (req, res) {
     res.end();
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON);
+    res.json(internalErrorJSON);
     res.end();
     return;
   }
@@ -382,7 +382,7 @@ app.post("/academic_details_fill", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON);
+    res.json(internalErrorJSON);
     res.end();
     return;
   }
@@ -467,7 +467,7 @@ app.post("/academic_details_fetch", async function (req, res) {
     return;
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON);
+    res.json(internalErrorJSON);
     res.end();
     return;
   }
