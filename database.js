@@ -71,7 +71,7 @@ export async function InsertStudent(student) {
     ]);
   } catch (err) {
     console.error("Error inserting user", err);
-    throw err;
+    throw "Error inserting user";
   }
 }
 export async function StudentCheckPassword(student) {
@@ -89,7 +89,7 @@ export async function StudentCheckPassword(student) {
     return true;
   } catch (err) {
     console.error("Error authenticating  user", err);
-    throw err;
+    throw "Error authenticating  user";
   }
 }
 
@@ -130,7 +130,7 @@ export async function IsStudentInSession(usn) {
     return false;
   } catch (err) {
     console.error("Error checking user", err);
-    throw err;
+    throw "Error checking user";
   }
 }
 export async function IsStudentInSessionSID(session_id) {
@@ -142,7 +142,7 @@ export async function IsStudentInSessionSID(session_id) {
     return false;
   } catch (err) {
     console.error("Error checking user", err);
-    throw err;
+    throw "Error checking user";
   }
 }
 
@@ -181,7 +181,7 @@ export async function MentorExists(mentor_id) {
     return false;
   } catch (err) {
     console.error("Error checking user", err);
-    throw err;
+    throw "Error checking user";
   }
 }
 
@@ -203,7 +203,7 @@ export async function InsertMentor(mentor) {
     ]);
   } catch (err) {
     console.error("Error inserting user", err);
-    throw err;
+    throw "Error inserting user";
   }
 }
 export async function MentorCheckPassword(mentor) {
@@ -222,7 +222,7 @@ export async function MentorCheckPassword(mentor) {
     return true;
   } catch (err) {
     console.error("Error authenticating  user", err);
-    throw err;
+    throw "Error authenticating  user";
   }
 }
 
@@ -480,7 +480,7 @@ export async function StudentPushIssue(usn, msg) {
 
 export async function MentorFetchIssue(mentor_id) {
   let q =
-    "select i.time , i.msg from issues i where i.usn in(select usn from student_mentor_table sm where sm.mentor_id=?) order by time desc limit 30;";
+    "select i.time , i.msg from issues i where i.usn in(select usn from student_mentor_table sm where sm.mentor_id=?) order by time desc limit 30;"; //TO:FIX (bs code)
   try {
     const [results, fields] = await connection.query(q, [mentor_id]);
     return results;
