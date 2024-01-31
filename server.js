@@ -616,7 +616,7 @@ app.post("/student_fetch_notification", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
