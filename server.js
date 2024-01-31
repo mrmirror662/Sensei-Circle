@@ -21,7 +21,9 @@ const GenErrorJSON = function (msg) {
 const GenSuccessJSON = function (msg) {
   return { flag: 200, msg: msg };
 };
-
+app.get("/home", async function (req, res) {
+  res.sendFile("/html/home.html", { root: "." });
+});
 app.get("/student_signup", function (req, res) {
   res.sendFile("/html/signup/student_signup.html", { root: "." });
 });
@@ -50,6 +52,12 @@ app.get("/mentor_register_student", async function (req, res) {
 app.get("/mentor_students_fetch", async function (req, res) {
   res.sendFile("/html/mentor_students_fetch.html", { root: "." });
 });
+app.get("/notifications", async function (req, res) {
+  res.sendFile("/html/notifications.html", { root: "." });
+});
+app.get("/home", async function (req, res) {
+  res.sendFile("/html/home.html", { root: "." });
+});
 app.post("/student_signup", async function (req, res) {
   const usn = req.body.usn;
   const name = req.body.name;
@@ -58,7 +66,6 @@ app.post("/student_signup", async function (req, res) {
   const email = req.body.email;
   const semester = Number(req.body.semester);
   const branch_id = req.body.branch_id;
-  console.log(req.body);
   if (
     !usn ||
     !name ||
@@ -197,7 +204,7 @@ app.post("/mentor_signup", async function (req, res) {
   const phone_no = req.body.phone_no;
   const email = req.body.email;
   const branch_id = req.body.branch_id;
-  console.log(req.body);
+
   if (!mentor_id || !name || !password || !phone_no || !email || !branch_id) {
     res.json(GenErrorJSON("No value entered in one of the fields"));
     res.end(); // end the response
@@ -386,7 +393,7 @@ app.post("/academic_details_fill", async function (req, res) {
     res.end();
     return;
   }
-  console.log(req.body);
+
   let usn = req.body.usn;
   let course_id = req.body.course_id;
   let ia_1 = req.body.IA_1;
@@ -449,7 +456,6 @@ app.post("/academic_details_fetch", async function (req, res) {
     res.end();
     return;
   }
-  console.log(req.body);
 
   try {
     const academic_details = await db.AcademiaFetch(session_id);
@@ -528,15 +534,102 @@ app.post("/mentor_students_fetch", async function (req, res) {
     return;
   }
 
-  const mentor_id = await db.FetchMentorIDFromSID(session_id);
   try {
+    const mentor_id = await db.FetchMentorIDFromSID(session_id);
     const studentDetails = await db.FetchStudentDetailsFromMentorID(mentor_id);
-    res.json(studentDetails);
+    res.json({ flag: 200, studentDetails });
     res.end();
   } catch (err) {
     console.error(err);
     res.json(internalErrorJSON);
     res.end();
+  }
+});
+app.post("/mentor_push_notification", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(internalErrorJSON);
+    res.end();
+    return;
+  }
+  const msg = req.body.msg;
+  if (!msg) {
+    res.json(GenErrorJSON("empty message."));
+    res.end();
+    return;
+  }
+  const mentor_id = await db.FetchMentorIDFromSID(session_id);
+  try {
+    await db.MentorPushNotification(mentor_id, msg);
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON("error pushing notification."));
+    res.end();
+    return;
+  }
+  res.json(GenSuccessJSON("notification pushed."));
+  res.end();
+});
+app.post("/mentor_fetch_notification", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(internalErrorJSON);
+    res.end();
+    return;
+  }
+  const mentor_id = await db.FetchMentorIDFromSID(session_id);
+  try {
+    const results = await db.MentorFetchNotification(mentor_id);
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON("error fetching notification."));
+    res.end();
+    return;
+  }
+});
+app.post("/student_fetch_notification", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsStudentInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(internalErrorJSON);
+    res.end();
+    return;
+  }
+  const usn = await db.FetchUSNFromSID(session_id);
+  try {
+    const results = await db.StudentFetchNotification(usn);
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON("error fetching notification."));
+    res.end();
+    return;
   }
 });
 

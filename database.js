@@ -145,6 +145,20 @@ export async function IsStudentInSessionSID(session_id) {
     throw err;
   }
 }
+
+export async function FetchUSNFromSID(session_id) {
+  let q = "select usn from student_session_info where session_id=?";
+
+  try {
+    const [results, fields] = await connection.query(q, [session_id]);
+    if (results.length == 0) throw "session not found";
+    return results[0]["usn"];
+  } catch (err) {
+    console.error("Error checking user", err);
+    throw "Error checking user";
+  }
+}
+
 export async function deleteExpiredStudentSessions() {
   console.log("deleting expired sessions");
   let q =
@@ -249,7 +263,7 @@ export async function IsMentorInSession(mentor_id) {
     return false;
   } catch (err) {
     console.error("Error checking user", err);
-    throw err;
+    throw "Error checking user";
   }
 }
 export async function IsMentorInSessionSID(session_id) {
@@ -261,7 +275,7 @@ export async function IsMentorInSessionSID(session_id) {
     return false;
   } catch (err) {
     console.error("Error checking user", err);
-    throw err;
+    throw "Error checking user";
   }
 }
 export async function FetchMentorIDFromSID(session_id) {
@@ -273,7 +287,7 @@ export async function FetchMentorIDFromSID(session_id) {
     return results[0]["mentor_id"];
   } catch (err) {
     console.error("Error checking user", err);
-    throw err;
+    throw "Error checking user";
   }
 }
 export async function deleteExpiredMentorSessions() {
@@ -297,7 +311,7 @@ export async function CourseExists(course_id) {
     return false;
   } catch (err) {
     console.error("Error checking course", err);
-    throw err;
+    throw "Error checking course";
   }
 }
 
@@ -311,7 +325,7 @@ export async function InsertCourse(course) {
     ]);
   } catch (err) {
     console.error("Error inserting course", err);
-    throw err;
+    throw "Error inserting course";
   }
 }
 
@@ -324,7 +338,7 @@ export async function AcademiaExists(usn, course_id) {
     return false;
   } catch (err) {
     console.error("Error checking academia", err);
-    throw err;
+    throw "Error checking academia";
   }
 }
 
@@ -346,7 +360,7 @@ export async function AcademiaInsert(academia) {
     ]);
   } catch (err) {
     console.error("Error inserting academia", err);
-    throw err;
+    throw "Error inserting academia";
   }
   let q_ =
     "UPDATE academic_details SET Total_internal_marks= ifnull(IA1,0) + ifnull(IA2,0) + ifnull(IA3,0) + ifnull(assignment_1,0) +ifnull(assignment_2,0) + ifnull(activity,0) WHERE usn=? and course_id=?;";
@@ -357,7 +371,7 @@ export async function AcademiaInsert(academia) {
     ]);
   } catch (err) {
     console.error("Error checking academia", err);
-    throw err;
+    throw "Error checking academia";
   }
 }
 
@@ -377,7 +391,7 @@ export async function AcademiaFetch(session_id) {
     return combinedJson;
   } catch (err) {
     console.error("Error checking academia", err);
-    throw err;
+    throw "Error checking academia";
   }
 }
 export async function MentorStudentExists(mentor_id, usn) {
@@ -390,7 +404,7 @@ export async function MentorStudentExists(mentor_id, usn) {
     return false;
   } catch (err) {
     console.error("Error checking course", err);
-    throw err;
+    throw "Error checking course";
   }
 }
 export async function RegisterStudentToMentor(mentor_id, usn) {
@@ -399,7 +413,7 @@ export async function RegisterStudentToMentor(mentor_id, usn) {
     const [results, fields] = await connection.query(q, [mentor_id, usn]);
   } catch (err) {
     console.error("Error inserting course", err);
-    throw err;
+    throw "Error inserting course";
   }
 }
 
@@ -411,6 +425,40 @@ export async function FetchStudentDetailsFromMentorID(mentor_id) {
     return results;
   } catch (err) {
     console.error("Error fetching student details ", err);
-    throw err;
+    throw "Error fetching student details ";
+  }
+}
+
+export async function MentorPushNotification(mentor_id, msg) {
+  let q = "insert into notification values(?,now(),?);";
+  try {
+    const [results, fields] = await connection.query(q, [mentor_id, msg]);
+  } catch (err) {
+    console.error("Error inserting course", err);
+    throw "Error inserting course";
+  }
+}
+
+export async function MentorFetchNotification(mentor_id) {
+  let q =
+    "select * from notification where mentor_id = ? order by time desc limit 30;";
+  try {
+    const [results, fields] = await connection.query(q, [mentor_id]);
+    return results;
+  } catch (err) {
+    console.error("Error fetching course", err);
+    throw "Error fetching course";
+  }
+}
+
+export async function StudentFetchNotification(usn) {
+  let q =
+    "select n.time , n.msg from notification n,student_mentor_table ms where ms.usn = ? and ms.mentor_id = n.mentor_id ";
+  try {
+    const [results, fields] = await connection.query(q, [usn]);
+    return results;
+  } catch (err) {
+    console.error("Error fetching course", err);
+    throw "Error fetching course";
   }
 }

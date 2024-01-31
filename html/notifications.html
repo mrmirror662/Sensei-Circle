@@ -1,0 +1,30 @@
+<html>
+
+<head>
+    <title>academic details</title>
+</head>
+
+<body>
+    <h2>Push notifications(mentor):</h2>
+    <form action="http://localhost:3000/mentor_push_notification" method="POST">
+        <p>session_id</p>
+        <input type="text" name="session_id" />
+        <p>msg</p>
+        <input type="text" name="msg" />
+        <input type="submit" />
+    </form>
+    <h2>Get notifiications(mentor):</h2>
+    <form action="http://localhost:3000/mentor_fetch_notification" method="POST">
+        <p>session_id</p>
+        <input type="text" name="session_id" />
+        <input type="submit" />
+    </form>
+    <h2>Get notifiications(student):</h2>
+    <form action="http://localhost:3000/student_fetch_notification" method="POST">
+        <p>session_id</p>
+        <input type="text" name="session_id" />
+        <input type="submit" />
+    </form>
+</body>
+
+</html>
