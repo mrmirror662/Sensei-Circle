@@ -480,7 +480,7 @@ export async function StudentPushIssue(usn, msg) {
 
 export async function MentorFetchIssue(mentor_id) {
   let q =
-    "select i.time , i.msg from issues i where i.usn in(select usn from student_mentor_table sm where sm.mentor_id=?) order by time desc limit 30;";
+    "select i.time , i.msg from issues i where i.usn in(select usn from student_mentor_table sm where sm.mentor_id=?) order by time desc limit 30;"; //TO:FIX (bs code)
   try {
     const [results, fields] = await connection.query(q, [mentor_id]);
     return results;
