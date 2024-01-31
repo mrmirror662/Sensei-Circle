@@ -8,9 +8,9 @@ insert into branch values
 
 -- Dummy data for course_information table
 insert into course_information values
-  ('21cs44','dbms',5),
-  ('21cs22','aiml',5),
-  ('21cs51','atc',5);
+  ('21cs44','dbms',3,5),
+  ('21cs22','aiml',3,5),
+  ('21cs51','atc',3,5);
 
 -- Dummy data for student_credentials table
 insert into student_credentials values
@@ -80,3 +80,9 @@ insert into notification values
   ('mentor1', '2024-01-31 12:30:00', 'Dummy notification 2'),
   ('mentor2', '2024-01-31 13:15:00', 'Dummy notification 3'),
   ('mentor3', '2024-01-31 14:00:00', 'Dummy notification 4');
+
+insert into issues values
+  ('1js21cs001', '2024-01-31 12:00:00', 'Dummy issue 1'),
+  ('1js21cs002', '2024-01-31 12:30:00', 'Dummy issue 2'),
+  ('1js21cs034', '2024-01-31 13:15:00', 'Dummy issue 3'),
+  ('1js21cs003', '2024-01-31 14:00:00', 'Dummy issue 4');

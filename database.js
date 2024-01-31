@@ -375,20 +375,25 @@ export async function AcademiaInsert(academia) {
   }
 }
 
-export async function AcademiaFetch(session_id) {
+export async function StudentAcademiaFetch(session_id) {
   let q =
     "select a.* from academic_details a , student_session_info s where s.session_id=? and a.usn=s.usn";
   try {
     const [results, fields] = await connection.query(q, [session_id]);
     console.log(results);
-    const combinedJson = results.reduce((op, currentObject, index) => {
-      // Use a dynamic key, for example, "item1", "item2", ...
-      const key = `course ${index + 1}`;
-      op[key] = currentObject;
-      return op;
-    }, {});
-    console.log(combinedJson);
-    return combinedJson;
+    return results;
+  } catch (err) {
+    console.error("Error checking academia", err);
+    throw "Error checking academia";
+  }
+}
+export async function MentorAcademiaFetch(session_id, usn) {
+  let q =
+    "select a.* from academic_details a , mentor_session_info m, student_mentor_table sm where m.session_id=? and m.mentor_id=sm.mentor_id and sm.usn=? and sm.usn=a.usn";
+  try {
+    const [results, fields] = await connection.query(q, [session_id, usn]);
+    console.log(results);
+    return results;
   } catch (err) {
     console.error("Error checking academia", err);
     throw "Error checking academia";
@@ -403,8 +408,8 @@ export async function MentorStudentExists(mentor_id, usn) {
     if (results.length !== 0) return true;
     return false;
   } catch (err) {
-    console.error("Error checking course", err);
-    throw "Error checking course";
+    console.error("Error checking mentor_student", err);
+    throw "Error checking mentor_student";
   }
 }
 export async function RegisterStudentToMentor(mentor_id, usn) {
@@ -412,8 +417,8 @@ export async function RegisterStudentToMentor(mentor_id, usn) {
   try {
     const [results, fields] = await connection.query(q, [mentor_id, usn]);
   } catch (err) {
-    console.error("Error inserting course", err);
-    throw "Error inserting course";
+    console.error("Error registering to mentor", err);
+    throw "Error registering student to mentor";
   }
 }
 
@@ -434,8 +439,8 @@ export async function MentorPushNotification(mentor_id, msg) {
   try {
     const [results, fields] = await connection.query(q, [mentor_id, msg]);
   } catch (err) {
-    console.error("Error inserting course", err);
-    throw "Error inserting course";
+    console.error("Error inserting notification", err);
+    throw "Error inserting notification";
   }
 }
 
@@ -446,8 +451,8 @@ export async function MentorFetchNotification(mentor_id) {
     const [results, fields] = await connection.query(q, [mentor_id]);
     return results;
   } catch (err) {
-    console.error("Error fetching course", err);
-    throw "Error fetching course";
+    console.error("Error fetching notification", err);
+    throw "Error fetching notification";
   }
 }
 
@@ -458,7 +463,40 @@ export async function StudentFetchNotification(usn) {
     const [results, fields] = await connection.query(q, [usn]);
     return results;
   } catch (err) {
-    console.error("Error fetching course", err);
-    throw "Error fetching course";
+    console.error("Error fetching notification", err);
+    throw "Error fetching notification";
+  }
+}
+
+export async function StudentPushIssue(usn, msg) {
+  let q = "insert into issues values(?,now(),?);";
+  try {
+    const [results, fields] = await connection.query(q, [usn, msg]);
+  } catch (err) {
+    console.error("Error inserting issues", err);
+    throw "Error inserting issues";
+  }
+}
+
+export async function MentorFetchIssue(mentor_id) {
+  let q =
+    "select i.time , i.msg from issues i where i.usn in(select usn from student_mentor_table sm where sm.mentor_id=?) order by time desc limit 30;";
+  try {
+    const [results, fields] = await connection.query(q, [mentor_id]);
+    return results;
+  } catch (err) {
+    console.error("Error fetching issues", err);
+    throw "Error fetching issues";
+  }
+}
+
+export async function StudentFetchIssue(usn) {
+  let q = "select * from issues where usn = ? order by time desc limit 30";
+  try {
+    const [results, fields] = await connection.query(q, [usn]);
+    return results;
+  } catch (err) {
+    console.error("Error fetching issues", err);
+    throw "Error fetching issues";
   }
 }

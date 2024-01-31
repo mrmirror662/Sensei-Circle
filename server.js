@@ -55,9 +55,11 @@ app.get("/mentor_students_fetch", async function (req, res) {
 app.get("/notifications", async function (req, res) {
   res.sendFile("/html/notifications.html", { root: "." });
 });
-app.get("/home", async function (req, res) {
-  res.sendFile("/html/home.html", { root: "." });
+
+app.get("/issues", async function (req, res) {
+  res.sendFile("/html/issues.html", { root: "." });
 });
+
 app.post("/student_signup", async function (req, res) {
   const usn = req.body.usn;
   const name = req.body.name;
@@ -423,8 +425,22 @@ app.post("/academic_details_fill", async function (req, res) {
   academia.usn = usn;
   academia.course_id = course_id;
   try {
-    let academia_exists = await db.AcademiaExists(usn, course_id);
-    if (academia_exists) {
+    const mentor_id = await db.FetchMentorIDFromSID(session_id);
+    let mentorStudentExists = await db.MentorStudentExists(mentor_id, usn);
+    if (!mentorStudentExists) {
+      res.json(GenErrorJSON("Student not registered."));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(internalErrorJSON);
+    res.end();
+    return;
+  }
+  try {
+    let academiaExists = await db.AcademiaExists(usn, course_id);
+    if (academiaExists) {
       await db.AcademiaInsert(academia);
       res.json({ flag: 200, msg: "Successfully updated" });
     } else {
@@ -441,7 +457,46 @@ app.post("/academic_details_fill", async function (req, res) {
   }
 });
 
-app.post("/academic_details_fetch", async function (req, res) {
+app.post("/mentor_academic_details_fetch", async function (req, res) {
+  const session_id = req.body.session_id;
+  const usn = req.body.usn;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(internalErrorJSON);
+    res.end();
+    return;
+  }
+
+  try {
+    const academic_details = await db.MentorAcademiaFetch(session_id, usn);
+    if (academic_details.length == 0) {
+      res.json({ flag: 404, msg: "No academic details" });
+      res.end();
+      return;
+    }
+    res.json({
+      flag: 200,
+      msg: "Fetch successful",
+      academic_details: academic_details,
+    });
+    res.end();
+    return;
+  } catch (err) {
+    console.error(err);
+    res.json(internalErrorJSON);
+    res.end();
+    return;
+  }
+});
+
+app.post("/student_academic_details_fetch", async function (req, res) {
   const session_id = req.body.session_id;
   try {
     let isInSession = await db.IsStudentInSessionSID(session_id);
@@ -458,8 +513,8 @@ app.post("/academic_details_fetch", async function (req, res) {
   }
 
   try {
-    const academic_details = await db.AcademiaFetch(session_id);
-    if (Object.keys(academic_details).length == 0) {
+    const academic_details = await db.StudentAcademiaFetch(session_id);
+    if (academic_details.length == 0) {
       res.json({ flag: 404, msg: "No academic details" });
       res.end();
       return;
@@ -633,6 +688,94 @@ app.post("/student_fetch_notification", async function (req, res) {
   }
 });
 
+app.post("/student_push_issue", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsStudentInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(internalErrorJSON);
+    res.end();
+    return;
+  }
+  const msg = req.body.msg;
+  if (!msg) {
+    res.json(GenErrorJSON("empty message."));
+    res.end();
+    return;
+  }
+  const usn = await db.FetchUSNFromSID(session_id);
+  try {
+    await db.StudentPushIssue(usn, msg);
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON("error pushing issues."));
+    res.end();
+    return;
+  }
+  res.json(GenSuccessJSON("issue pushed."));
+  res.end();
+});
+app.post("/mentor_fetch_issue", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(internalErrorJSON);
+    res.end();
+    return;
+  }
+  const mentor_id = await db.FetchMentorIDFromSID(session_id);
+
+  try {
+    const results = await db.MentorFetchIssue(mentor_id);
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON("error fetching issue."));
+    res.end();
+    return;
+  }
+});
+app.post("/student_fetch_issue", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsStudentInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(internalErrorJSON);
+    res.end();
+    return;
+  }
+  const usn = await db.FetchUSNFromSID(session_id);
+  try {
+    const results = await db.StudentFetchIssue(usn);
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON("error fetching issue."));
+    res.end();
+    return;
+  }
+});
 let server = app.listen(PORT_NO, function () {
   let host = server.address().address;
   let port = server.address().port;
