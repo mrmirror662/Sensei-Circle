@@ -48,7 +48,7 @@ export async function StudentExists(usn) {
     return false;
   } catch (err) {
     console.error("Error checking user", err);
-    throw err;
+    throw "Error checking user";
   }
 }
 
@@ -104,7 +104,7 @@ export async function AddStudentToSession(usn) {
     const [results, fields] = await connection.query(q, [session_id, usn]);
   } catch (err) {
     console.error(err);
-    throw err;
+    throw "error in adding to session";
   }
 
   return session_id;
@@ -117,7 +117,7 @@ export async function RemoveStudentSession(session_id) {
   } catch (err) {
     console.error(err);
 
-    throw err;
+    throw "error deleteing from session";
   }
 }
 
@@ -168,7 +168,7 @@ export async function deleteExpiredStudentSessions() {
   } catch (err) {
     console.error(err);
 
-    throw err;
+    throw "error deleting expired sessions";
   }
 }
 
@@ -237,7 +237,7 @@ export async function AddMentorToSession(mentor_id) {
     ]);
   } catch (err) {
     console.error(err);
-    throw err;
+    throw "error adding mentor to session";
   }
 
   return session_id;
@@ -250,7 +250,7 @@ export async function RemoveMentorSession(session_id) {
   } catch (err) {
     console.error(err);
 
-    throw err;
+    throw "error removing mentor from session";
   }
 }
 
@@ -299,7 +299,7 @@ export async function deleteExpiredMentorSessions() {
   } catch (err) {
     console.error(err);
 
-    throw err;
+    throw "error deleting expired mentor sessions";
   }
 }
 export async function CourseExists(course_id) {
