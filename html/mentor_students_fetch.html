@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <title>Academic Details</title>
+</head>
+
+<body ng-app="myApp" ng-controller="myController">
+    <h2>Fetch Student Details</h2>
+    <form id="fetchForm" action="http://localhost:3000/mentor_students_fetch" method="POST">
+        <!-- Bind the sessionID to a hidden input field -->
+        <input type="hidden" name="session_id" ng-value="sessionID" />
+        <!-- Trigger form submission on button click -->
+        <button type="submit" ng-click="fetchStudentDetails()">Fetch Student Details</button>
+    </form>
+    <script>
+        angular.module('myApp', [])
+            .controller('myController', ['$scope', '$window', function($scope, $window) {
+                // Retrieve sessionID from localStorage
+                $scope.sessionID = $window.localStorage.getItem('session_id');
+
+                // Function to submit the form
+                $scope.fetchStudentDetails = function() {
+                    document.getElementById('fetchForm').submit();
+                };
+            }]);
+    </script>
+</body>
+</html>

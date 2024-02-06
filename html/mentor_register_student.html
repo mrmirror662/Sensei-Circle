@@ -1,0 +1,29 @@
+<html>
+
+<head>
+    <title>academic details</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+
+<body ng-app="myApp" ng-controller="myController">
+    <h2>register student </h2>
+    <form id="fetchForm" action="http://localhost:3000/mentor_register_student" method="POST">
+        <input type="hidden" name="session_id" ng-value="sessionID"/><br>
+        <p>usn:</p>
+        <input type="text" name="usn"/>
+        <button type="submit" ng-click="registerStudentDetails()">Register</button>
+    </form>
+    <script>
+        angular.module('myApp', [])
+            .controller('myController', ['$scope', '$window', function($scope, $window) {
+                // Retrieve sessionID from localStorage
+                $scope.sessionID = $window.localStorage.getItem('session_id');
+
+                // Function to submit the form
+                $scope.registerStudentDetails = function() {
+                    document.getElementById('fetchForm').submit();
+                };
+            }]);
+    </script>
+</body>
+</html>

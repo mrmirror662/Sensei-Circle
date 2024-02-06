@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>academic details</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+
+</head>
+<body ng-controller="myController">
+<h2 class="text-2xl font-bold mb-4">Academic Details</h2>
+<div class="mt-8">
+  <h3 class="mb-4 text-lg font-medium">Student Fetch</h3>
+
+  <input type="hidden" ng-model="studentSessionId" name="session_id" />
+
+  <button class="bg-blue-500 text-white px-4 py-2 rounded font-bold" ng-click="fetchStudentAcademicDetails()">Fetch Student Details</button>
+
+  <div class="bg-white shadow-md rounded-lg p-4 mt-4" ng-show="studentAcademicDetails"> <h3 class="text-lg font-medium mb-4">Academic Details</h3>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div>
+            <p class="font-medium">USN:</p> 
+            <p class="text-gray-700">{{ studentAcademicDetails.usn }}</p> 
+        </div>
+        <div>
+            <p class="font-medium">Course ID:</p> 
+            <p class="text-gray-700">{{ studentAcademicDetails.course_id }}</p> 
+        </div>
+        <div>
+            <p class="font-medium">IA1:</p> 
+            <p class="text-gray-700">{{ studentAcademicDetails.IA1 }}</p> 
+        </div>
+        <div>
+            <p class="font-medium">IA12:</p> 
+            <p class="text-gray-700">{{ studentAcademicDetails.IA2 }}</p> 
+        </div>
+        <div>
+            <p class="font-medium">IA3:</p> 
+            <p class="text-gray-700">{{ studentAcademicDetails.IA3 }}</p> 
+        </div>
+        <div>
+            <p class="font-medium">Assignment 1</p> 
+            <p class="text-gray-700">{{ studentAcademicDetails.assignment_1 }}</p> 
+        </div>
+        <div>
+            <p class="font-medium">Assignment 2</p> 
+            <p class="text-gray-700">{{ studentAcademicDetails.assignment_2 }}</p> 
+        </div>
+        <div>
+            <p class="font-medium">Activity:</p> 
+            <p class="text-gray-700">{{ studentAcademicDetails.activity }}</p> 
+        </div>
+        <div>
+            <p class="font-medium">Total Marks</p> 
+            <p class="text-gray-700">{{ studentAcademicDetails.total_marks }}</p> 
+        </div>
+        <div>
+            <p class="font-medium">Attendance:</p> 
+            <p class="text-gray-700">{{ studentAcademicDetails.attendance }}</p> 
+        </div>
+    </div>
+</div>
+
+<div class="mt-8">
+    <h3 class="mb-4">Mentor Fetch</h3>
+    <input type="hidden" ng-model="mentorSessionId" name="session_id" />
+    <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2">USN:</label>
+        <input type="text" ng-model="usn" name="usn"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+    </div>
+        <button class="bg-green-500 text-white px-4 py-2 rounded font-bold" ng-click="fetchMentorAcademicDetails()">Fetch Mentor Details</button>
+    </div>
+
+    <div class="bg-white shadow-md rounded-lg p-4 mt-4" ng-show="Mflag >= 1">
+        <h3 class="text-lg font-medium mb-4">Academic Details</h3>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div>
+                <p class="font-medium">USN:</p>
+                <p class="text-gray-700">{{ mentorAcademicDetails.usn }}</p>
+            </div>
+            <div>
+                <p class="font-medium">Course ID:</p>
+                <p class="text-gray-700">{{ mentorAcademicDetails.course_id }}</p>
+            </div>
+            <div>
+                <p class="font-medium">IA1:</p>
+                <p class="text-gray-700">{{ mentorAcademicDetails.IA1 }}</p>
+            </div>
+            <div>
+                <p class="font-medium">IA2:</p>
+                <p class="text-gray-700">{{ mentorAcademicDetails.IA2 }}</p>
+            </div>
+            <div>
+                <p class="font-medium">IA3:</p>
+                <p class="text-gray-700">{{ mentorAcademicDetails.IA3 }}</p>
+            </div>
+            <div>
+                <p class="font-medium">Assignment 1:</p>
+                <p class="text-gray-700">{{ mentorAcademicDetails.assignment_1 }}</p>
+            </div>
+            <div>
+                <p class="font-medium">Assignment 2:</p>
+                <p class="text-gray-700">{{ mentorAcademicDetails.assignment_2 }}</p>
+            </div>
+            <div>
+                <p class="font-medium">Activity:</p>
+                <p class="text-gray-700">{{ mentorAcademicDetails.activity }}</p>
+            </div>
+            <div>
+                <p class="font-medium">Total Marks:</p>
+                <p class="text-gray-700">{{ mentorAcademicDetails.total_marks }}</p>
+            </div>
+            <div>
+                <p class="font-medium">Attendance:</p>
+                <p class="text-gray-700">{{ mentorAcademicDetails.attendance }}</p>
+            </div>
+    </div>
+</div>
+
+<div class="mt-4" ng-show="Mflag == 0">
+    <p class="text-red-500">No student found!</p>
+</div>
+
+    <script>
+        angular.module('myApp',[])
+        .controller('myController',['$scope','$http', function($scope, $http) {
+            // Retrieve session_id from localStorage
+            $scope.studentSessionId = localStorage.getItem('session_id');
+            $scope.mentorSessionId = localStorage.getItem('session_id');
+
+            $scope.studentAcademicDetails = null;
+            $scope.mentorAcademicDetails = null;
+            $scope.Mflag =-1;
+            $scope.fetchStudentAcademicDetails = function() {
+                $http.post('http://localhost:3000/student_academic_details_fetch', { session_id: $scope.studentSessionId })
+                    .then(function(response) {
+                        try{
+                            $scope.studentAcademicDetails = response.data.academic_details[0];
+                        }
+                        catch(err){
+                            console.log('Error');
+                        }    
+                    })
+                    .catch(function(error) {
+                        console.error('Error fetching student academic details:', error);
+                    });
+
+            };
+
+            $scope.fetchMentorAcademicDetails = function() {
+                $http.post('http://localhost:3000/mentor_academic_details_fetch', { session_id: $scope.mentorSessionId, usn: $scope.usn })
+                    .then(function(response) {
+                       try{
+                            $scope.mentorAcademicDetails = response.data.academic_details[0];
+                            $scope.Mflag = response.data.academic_details.length;
+                        }
+                        catch(err){
+                         $scope.Mflag = 0;
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error fetching mentor academic details:', error);
+                    });
+                    
+            };
+        }]);
+    </script>
+</body>
+</html>
