@@ -92,7 +92,7 @@ app.post("/student_signup", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     return;
   }
 
@@ -108,7 +108,7 @@ app.post("/student_signup", async function (req, res) {
     });
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end(); // end the response
     return;
   }
@@ -123,7 +123,7 @@ app.post("/student_login", async function (req, res) {
   try {
     studentExists = await db.StudentExists(usn);
   } catch (err) {
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     console.error(err);
     return;
   }
@@ -148,7 +148,7 @@ app.post("/student_login", async function (req, res) {
     });
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end(); // end the response
     return;
   }
@@ -172,7 +172,7 @@ app.post("/student_login", async function (req, res) {
     res.end();
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -193,7 +193,7 @@ app.post("/student_logout", async function (req, res) {
     res.end();
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -223,7 +223,7 @@ app.post("/mentor_signup", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     return;
   }
 
@@ -238,7 +238,7 @@ app.post("/mentor_signup", async function (req, res) {
     });
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end(); // end the response
     return;
   }
@@ -253,7 +253,7 @@ app.post("/mentor_login", async function (req, res) {
   try {
     mentorExists = await db.MentorExists(mentor_id);
   } catch (err) {
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     console.error(err);
     return;
   }
@@ -276,7 +276,7 @@ app.post("/mentor_login", async function (req, res) {
     });
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end(); // end the response
     return;
   }
@@ -299,7 +299,7 @@ app.post("/mentor_login", async function (req, res) {
     res.end();
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -321,7 +321,7 @@ app.post("/mentor_logout", async function (req, res) {
     res.end();
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -391,7 +391,7 @@ app.post("/academic_details_fill", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -434,7 +434,7 @@ app.post("/academic_details_fill", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -451,7 +451,7 @@ app.post("/academic_details_fill", async function (req, res) {
     return;
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -469,7 +469,7 @@ app.post("/mentor_academic_details_fetch", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -490,7 +490,7 @@ app.post("/mentor_academic_details_fetch", async function (req, res) {
     return;
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -507,7 +507,7 @@ app.post("/student_academic_details_fetch", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -528,7 +528,7 @@ app.post("/student_academic_details_fetch", async function (req, res) {
     return;
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -544,7 +544,7 @@ app.post("/mentor_register_student", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -567,7 +567,46 @@ app.post("/mentor_register_student", async function (req, res) {
     res.end();
   } catch (err) {
     console.error("POST : ", err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+app.post("/mentor_deregister_student", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  const usn = req.body.usn;
+  const mentor_id = await db.FetchMentorIDFromSID(session_id);
+  if (!usn || !mentor_id) {
+    res.json(GenErrorJSON("invalid fields"));
+  }
+
+  try {
+    let mentorStudentExists = await db.MentorStudentExists(mentor_id, usn);
+
+    if (!mentorStudentExists) {
+      res.json(GenErrorJSON("student not  registered!"));
+      res.end();
+      return;
+    }
+    await db.DeregisterStudentToMentor(mentor_id, usn);
+    res.json(GenSuccessJSON("student deregistered"));
+    res.end();
+  } catch (err) {
+    console.error("POST : ", err);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -584,7 +623,7 @@ app.post("/mentor_students_fetch", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -596,7 +635,7 @@ app.post("/mentor_students_fetch", async function (req, res) {
     res.end();
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
   }
 });
@@ -611,7 +650,7 @@ app.post("/mentor_push_notification", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -626,7 +665,7 @@ app.post("/mentor_push_notification", async function (req, res) {
     await db.MentorPushNotification(mentor_id, msg);
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON("error pushing notification."));
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -644,7 +683,7 @@ app.post("/mentor_fetch_notification", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -655,7 +694,7 @@ app.post("/mentor_fetch_notification", async function (req, res) {
     res.end();
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON("error fetching notification."));
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -682,7 +721,7 @@ app.post("/student_fetch_notification", async function (req, res) {
     res.end();
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON("error fetching notification."));
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -699,7 +738,7 @@ app.post("/student_push_issue", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -714,7 +753,7 @@ app.post("/student_push_issue", async function (req, res) {
     await db.StudentPushIssue(usn, msg);
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON("error pushing issues."));
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -732,7 +771,7 @@ app.post("/mentor_fetch_issue", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -744,7 +783,7 @@ app.post("/mentor_fetch_issue", async function (req, res) {
     res.end();
   } catch (err) {
     console.error(err);
-    res.json(GenErrorJSON("error fetching issue."));
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
@@ -760,7 +799,7 @@ app.post("/student_fetch_issue", async function (req, res) {
     }
   } catch (err) {
     console.error(err);
-    res.json(internalErrorJSON);
+    res.json(GenErrorJSON(err));
     res.end();
     return;
   }
