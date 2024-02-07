@@ -422,6 +422,15 @@ export async function RegisterStudentToMentor(mentor_id, usn) {
   }
 }
 
+export async function DeregisterStudentToMentor(mentor_id, usn) {
+  let q = "delete from student_mentor_table where mentor_id = ? and usn = ?;";
+  try {
+    const [results, fields] = await connection.query(q, [mentor_id, usn]);
+  } catch (err) {
+    console.error("Error deregistering to mentor", err);
+    throw "Error deregistering student to mentor";
+  }
+}
 export async function FetchStudentDetailsFromMentorID(mentor_id) {
   let q =
     "select si.* from student_mentor_table sm, student_information si where sm.mentor_id = ? and sm.usn = si.usn;";
