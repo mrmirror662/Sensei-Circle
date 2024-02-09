@@ -1,31 +1,78 @@
-<html>
-  <head>
-    <title>academic details</title>
-  </head>
+<!DOCTYPE html>
+<html lang="en">
 
-  <body>
-    <h2>Push issues(student):</h2>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Details</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <style>
+    body {
+      padding: 20px;
+      background-color: black;
+      color: white;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #007bff;
+      /* This line is for consistency if you want the h2 color to be different */
+    }
+
+    form {
+      margin-bottom: 30px;
+    }
+
+    input[type="text"],
+    input[type="submit"] {
+      width: 100%;
+      margin-bottom: 10px;
+      background-color: #343a40;
+      /* Dark gray background color */
+      color: white;
+      /* White text color */
+    }
+
+    input[type="submit"] {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Push issues (student):</h2>
     <form action="http://localhost:3000/student_push_issue" method="POST">
-      <p>session_id</p>
-      <input type="text" name="session_id" />
-      <p>msg</p>
-      <input type="text" name="msg" />
-      <input type="submit" />
+      <div class="form-group">
+        <label for="session_id">Session ID</label>
+        <input type="text" id="session_id" name="session_id" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="msg">Message</label>
+        <input type="text" id="msg" name="msg" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <h2>Get issues(mentor):</h2>
+
+    <h2>Get issues (mentor):</h2>
     <form action="http://localhost:3000/mentor_fetch_issue" method="POST">
-      <p>session_id</p>
-      <input type="text" name="session_id" />
-
-        <input type="submit" />
-      </p>
+      <div class="form-group">
+        <label for="mentor_session_id">Session ID</label>
+        <input type="text" id="mentor_session_id" name="session_id" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 
-    <h2>Get issues(student):</h2>
+    <h2>Get issues (student):</h2>
     <form action="http://localhost:3000/student_fetch_issue" method="POST">
-      <p>session_id</p>
-      <input type="text" name="session_id" />
-      <input type="submit" />
+      <div class="form-group">
+        <label for="student_session_id">Session ID</label>
+        <input type="text" id="student_session_id" name="session_id" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-  </body>
+  </div>
+</body>
+
 </html>

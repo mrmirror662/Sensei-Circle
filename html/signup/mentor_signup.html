@@ -1,32 +1,76 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign in</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+        body {
+            padding: 20px;
+            background-color: black;
+            color: white;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #007bff;
+            /* This line is for consistency if you want the h2 color to be different */
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        input[type="text"],
+        input[type="submit"] {
+            width: 100%;
+            margin-bottom: 10px;
+            background-color: #343a40;
+            /* Dark gray background color */
+            color: white;
+            /* White text color */
+        }
+
+        input[type="submit"] {
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
-    <h2>Sign in</h2>
-    <form action="http://localhost:3000/mentor_signup" method="POST" class="pure-form pure-form-aligned">
-        <p>mentor_id</p>
-        <input type="text" name="mentor_id">
-        <p>name</p>
-        <input type="text" name="name">
-        <p>password</p>
-        <input type="text" name="password">
-        <p>phone_number</p>
-        <input type="text" name="phone_no">
-        <p>email</p>
-        <input type="text" name="email">
-        <p>branch</p>
-        <input type="text" name="branch_id">
-
-        <input type="submit" value="Submit">
-        
-
-    </form>
-
-
-
+    <div class="container">
+        <h2>Sign in</h2>
+        <form action="http://localhost:3000/mentor_signup" method="POST" class="pure-form pure-form-aligned">
+            <div class="form-group">
+                <label for="mentor_id">Mentor ID</label>
+                <input type="text" id="mentor_id" name="mentor_id" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="text" id="password" name="password" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="phone_no">Phone Number</label>
+                <input type="text" id="phone_no" name="phone_no" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="branch_id">Branch</label>
+                <input type="text" id="branch_id" name="branch_id" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 </body>
 
 </html>

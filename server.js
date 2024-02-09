@@ -572,6 +572,45 @@ app.post("/mentor_register_student", async function (req, res) {
     return;
   }
 });
+app.post("/mentor_deregister_student", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  const usn = req.body.usn;
+  const mentor_id = await db.FetchMentorIDFromSID(session_id);
+  if (!usn || !mentor_id) {
+    res.json(GenErrorJSON("invalid fields"));
+  }
+
+  try {
+    let mentorStudentExists = await db.MentorStudentExists(mentor_id, usn);
+
+    if (!mentorStudentExists) {
+      res.json(GenErrorJSON("student not  registered!"));
+      res.end();
+      return;
+    }
+    await db.DeregisterStudentToMentor(mentor_id, usn);
+    res.json(GenSuccessJSON("student deregistered"));
+    res.end();
+  } catch (err) {
+    console.error("POST : ", err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
 
 app.post("/mentor_students_fetch", async function (req, res) {
   const session_id = req.body.session_id;
