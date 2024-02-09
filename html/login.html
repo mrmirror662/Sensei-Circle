@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+    <title>Login</title>
+  </head>
+  <body ng-controller="myController">
+    <div>
+      <div class="flex items-center"> <div class="navbar mr-4 bg-gray-100 px-4 py-2"> <a href="" ng-click="setActiveContent('content1')" class="text-gray-700 hover:text-gray-900 font-bold">Mentor</a>
+        </div>
+        <div class="navbar bg-gray-100 px-4 py-2">
+          <a href="" ng-click="setActiveContent('content2')" class="text-gray-700 hover:text-gray-900 font-bold">Student</a>
+        </div>
+      </div>
+      <div class="content" ng-show="activeContent === 'content1'">
+        <div class="mentor">
+          <form action="http://localhost:3000/mentor_login" method="POST" ng-submit="mentor_login()">
+            <div class="flex items-center justify-center min-h-screen bg-gray-200">
+              <div
+              class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
+              <!-- left side -->
+              <div class="flex flex-col justify-center p-8 md:p-14">
+                <span class="mb-3 text-4xl font-bold">Login</span>
+                <span class="font-light text-gray-400 mb-8">
+                  Welcome back! Please enter your details
+                </span>
+                <div class="py-4">
+                  <span class="mb-2 text-md">Mentor ID</span>
+                  <input
+                    type="text"
+                    class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
+                    name="mentor_id"
+                    ng-model="mentorCredentials.mentor_id"
+                    id="mentor_id"
+                  />
+                </div>
+                <div class="py-4">
+                  <span class="mb-2 text-md">Password</span>
+                  <input
+                    type="password"
+                    name="password"
+                    id="mpass"
+                    ng-model="mentorCredentials.password"
+                    class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"/>
+                </div>
+                <div class="flex justify-between w-full py-4">
+                  <span class="font-bold text-md">Forgot password</span>
+                </div>
+                <button
+                  class="w-full bg-blue-500 text-white p-2 rounded-lg mb-6 hover:bg-white hover:text-black hover:border hover:border-gray-300" type="submit" value="login">
+                  Log in
+                </button>
+                <div class="text-center text-gray-400">
+                  Dont'have an account?
+                  <span class="font-bold text-black"><a href="http://localhost:3000/signup">Sign up</a></span>
+                </div>
+              </div>
+               <!-- {/* right side */} -->
+              <div class="relative">
+              <div class="h-24 bg-gradient-to-r from-sky-300 via-blue-500 to-blue-900 w-[400px] h-full hidden rounded-r-2xl md:block object-cover"></div>
+            </div>
+          </div>
+          </form>
+        </div>
+      </div>
+     </div>
+      <div class="content" ng-show="activeContent === 'content2'">
+        <div class="student">
+          <form action="http://localhost:3000/student_login" method="POST" ng-submit="student_login()">
+            <div class="flex items-center justify-center min-h-screen bg-gray-200">
+              <div
+              class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
+              <!-- left side -->
+              <div class="flex flex-col justify-center p-8 md:p-14">
+                <span class="mb-3 text-4xl font-bold">Login</span>
+                <span class="font-light text-gray-400 mb-8">
+                  Welcome back! Please enter your details
+                </span>
+                <div class="py-4">
+                  <span class="mb-2 text-md">USN</span>
+                  <input
+                    type="text"
+                    class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
+                    name="usn"
+                    ng-model="studentCredentials.usn"
+                    id="usn"
+                  />
+                </div>
+                <div class="py-4">
+                  <span class="mb-2 text-md">Password</span>
+                  <input
+                    type="password"
+                    name="password"
+                    id="spass"
+                    ng-model="studentCredentials.password"
+                    class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"/>
+                </div>
+                <div class="flex justify-between w-full py-4">
+                  <span class="font-bold text-md">Forgot password</span>
+                </div>
+                <button
+                  class="w-full bg-blue-500 text-white p-2 rounded-lg mb-6 hover:bg-white hover:text-black hover:border hover:border-gray-300" type="submit" value="login">
+                  Log in
+                </button>
+                <div class="text-center text-gray-400">
+                  Dont'have an account?
+                  <span class="font-bold text-black"><a href="http://localhost:3000/signup">Sign up</a></span>
+                </div>
+              </div>
+               <!-- {/* right side */} -->
+              <div class="relative">
+              <div class="h-24 bg-gradient-to-r from-sky-300 via-blue-500 to-blue-900 w-[400px] h-full hidden rounded-r-2xl md:block object-cover"></div>
+            </div>
+          </div>
+          </form>
+        </div>
+      </div>
+  
+    <script>
+      angular.module('myApp', [])
+        .controller('myController', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+                $scope.mentorCredentials = {};
+                $scope.studentCredentials = {};
+                $scope.mentor_login = function () {
+                    $http.post('http://localhost:3000/mentor_login', $scope.mentorCredentials)
+                        .then(function (response) { 
+                            const session_id = response.data.session_id;
+                            // Store the sessionID in localStorage
+                            localStorage.setItem('mentor_session_id', session_id);
+                            // Redirect to another page or handle the login success as needed
+                            window.location.replace('http://localhost:3000/mentor_mainpage');
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                            // Handle login failure
+                        });
+                };
+                $scope.student_login = function () {
+                    $http.post('http://localhost:3000/student_login', $scope.studentCredentials)
+                        .then(function (response) { 
+                            const session_id = response.data.session_id;
+                            // Store the sessionID in localStorage
+                            localStorage.setItem('student_session_id', session_id);   
+                            // Redirect to another page or handle the login success as needed
+                            window.location.replace('http://localhost:3000/student_mainpage');
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                            // Handle login failure
+                        });
+                };
+                $scope.activeContent = 'content1'; // Default active content
+                $scope.setActiveContent = function(content) {
+                $scope.activeContent = content;
+                };
+            }]);
+    </script>
+    
+  </body>
+</html>
+

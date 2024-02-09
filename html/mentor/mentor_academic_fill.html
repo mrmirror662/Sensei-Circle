@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Details</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 text-gray-700 font-sans py-8" ng-controller="myController">
+  <div class="container mx-auto px-4 max-w-lg">
+    <h2 class="text-2xl font-bold mb-8">Student Academic Details</h2>
+
+    <form id="fillForm" action="http://localhost:3000/academic_details_fill" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <input type="hidden" name="session_id" ng-value="sessionID">
+      <div class="mb-4">
+        <label for="usn" class="block text-gray-700 font-medium mb-2">USN</label>
+        <input type="text" id="usn" name="usn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      </div>
+
+      <div class="mb-4">
+        <label for="course_id" class="block text-gray-700 font-medium mb-2">Course ID</label>
+        <input type="text" id="course_id" name="course_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      </div>
+
+      <div class="grid grid-cols-3 gap-4">
+        <div class="mb-4">
+          <label for="IA_1" class="block text-gray-700 font-medium mb-2">IA 1</label>
+          <input type="number" id="IA_1" name="IA_1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <div class="mb-4">
+          <label for="IA_2" class="block text-gray-700 font-medium mb-2">IA 2</label>
+          <input type="number" id="IA_2" name="IA_2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <div class="mb-4">
+          <label for="IA_3" class="block text-gray-700 font-medium mb-2">IA 3</label>
+          <input type="number" id="IA_3" name="IA_3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <div class="mb-4">
+          <label for="assignment_1" class="block text-gray-700 font-medium mb-2">Assignment 1</label>
+          <input type="number" id="assignment_1" name="assignment_1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <div class="mb-4">
+          <label for="assignment_2" class="block text-gray-700 font-medium mb-2">Assignment 2</label>
+          <input type="number" id="assignment_2" name="assignment_2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+
+        <div class="mb-4">
+          <label for="activity" class="block text-gray-700 font-medium mb-2">Activity</label>
+          <input type="number" id="activity" name="activity" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+      </div>  
+        <div class="mb-4">
+          <label for="attendance" class="block text-gray-700 font-medium mb-2">Attendance(%)</label>
+          <input type="number" id="attendance" name="attendance" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <button type="submit" ng-click="fillStudentDetails()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          Submit Details
+        </button>
+    </form>
+  </div>   
+  <script>
+    angular.module('myApp', [])
+        .controller('myController', ['$scope', '$window', function($scope, $window) {
+            // Retrieve sessionID from localStorage
+            $scope.sessionID = $window.localStorage.getItem('mentor_session_id');
+
+            // Function to submit the form
+            $scope.fillStudentDetails = function() {
+              document.getElementById('fillForm').submit();
+            };
+        }]);
+</script>   
+</body>
+</html>  

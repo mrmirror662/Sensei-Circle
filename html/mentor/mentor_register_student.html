@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Details</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body ng-app="myApp" ng-controller="myController">
+  
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Details</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  </head>
+  
+  <body ng-app="myApp" ng-controller="myController">
+    <h2 class="text-3xl font-bold text-center mt-8 mb-4">Register/Deregister Student</h2>
+  
+    <section class="flex flex-col space-y-4 justify-center items-center">
+      <form id="registerForm" class="flex flex-col space-y-2 border border-gray-300 rounded p-4" action="http://localhost:3000/mentor_register_student" method="POST">
+        <input type="hidden" name="session_id" ng-value="sessionID">
+        <div class="flex items-center space-x-4">
+          <p class="text-gray-700 font-medium">USN:</p>
+          <input type="text" name="usn" class="px-3 py-2 border border-gray-300 rounded outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <button type="submit" ng-click="registerStudentDetails()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          Register
+        </button>
+      </form>
+  
+      <form id="deregisterForm" class="flex flex-col space-y-2 border border-gray-300 rounded p-4 mt-4" action="http://localhost:3000/mentor_deregister_student" method="POST">
+        <input type="hidden" name="session_id" ng-value="sessionID">
+        <div class="flex items-center space-x-4">
+          <p class="text-gray-700 font-medium">USN:</p>
+          <input type="text" name="usn" class="px-3 py-2 border border-gray-300 rounded outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <button type="submit" ng-click="deregisterStudentDetails()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          Deregister
+        </button>
+      </form>
+    </section>
+    <script>
+        angular.module('myApp', [])
+            .controller('myController', ['$scope', '$window', function($scope, $window) {
+                // Retrieve sessionID from localStorage
+                $scope.sessionID = $window.localStorage.getItem('mentor_session_id');
+
+                // Function to submit the form
+                $scope.registerStudentDetails = function() {
+                  document.getElementById('registerForm').submit();
+                };
+                $scope.deregisterStudentDetails = function() {
+                  document.getElementById('deregisterForm').submit();
+                };
+            }]);
+    </script>
+</body>
+</html>

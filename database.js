@@ -27,6 +27,7 @@ async function init() {
       host: process.env.host,
       user: process.env.user,
       database: process.env.db,
+      password: process.env.password,
     });
     console.log(
       `DB initialized with \nhost:${process.env.host}\nuser:${process.env.user}\ndb:${process.env.db}`
@@ -47,7 +48,7 @@ export async function StudentExists(usn) {
     return false;
   } catch (err) {
     console.error("Error checking user", err);
-    throw err;
+    throw "Error checking user";
   }
 }
 
@@ -103,7 +104,7 @@ export async function AddStudentToSession(usn) {
     const [results, fields] = await connection.query(q, [session_id, usn]);
   } catch (err) {
     console.error(err);
-    throw err;
+    throw "error in adding to session";
   }
 
   return session_id;
@@ -116,7 +117,7 @@ export async function RemoveStudentSession(session_id) {
   } catch (err) {
     console.error(err);
 
-    throw err;
+    throw "error deleteing from session";
   }
 }
 
@@ -167,7 +168,7 @@ export async function deleteExpiredStudentSessions() {
   } catch (err) {
     console.error(err);
 
-    throw err;
+    throw "error deleting expired sessions";
   }
 }
 
@@ -236,7 +237,7 @@ export async function AddMentorToSession(mentor_id) {
     ]);
   } catch (err) {
     console.error(err);
-    throw err;
+    throw "error adding mentor to session";
   }
 
   return session_id;
@@ -249,7 +250,7 @@ export async function RemoveMentorSession(session_id) {
   } catch (err) {
     console.error(err);
 
-    throw err;
+    throw "error removing mentor from session";
   }
 }
 
@@ -298,7 +299,7 @@ export async function deleteExpiredMentorSessions() {
   } catch (err) {
     console.error(err);
 
-    throw err;
+    throw "error deleting expired mentor sessions";
   }
 }
 export async function CourseExists(course_id) {
@@ -421,6 +422,15 @@ export async function RegisterStudentToMentor(mentor_id, usn) {
   }
 }
 
+export async function DeregisterStudentToMentor(mentor_id, usn) {
+  let q = "delete from student_mentor_table where mentor_id = ? and usn = ?;";
+  try {
+    const [results, fields] = await connection.query(q, [mentor_id, usn]);
+  } catch (err) {
+    console.error("Error deregistering to mentor", err);
+    throw "Error deregistering student to mentor";
+  }
+}
 export async function FetchStudentDetailsFromMentorID(mentor_id) {
   let q =
     "select si.* from student_mentor_table sm, student_information si where sm.mentor_id = ? and sm.usn = si.usn;";
