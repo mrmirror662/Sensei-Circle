@@ -1,22 +1,61 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>academic details</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+         body {
+      padding: 20px;
+      background-color: black;
+      color: white;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #007bff;
+        }
+
+        .container {
+            max-width: 600px;
+        }
+
+        .btn {
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .btn-primary:hover {
+            color: #fff;
+        }
+    </style>
 </head>
 
 <body>
-    <h2>Mentor Management System</h2>
-    <a href="/student_signup">student signup</a><br>
-    <a href="/student_login">student login</a><br>
-    <a href="/mentor_signup">mentor signup</a><br>
-    <a href="/mentor_login">mentor login</a><br>
-    <a href="/academic_details_fill">fill academic details</a><br>
-    <a href="/academic_details_fetch">fetch academic details</a><br>
-    <a href="/mentor_register_student">register student(mentor)</a><br>
-    <a href="/mentor_students_fetch">fetch students(mentor)</a><br>
-    <a href="/notifications">notifications</a><br>
-    <a href="/issues">issues</a><br>
-    <a href="/feedback">Feedback</a><br>
+    
+    <div class="container">
+        <h2 class="text-center">Mentor Management System</h2>
+        <a href="/student_signup" class="btn btn-primary btn-block">Student Signup</a>
+        <a href="/student_login" class="btn btn-primary btn-block">Student Login</a>
+        <a href="/mentor_signup" class="btn btn-primary btn-block">Mentor Signup</a>
+        <a href="/mentor_login" class="btn btn-primary btn-block">Mentor Login</a>
+        <a href="/academic_details_fill" class="btn btn-primary btn-block">Fill Academic Details</a>
+        <a href="/academic_details_fetch" class="btn btn-primary btn-block">Fetch Academic Details</a>
+        <a href="/mentor_register_student" class="btn btn-primary btn-block">Register Student (Mentor)</a>
+        <a href="/mentor_students_fetch" class="btn btn-primary btn-block">Fetch Students (Mentor)</a>
+        <a href="/notifications" class="btn btn-primary btn-block">Notifications</a>
+        <a href="/issues" class="btn btn-primary btn-block">Issues</a>
+        <a href="/feedback">Feedback</a><br>
+    </div>
+
 </body>
 
 </html>
