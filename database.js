@@ -509,3 +509,52 @@ export async function StudentFetchIssue(usn) {
     throw "Error fetching issues";
   }
 }
+
+export async function StudentPushFeedback(usn, meeting_date, feedback) {
+  let q = "insert into meeting_feedback values(? ,? ,? ,0)";
+  try {
+    const [results, fields] = await connection.query(q, [
+      usn,
+      meeting_date,
+      feedback,
+    ]);
+  } catch (err) {
+    console.error("Error inserting feedback", err);
+    throw "Error inserting feedback";
+  }
+}
+
+export async function ValidateMeetingAttendance(usn, meeting_date) {
+  let q =
+    "update meeting_feedback set attended=1 where usn=? and meeting_date=?";
+  try {
+    const [results, fields] = await connection.query(q, [usn, meeting_date]);
+    return results;
+  } catch (err) {
+    console.error("Error Validating Attendance", err);
+    throw "Error Validating Attendance";
+  }
+}
+
+export async function StudentFetchFeedback(usn) {
+  let q =
+    "select meeting_date,feedback from meeting_feedback where usn = ? and attended=1 order by meeting_date desc limit 30";
+  try {
+    const [results, fields] = await connection.query(q, [usn]);
+    return results;
+  } catch (err) {
+    console.error("Error fetching feedbacks", err);
+    throw "Error fetching feedbacks";
+  }
+}
+export async function MentorFetchFeedback(mentor_id) {
+  let q =
+    "select i.usn,i.meeting_date,i.feedback from meeting_feedback i where i.usn in(select usn from student_mentor_table sm where sm.mentor_id=?) and attended=1 order by meeting_date desc limit 30;"; //TO:FIX (bs code)
+  try {
+    const [results, fields] = await connection.query(q, [mentor_id]);
+    return results;
+  } catch (err) {
+    console.error("Error fetching feedbacks", err);
+    throw "Error fetching feedbacks";
+  }
+}

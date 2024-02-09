@@ -25,3 +25,5 @@ create table if not exists student_mentor_table(mentor_id char(10),usn char(10),
 create table if not exists notification(mentor_id char(10),time timestamp,msg text, primary key(mentor_id,time));
 
 create table if not exists issues(usn char(10),time timestamp,msg text, primary key(usn,time));
+
+create table if not exists meeting_feedback(usn char(10),meeting_date date,feedback text,attended tinyint(1) default 0,primary key(usn,meeting_date));
