@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Registration</title>
+    <title>Fetch Student Details</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <style>
@@ -41,35 +41,48 @@
         input[type="submit"] {
             cursor: pointer;
         }
+         input[type="file"] {
+        width: 24%;
+        height: 100%;    
+        margin-bottom: 10px;
+        background-color: #343a40;
+        /* Dark gray background color */
+        color: white;
+        /* White text color */
+    }
+    input[type="file"]::-webkit-file-upload-button {
+        background-color: #007bff;
+        /* Blue color for the "Choose File" button */
+        color: white;
+        /* White text color */
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h2>Register Student</h2>
-        <form action="http://localhost:3000/mentor_register_student" method="POST">
+        <h2>Upload mentor form</h2>
+        <form action="http://localhost:3000/student_upload_mentor_form" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <p>Session ID</p>
-                <input type="text" name="session_id" class="form-control">
+                <input type="text" name="session_id" class="form-control" required>
+                <input type="file" name="mentor_form" class="form-control" required>
             </div>
-            <div class="form-group">
-                <p>USN</p>
-                <input type="text" name="usn" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-
-        <h2>Deregister Student</h2>
-        <form action="http://localhost:3000/mentor_deregister_student" method="POST">
+        <h2>Download mentor form</h2>
+        <form action="http://localhost:3000/mentor_download_mentor_form" method="POST" >
             <div class="form-group">
                 <p>Session ID</p>
-                <input type="text" name="session_id" class="form-control">
-            </div>
-            <div class="form-group">
+                <input type="text" name="session_id" class="form-control" required>
                 <p>USN</p>
-                <input type="text" name="usn" class="form-control">
+                <input type="text" name="usn" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-danger">Deregister</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
 </body>

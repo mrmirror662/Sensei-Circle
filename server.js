@@ -59,7 +59,9 @@ app.get("/notifications", async function (req, res) {
 app.get("/issues", async function (req, res) {
   res.sendFile("/html/issues.html", { root: "." });
 });
-
+app.get("/student_upload_mentor_form", async function (req, res) {
+  res.sendFile("/html/upload_file.html", { root: "." });
+});
 app.post("/student_signup", async function (req, res) {
   const usn = req.body.usn;
   const name = req.body.name;
@@ -814,6 +816,103 @@ app.post("/student_fetch_issue", async function (req, res) {
     res.end();
     return;
   }
+});
+function isDocxFile(name) {
+  // Get the file extension (case-insensitive)
+  const extension = name.toLowerCase().split(".").pop();
+
+  // Check for the DOCX extension
+  return extension === "docx";
+}
+// Require the upload middleware
+import fileUpload from "express-fileupload";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import { abort } from "process";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+app.post(
+  "/student_upload_mentor_form",
+  fileUpload({ createParentPath: true }),
+  async function (req, res) {
+    const session_id = req.body.session_id;
+    try {
+      let isInSession = await db.IsStudentInSessionSID(session_id);
+      if (!isInSession) {
+        res.json({ flag: 404, msg: "Invalid session id" });
+        res.end();
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+      res.json(GenErrorJSON(err));
+      res.end();
+      return;
+    }
+    const usn = await db.FetchUSNFromSID(session_id);
+    let mentor_form = req.files.mentor_form;
+    if (!isDocxFile(mentor_form.name)) {
+      res.json(GenErrorJSON("not a docx file."));
+      res.end();
+      return;
+    }
+
+    const targetPath = path.join(__dirname, "/forms/", `${usn}.docx`); // Use dynamic filename or extension
+
+    mentor_form.mv(targetPath, function (err) {
+      if (err) {
+        console.log(err);
+      }
+    });
+    res.json(GenSuccessJSON("file uploaded!"));
+    res.end();
+  }
+);
+import fs from "fs";
+
+app.post("/mentor_download_mentor_form", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  let usn = req.body.usn;
+  if (!usn) {
+    res.json(GenErrorJSON("empty field."));
+    res.end();
+    return;
+  }
+  let mentor_id = await db.FetchMentorIDFromSID(session_id);
+  const mentorStudentExist = await db.MentorStudentExists(mentor_id, usn);
+  if (!mentorStudentExist) {
+    res.json(GenErrorJSON("invalid usn"));
+    res.end();
+    return;
+  }
+
+  // Set the appropriate headers for file download
+  res.setHeader("Content-Disposition", `attachment; filename=${usn}.docx`);
+  res.setHeader("Content-Type", "application/octet-stream"); // Or specify the appropriate content type
+  const targetPath = path.join(__dirname, "/forms"); // Use dynamic filename or extension
+
+  // Send the file as a response
+  res.download(`forms/${usn}.docx`, (err) => {
+    if (err) {
+      // Handle error if any
+      console.error("Error downloading file:", err);
+      res.status(500).send("Error downloading file");
+    }
+  });
 });
 let server = app.listen(PORT_NO, function () {
   let host = server.address().address;
