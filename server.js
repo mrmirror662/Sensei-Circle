@@ -736,7 +736,7 @@ app.post("/student_push_issue", async function (req, res) {
   try {
     let isInSession = await db.IsStudentInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
@@ -769,7 +769,7 @@ app.post("/mentor_fetch_issue", async function (req, res) {
   try {
     let isInSession = await db.IsMentorInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
@@ -797,7 +797,7 @@ app.post("/student_fetch_issue", async function (req, res) {
   try {
     let isInSession = await db.IsStudentInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
@@ -825,7 +825,7 @@ app.post("/student_push_feedback", async function (req, res) {
   try {
     let isInSession = await db.IsStudentInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
@@ -860,7 +860,7 @@ app.post("/mentor_fetch_feedback", async function (req, res) {
   try {
     let isInSession = await db.IsMentorInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
@@ -890,7 +890,7 @@ app.post("/student_fetch_feedback", async function (req, res) {
   try {
     let isInSession = await db.IsStudentInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
@@ -926,7 +926,7 @@ app.post("/mentor_validate_meeting_attendance", async function (req, res) {
   try {
     let isInSession = await db.IsMentorInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
