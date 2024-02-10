@@ -86,3 +86,10 @@ insert into issues values
   ('1js21cs002', '2024-01-31 12:30:00', 'Dummy issue 2'),
   ('1js21cs034', '2024-01-31 13:15:00', 'Dummy issue 3'),
   ('1js21cs003', '2024-01-31 14:00:00', 'Dummy issue 4');
+
+insert into meeting_feedback values
+  ('1js21cs001', '2024-01-31', 'Dummy feedback 1',0),
+  ('1js21cs002', '2024-01-31', 'Dummy feedback 2',0),
+  ('1js21cs034', '2024-01-31', 'Dummy feedback 3',0),
+  ('1js21cs003', '2024-01-31', 'Dummy feedback 4',0);
+  

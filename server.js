@@ -62,6 +62,12 @@ app.get("/issues", async function (req, res) {
 app.get("/student_upload_mentor_form", async function (req, res) {
   res.sendFile("/html/upload_file.html", { root: "." });
 });
+
+
+app.get("/feedback", async function (req, res) {
+  res.sendFile("/html/mentor_feedback.html", { root: "." });
+});
+
 app.post("/student_signup", async function (req, res) {
   const usn = req.body.usn;
   const name = req.body.name;
@@ -734,7 +740,7 @@ app.post("/student_push_issue", async function (req, res) {
   try {
     let isInSession = await db.IsStudentInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
@@ -767,7 +773,7 @@ app.post("/mentor_fetch_issue", async function (req, res) {
   try {
     let isInSession = await db.IsMentorInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
@@ -795,7 +801,7 @@ app.post("/student_fetch_issue", async function (req, res) {
   try {
     let isInSession = await db.IsStudentInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
@@ -817,6 +823,7 @@ app.post("/student_fetch_issue", async function (req, res) {
     return;
   }
 });
+
 function isDocxFile(name) {
   // Get the file extension (case-insensitive)
   const extension = name.toLowerCase().split(".").pop();
@@ -877,19 +884,10 @@ app.post("/mentor_download_mentor_form", async function (req, res) {
     let isInSession = await db.IsMentorInSessionSID(session_id);
     if (!isInSession) {
       res.json({ flag: 404, msg: "Invalid session id" });
+    let usn = req.body.usn;
+    if (!usn) {
+      res.json(GenErrorJSON("empty field."));
       res.end();
-      return;
-    }
-  } catch (err) {
-    console.error(err);
-    res.json(GenErrorJSON(err));
-    res.end();
-    return;
-  }
-  let usn = req.body.usn;
-  if (!usn) {
-    res.json(GenErrorJSON("empty field."));
-    res.end();
     return;
   }
   let mentor_id = await db.FetchMentorIDFromSID(session_id);
@@ -913,6 +911,134 @@ app.post("/mentor_download_mentor_form", async function (req, res) {
       res.status(500).send("Error downloading file");
     }
   });
+app.post("/student_push_feedback", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsStudentInSessionSID(session_id);
+    if (!isInSession) {
+      res.json(GenErrorJSON("Invalid session id"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  const meeting_date = req.body.meeting_date;
+  const feedback = req.body.feedback;
+  if (!feedback || !meeting_date) {
+    res.json(GenErrorJSON("One of the fields are empty."));
+    res.end();
+    return;
+  }
+  const usn = await db.FetchUSNFromSID(session_id);
+  try {
+    await db.StudentPushFeedback(usn, meeting_date, feedback);
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  res.json(GenSuccessJSON("Feedback pushed."));
+  res.end();
+});
+
+app.post("/mentor_fetch_feedback", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json(GenErrorJSON("Invalid session id"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  const mentor_id = await db.FetchMentorIDFromSID(session_id);
+
+  try {
+    const results = await db.MentorFetchFeedback(mentor_id);
+    if (results.length == 0) throw "No feedbacks!";
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+
+app.post("/student_fetch_feedback", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsStudentInSessionSID(session_id);
+    if (!isInSession) {
+      res.json(GenErrorJSON("Invalid session id"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  const usn = await db.FetchUSNFromSID(session_id);
+  try {
+    const results = await db.StudentFetchFeedback(usn);
+    if (results.length == 0) throw "No feedbacks!";
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+
+app.post("/mentor_validate_meeting_attendance", async function (req, res) {
+  const session_id = req.body.session_id;
+  const meeting_date = req.body.meeting_date;
+  const usn = req.body.usn;
+  if (!usn || !meeting_date) {
+    res.json(GenErrorJSON("One of the fields are empty."));
+    res.end();
+    return;
+  }
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json(GenErrorJSON("Invalid session id"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+
+  try {
+    const results = await db.ValidateMeetingAttendance(usn, meeting_date);
+    if (results.affectedRows == 0) throw "Validation failed";
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  res.json(GenSuccessJSON("Attendance Validated."));
+  res.end();
 });
 let server = app.listen(PORT_NO, function () {
   let host = server.address().address;
