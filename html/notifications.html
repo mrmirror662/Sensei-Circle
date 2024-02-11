@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign in</title>
+    <title>Push and Fetch Notifications</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <style>
@@ -22,6 +22,10 @@
 
         form {
             margin-bottom: 30px;
+        }
+
+        p {
+            margin-bottom: 5px;
         }
 
         input[type="text"],
@@ -42,33 +46,35 @@
 
 <body>
     <div class="container">
-        <h2>Sign in</h2>
-        <form action="http://localhost:3000/mentor_signup" method="POST" class="pure-form pure-form-aligned">
+        <h2>Push Notifications (Mentor)</h2>
+        <form action="http://localhost:3000/mentor_push_notification" method="POST">
             <div class="form-group">
-                <label for="mentor_id">Mentor ID</label>
-                <input type="text" id="mentor_id" name="mentor_id" class="form-control">
+                <p>Session ID</p>
+                <input type="text" name="session_id" class="form-control">
             </div>
             <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" class="form-control">
+                <p>Message</p>
+                <input type="text" name="msg" class="form-control">
             </div>
+            <button type="submit" class="btn btn-primary">Push</button>
+        </form>
+
+        <h2>Fetch Notifications (Mentor)</h2>
+        <form action="http://localhost:3000/mentor_fetch_notification" method="POST">
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="text" id="password" name="password" class="form-control">
+                <p>Session ID</p>
+                <input type="text" name="session_id" class="form-control">
             </div>
+            <button type="submit" class="btn btn-primary">Fetch</button>
+        </form>
+
+        <h2>Fetch Notifications (Student)</h2>
+        <form action="http://localhost:3000/student_fetch_notification" method="POST">
             <div class="form-group">
-                <label for="phone_no">Phone Number</label>
-                <input type="text" id="phone_no" name="phone_no" class="form-control">
+                <p>Session ID</p>
+                <input type="text" name="session_id" class="form-control">
             </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="text" id="email" name="email" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="branch_id">Branch</label>
-                <input type="text" id="branch_id" name="branch_id" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Fetch</button>
         </form>
     </div>
 </body>

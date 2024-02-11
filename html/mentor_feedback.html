@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <title>mentor feedback</title>
+  </head>
+
+  <body>
+    <h2>Push feedback(student):</h2>
+    <form action="http://localhost:3000/student_push_feedback" method="POST">
+      <p>session_id</p>
+      <input type="text" name="session_id" />
+      <p>Date</p>
+      <input type="date" name="meeting_date" />
+      <p>Feedback</p>
+      <textarea name="feedback"></textarea><br>
+      <input type="submit" />
+    </form>
+
+    <h2>Validate student attendance for meeting(mentor):</h2>
+    <form action="http://localhost:3000/mentor_validate_meeting_attendance" method="POST">
+      <p>session_id</p>
+      <input type="text" name="session_id" />
+      <p>Date</p>
+      <input type="date" name="meeting_date" />
+      <p>USN</p>
+      <input type="text" name="usn" />
+        <input type="submit" />
+      </p>
+    </form>
+
+    <h2>Get feedback(mentor):</h2>
+    <form action="http://localhost:3000/mentor_fetch_feedback" method="POST">
+      <p>session_id</p>
+      <input type="text" name="session_id" />
+      <input type="submit" />
+    </form>
+
+    <h2>Get feedback(student):</h2>
+    <form action="http://localhost:3000/student_fetch_feedback" method="POST">
+      <p>session_id</p>
+      <input type="text" name="session_id" />
+      <input type="submit" />
+    </form>
+  </body>
+</html>

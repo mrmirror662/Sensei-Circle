@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Fetch Student Details</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <style>
@@ -24,11 +24,12 @@
             margin-bottom: 30px;
         }
 
-       input[type="text"],
-        input[type="number"],
-        input[type="submit"],
-        input[type="password"],
-        input[type="email"]{
+        p {
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="submit"] {
             width: 30%;
             margin-bottom: 10px;
             background-color: #343a40;
@@ -45,15 +46,11 @@
 
 <body>
     <div class="container">
-        <h2>Login</h2>
-        <form action="http://localhost:3000/mentor_login" method="POST">
+        <h2>Fetch Student Details</h2>
+        <form action="http://localhost:3000/mentor_students_fetch" method="POST">
             <div class="form-group">
-                <label for="mentor_id">Mentor ID</label>
-                <input type="text" id="mentor_id" name="mentor_id" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" class="form-control">
+                <p>Session ID</p>
+                <input type="text" name="session_id" class="form-control">
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
