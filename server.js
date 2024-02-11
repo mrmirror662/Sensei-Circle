@@ -880,7 +880,7 @@ import fs from "fs";
 app.post("/mentor_download_mentor_form", async function (req, res) {
   const session_id = req.body.session_id;
   try {
-    let isInSession = await db.IsStudentInSessionSID(session_id);
+    let isInSession = await db.IsMentorInSessionSID(session_id);
     if (!isInSession) {
       res.json({ flag: 404, msg: "Invalid session id" });
       res.end();
