@@ -7,14 +7,13 @@
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
 </head>
-<body ng-controller="myController">
-<h2 class="text-2xl font-bold mb-4">Academic Details</h2>
-<div class="mt-8">
-  <h3 class="mb-4 text-lg font-medium">Student Fetch</h3>
+<body ng-controller="myController" class="container mx-auto p-4">
+<h2 class="text-2xl font-bold mb-4 mt-4" >Academic Details</h2>
+<div class="mt-8 ">
 
   <input type="hidden" ng-model="studentSessionId" name="session_id" />
 
-  <button class="bg-blue-500 text-white px-4 py-2 rounded font-bold" ng-click="fetchStudentAcademicDetails()">Fetch Student Details</button>
+  <button class="bg-blue-500 text-white px-4 py-2 rounded font-bold" ng-click="fetchStudentAcademicDetails()">Fetch Academic Details</button>
 
   <div class="bg-white shadow-md rounded-lg p-4 mt-4" ng-show="studentAcademicDetails"> <h3 class="text-lg font-medium mb-4">Academic Details</h3>
 

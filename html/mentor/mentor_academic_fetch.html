@@ -7,66 +7,59 @@
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 
 </head>
-<body ng-controller="myController">
-<h2 class="text-2xl font-bold mb-4">Academic Details</h2>
+<body ng-controller="myController" class="container mx-auto p-4">
+<h2 class="text-2xl font-bold mb-4 mt-4">Student Academic Details</h2>
 <div class="mt-8">
-    <h3 class="mb-4">Mentor Fetch</h3>
     <input type="hidden" ng-model="mentorSessionId" name="session_id" />
     <div class="mb-4">
         <label class="block text-gray-700 font-bold mb-2">USN:</label>
         <input type="text" ng-model="usn" name="usn"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
     </div>
-        <button class="bg-green-500 text-white px-4 py-2 rounded font-bold" ng-click="fetchMentorAcademicDetails()">Fetch Mentor Details</button>
+        <button class="bg-blue-500 text-white px-4 py-2 rounded font-bold" ng-click="fetchMentorAcademicDetails()">Fetch Academic Details</button>
     </div>
 
-    <div class="bg-white shadow-md rounded-lg p-4 mt-4" ng-show="Mflag >= 1">
+    <div  ng-show="Mflag >= 1">
         <h3 class="text-lg font-medium mb-4">Academic Details</h3>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div>
-                <p class="font-medium">USN:</p>
-                <p class="text-gray-700">{{ mentorAcademicDetails.usn }}</p>
-            </div>
-            <div>
-                <p class="font-medium">Course ID:</p>
-                <p class="text-gray-700">{{ mentorAcademicDetails.course_id }}</p>
-            </div>
-            <div>
-                <p class="font-medium">IA1:</p>
-                <p class="text-gray-700">{{ mentorAcademicDetails.IA1 }}</p>
-            </div>
-            <div>
-                <p class="font-medium">IA2:</p>
-                <p class="text-gray-700">{{ mentorAcademicDetails.IA2 }}</p>
-            </div>
-            <div>
-                <p class="font-medium">IA3:</p>
-                <p class="text-gray-700">{{ mentorAcademicDetails.IA3 }}</p>
-            </div>
-            <div>
-                <p class="font-medium">Assignment 1:</p>
-                <p class="text-gray-700">{{ mentorAcademicDetails.assignment_1 }}</p>
-            </div>
-            <div>
-                <p class="font-medium">Assignment 2:</p>
-                <p class="text-gray-700">{{ mentorAcademicDetails.assignment_2 }}</p>
-            </div>
-            <div>
-                <p class="font-medium">Activity:</p>
-                <p class="text-gray-700">{{ mentorAcademicDetails.activity }}</p>
-            </div>
-            <div>
-                <p class="font-medium">Total Marks:</p>
-                <p class="text-gray-700">{{ mentorAcademicDetails.Total_internal_marks }}</p>
-            </div>
-            <div>
-                <p class="font-medium">Attendance:</p>
-                <p class="text-gray-700">{{ mentorAcademicDetails.attendance }}</p>
-            </div>
-    </div>
-</div>
-
+        <div class="bg-white shadow-md rounded-lg p-4 mt-4 border border-gray-400 p-5" ng-repeat="details in mentorAcademicDetails" class="grid grid-cols-2 gap-4">
+          <div class="border border-gray-200 p-2 rounded-md">
+            <p class="font-medium">Course ID:</p>
+            <p class="text-gray-700">{{ details.course_id }}</p>
+          </div>
+          <div class="border border-gray-200 p-2 rounded-md">
+            <p class="font-medium">IA1:</p>
+            <p class="text-gray-700">{{ details.IA1 }}</p>
+          </div>
+          <div class="border border-gray-200 p-2 rounded-md">
+            <p class="font-medium">IA2:</p>
+            <p class="text-gray-700">{{ details.IA2 }}</p>
+          </div>
+          <div class="border border-gray-200 p-2 rounded-md">
+            <p class="font-medium">IA3:</p>
+            <p class="text-gray-700">{{ details.IA3 }}</p>
+          </div>
+          <div class="border border-gray-200 p-2 rounded-md">
+            <p class="font-medium">Assignment 1:</p>
+            <p class="text-gray-700">{{ details.assignment_1 }}</p>
+          </div>
+          <div class="border border-gray-200 p-2 rounded-md">
+            <p class="font-medium">Assignment 2:</p>
+            <p class="text-gray-700">{{ details.assignment_2 }}</p>
+          </div>
+          <div class="border border-gray-200 p-2 rounded-md">
+            <p class="font-medium">Activity:</p>
+            <p class="text-gray-700">{{ details.activity }}</p>
+          </div>
+          <div class="border border-gray-200 p-2 rounded-md">
+            <p class="font-medium">Total Marks:</p>
+            <p class="text-gray-700">{{ details.Total_internal_marks }}</p>
+          </div>
+          <div class="border border-gray-200 p-2 rounded-md">
+            <p class="font-medium">Attendance:</p>
+            <p class="text-gray-700">{{ details.attendance }}</p>
+          </div>
+        </div>
+      </div>
 <div class="mt-4" ng-show="Mflag == 0">
     <p class="text-red-500">No student found!</p>
 </div>
@@ -82,7 +75,7 @@
                 $http.post('http://localhost:3000/mentor_academic_details_fetch', { session_id: $scope.mentorSessionId, usn: $scope.usn })
                     .then(function(response) {
                        try{
-                            $scope.mentorAcademicDetails = response.data.academic_details[0];
+                            $scope.mentorAcademicDetails = response.data.academic_details;
                             $scope.Mflag = response.data.academic_details.length;
                         }
                         catch(err){

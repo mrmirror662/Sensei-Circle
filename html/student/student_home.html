@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home Page</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <style>
     .tooltip {
       position: relative;
@@ -41,8 +42,8 @@
     <a href="http://localhost:3000/student_academic_fetch" target="f21" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Academic Details</a>
     <a href="http://localhost:3000/student_notifications" target="f21" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Notification</a>
     <a href="http://localhost:3000/student_issues" target="f21" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Issues</a>
-    <a class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Feedback</a>
-    <a class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Form</a>
+    <a href="http://localhost:3000/student_mentor_feedback" target="f21" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Feedback</a>
+    <a href="http://localhost:3000/student_mentor_upload" target="f21" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Form</a>
     <div class="tooltip-text ml-auto bg-yellow-50 text-left rounded-2xl border-solid border-blue-900 border-2" ng-show="vm.isTooltipVisible">
       <div class="py-1 px-2">
         <a class="py-1 hover:bg-gray-200 text-gray-800">Name:{{ vm.name }}</a></br>
@@ -58,8 +59,6 @@
       </div>
     </div>
   </nav>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <script>
     angular.module('myApp', [])
       .controller('MainCtrl', function() {

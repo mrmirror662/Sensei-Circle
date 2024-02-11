@@ -69,6 +69,18 @@ app.get("/student_issues", async function (req, res) {
 app.get("/mentor_issues", async function (req, res) {
   res.sendFile("/html/mentor/mentor_issues.html", { root: "." });
 });
+app.get("/mentor_feedback", async function (req, res) {
+  res.sendFile("/html/mentor/mentor_feedback.html", { root: "." });
+});
+app.get("/student_mentor_feedback", async function (req, res) {
+  res.sendFile("/html/student/student_mentor_feedback.html", { root: "." });
+});
+app.get("/student_mentor_upload", async function (req, res) {
+  res.sendFile("/html/student/student_upload.html", { root: "." });
+});
+app.get("/mentor_form_download", async function (req, res) {
+  res.sendFile("/html/mentor/mentor_download.html", { root: "." });
+});
 
 app.post("/student_signup", async function (req, res) {
   const usn = req.body.usn;
@@ -742,7 +754,7 @@ app.post("/student_push_issue", async function (req, res) {
   try {
     let isInSession = await db.IsStudentInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
@@ -775,7 +787,7 @@ app.post("/mentor_fetch_issue", async function (req, res) {
   try {
     let isInSession = await db.IsMentorInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
@@ -803,7 +815,7 @@ app.post("/student_fetch_issue", async function (req, res) {
   try {
     let isInSession = await db.IsStudentInSessionSID(session_id);
     if (!isInSession) {
-      res.json({ flag: 404, msg: "Invalid session id" });
+      res.json(GenErrorJSON("Invalid session id"));
       res.end();
       return;
     }
@@ -825,6 +837,236 @@ app.post("/student_fetch_issue", async function (req, res) {
     return;
   }
 });
+
+function isDocxFile(name) {
+  // Get the file extension (case-insensitive)
+  const extension = name.toLowerCase().split(".").pop();
+
+  // Check for the DOCX extension
+  return extension === "docx";
+}
+// Require the upload middleware
+import fileUpload from "express-fileupload";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import { abort } from "process";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+app.post(
+  "/student_upload_mentor_form",
+  fileUpload({ createParentPath: true }),
+  async function (req, res) {
+    const session_id = req.body.session_id;
+    try {
+      let isInSession = await db.IsStudentInSessionSID(session_id);
+      if (!isInSession) {
+        res.json({ flag: 404, msg: "Invalid session id" });
+        res.end();
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+      res.json(GenErrorJSON(err));
+      res.end();
+      return;
+    }
+    const usn = await db.FetchUSNFromSID(session_id);
+    let mentor_form = req.files.mentor_form;
+    if (!isDocxFile(mentor_form.name)) {
+      res.json(GenErrorJSON("not a docx file."));
+      res.end();
+      return;
+    }
+
+    const targetPath = path.join(__dirname, "/forms/", `${usn}.docx`); // Use dynamic filename or extension
+
+    mentor_form.mv(targetPath, function (err) {
+      if (err) {
+        console.log(err);
+      }
+    });
+    res.json(GenSuccessJSON("file uploaded!"));
+    res.end();
+  }
+);
+import fs from "fs";
+
+app.post("/mentor_download_mentor_form", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json({ flag: 404, msg: "Invalid session id" });
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+
+  let usn = req.body.usn;
+  if (!usn) {
+    res.json(GenErrorJSON("empty field."));
+    res.end();
+    return;
+  }
+  let mentor_id = await db.FetchMentorIDFromSID(session_id);
+  const mentorStudentExist = await db.MentorStudentExists(mentor_id, usn);
+  if (!mentorStudentExist) {
+    res.json(GenErrorJSON("invalid usn"));
+    res.end();
+    return;
+  }
+
+  // Set the appropriate headers for file download
+  res.setHeader("Content-Disposition", `attachment; filename=${usn}.docx`);
+  res.setHeader("Content-Type", "application/octet-stream"); // Or specify the appropriate content type
+  const targetPath = path.join(__dirname, "/forms"); // Use dynamic filename or extension
+
+  // Send the file as a response
+  res.download(`forms/${usn}.docx`, (err) => {
+    if (err) {
+      // Handle error if any
+      console.error("Error downloading file:", err);
+      res.status(500).send("Error downloading file");
+    }
+  });
+});
+
+app.post("/student_push_feedback", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsStudentInSessionSID(session_id);
+    if (!isInSession) {
+      res.json(GenErrorJSON("Invalid session id"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  const meeting_date = req.body.meeting_date;
+  const feedback = req.body.feedback;
+  if (!feedback || !meeting_date) {
+    res.json(GenErrorJSON("One of the fields are empty."));
+    res.end();
+    return;
+  }
+  const usn = await db.FetchUSNFromSID(session_id);
+  try {
+    await db.StudentPushFeedback(usn, meeting_date, feedback);
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  res.json(GenSuccessJSON("Feedback pushed."));
+  res.end();
+});
+
+app.post("/mentor_fetch_feedback", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json(GenErrorJSON("Invalid session id"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  const mentor_id = await db.FetchMentorIDFromSID(session_id);
+
+  try {
+    const results = await db.MentorFetchFeedback(mentor_id);
+    if (results.length == 0) throw "No feedbacks!";
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+
+app.post("/student_fetch_feedback", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsStudentInSessionSID(session_id);
+    if (!isInSession) {
+      res.json(GenErrorJSON("Invalid session id"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  const usn = await db.FetchUSNFromSID(session_id);
+  try {
+    const results = await db.StudentFetchFeedback(usn);
+    if (results.length == 0) throw "No feedbacks!";
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+
+app.post("/mentor_validate_meeting_attendance", async function (req, res) {
+  const session_id = req.body.session_id;
+  const meeting_date = req.body.meeting_date;
+  const usn = req.body.usn;
+  if (!usn || !meeting_date) {
+    res.json(GenErrorJSON("One of the fields are empty."));
+    res.end();
+    return;
+  }
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json(GenErrorJSON("Invalid session id"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+
+  try {
+    const results = await db.ValidateMeetingAttendance(usn, meeting_date);
+    if (results.affectedRows == 0) throw "Validation failed";
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  res.json(GenSuccessJSON("Attendance Validated."));
+  res.end();
+});
+
 let server = app.listen(PORT_NO, function () {
   let host = server.address().address;
   let port = server.address().port;

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Form</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body ng-controller="myController" class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="max-w-md py-8 px-4 bg-white shadow-lg rounded-lg">
+        <h2 class="text-2xl font-bold mb-4 text-center">Download Mentor Form</h2>
+        <form ng-submit="getMentorForm()">
+            <div class="mb-4">
+                <label for="usn" class="block text-sm font-medium text-gray-700">USN</label>
+                <input type="text" name="usn" id="usn" ng-model="credentials.usn" class="mt-1 p-2 w-full border rounded-md" required>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 focus:outline-none focus:bg-blue-500">Submit</button>
+            </div>
+        </form>
+    </div>
+    <script>
+            angular.module('myApp', [])
+                    .controller('myController', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+                        // Retrieve sessionID from localStorage
+                        $scope.sessionID = $window.localStorage.getItem('mentor_session_id');
+                        $scope.getForm = null;
+                        $scope.credentials = {};
+                        $scope.getMentorForm = function() {
+                            $scope.credentials.session_id = $scope.sessionID; 
+                            $http.post('http://localhost:3000/mentor_download_mentor_form', $scope.credentials, { responseType: 'arraybuffer' })
+                                .then(function(response) {
+                                    var contentDispositionHeader = response.headers('Content-Disposition');
+                                    var fileNameMatch = contentDispositionHeader && contentDispositionHeader.match(/filename="(.+)"/);
+
+                                    var fileName = fileNameMatch ? fileNameMatch[1] : 'downloaded_file';
+                                    var blob = new Blob([response.data], { type: response.headers('Content-Type') });
+
+                                    if (window.navigator.msSaveOrOpenBlob) {
+                                        // For IE/Edge browsers
+                                        window.navigator.msSaveOrOpenBlob(blob, fileName);
+                                    } else {
+                                        var link = document.createElement('a');
+                                        link.href = window.URL.createObjectURL(blob);
+                                        link.download = fileName;
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                    }
+                                })
+                                .catch(function(error) {
+                                    console.error('Error', error);
+                                });    
+                        };
+                    }]);
+</script>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentor Feedback</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6" ng-controller="myController">
+  <div class="mx-auto max-w-md">
+    <div class="container mx-auto p-4 bg-white rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4">Push Feedback:</h2>
+        <form ng-submit="pushMentorFeedback()">
+            <div class="mb-4">
+                <label for="meeting_date" class="block mb-1">Date:</label>
+                <input type="date" id="meeting_date" name="meeting_date" ng-model="credentials.meeting_date" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="feedback" class="block mb-1">Feedback:</label>
+                <textarea id="feedback" name="feedback" ng-model="credentials.feedback" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"></textarea>
+            </div>
+            <div>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Submit</button>
+            </div>
+        </form>
+    
+        <h2 class="text-2xl font-semibold mt-8">Get feedback:</h2>
+        <div class="mt-4">
+            <button ng-click="getMentorFeedback()" type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Get Feedback</button>
+        </div>
+    </div>
+</div>
+
+  <a class="font-thin">{{ pushFeedback }}</a>
+  <a class="font-thin">{{ getFeedback }}</a>
+  <script>
+    angular.module('myApp', [])
+            .controller('myController', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+                // Retrieve sessionID from localStorage
+                $scope.sessionID = $window.localStorage.getItem('student_session_id');
+                $scope.pushFeedback = null;
+                $scope.getFeedback = null;
+                var tempDate = null;
+                $scope.credentials = {
+                  meeting_date: ''
+                };
+                $scope.pushMentorFeedback = function() {
+                    $scope.credentials.session_id = $scope.sessionID; 
+                    $http.post('http://localhost:3000/student_push_feedback', $scope.credentials)
+                        .then(function(response) {
+                            $scope.pushFeedback = response.data;                              
+                        })
+                        .catch(function(error) {
+                            console.error('Error', error);
+                        });    
+
+                };
+                $scope.getMentorFeedback = function () {
+                    $scope.credentials.session_id = $scope.sessionID;
+                    $http.post('http://localhost:3000/student_fetch_feedback', $scope.credentials)
+                        .then(function(response) {
+                          $scope.getFeedback = response.data;
+                        })
+                        .catch(function (error) {
+                            console.error('Error', error);
+                        });
+                    };
+            }]);
+  </script>
+</body>
+</html>

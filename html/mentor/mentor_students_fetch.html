@@ -1,27 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="myApp">
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <title>Academic Details</title>
 </head>
 
-<body ng-app="myApp" ng-controller="myController">
-    <h2>Fetch Student Details</h2>
-    <form id="fetchForm" action="http://localhost:3000/mentor_students_fetch" method="POST">
-        <!-- Bind the sessionID to a hidden input field -->
-        <input type="hidden" name="session_id" ng-value="sessionID" />
-        <!-- Trigger form submission on button click -->
-        <button type="submit" ng-click="fetchStudentDetails()">Fetch Student Details</button>
-    </form>
+<body  ng-controller="myController">
+    <div class="container mx-auto p-4">
+        <h2 class="text-2xl font-bold mb-4">Student Details</h2>
+          <button type="submit" ng-click="fetchStudentDetails()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+            Fetch Student Details
+          </button>
+    </div>
+    <div class="mt-4" ng-repeat="z in studentDetails.studentDetails">
+        <div class="border-b border-gray-200 py-4">
+            <p class="font-bold">Name: <a class="font-bold">{{ z.name }}</a></p>
+            <p class="font-bold">USN: <a class="font-bold">{{ z.usn }}</a></p>
+            <p class="font-bold">Phone Number: <a class="font-bold">{{ z.phone_no }}</p></a>
+            <p class="font-bold">Email ID: <a class="font-bold">{{ z.email }}</a></p>
+            <p class="font-bold">Branch: <a class="font-bold">{{ z.branch_id }}</a></p>
+            <p class="font-bold">Semester: <a class="font-bold">{{ z.semester }}</a></p>
+        </div>
+    <div class="mt-4" ng-show="studentDetails.length == 0">
+        <p class="text-red-500">No data found!</p>
+    </div>    
     <script>
         angular.module('myApp', [])
-            .controller('myController', ['$scope', '$window', function($scope, $window) {
+            .controller('myController', ['$scope', '$http', '$window', function ($scope, $http, $window) {
                 // Retrieve sessionID from localStorage
                 $scope.sessionID = $window.localStorage.getItem('mentor_session_id');
-
-                // Function to submit the form
+                $scope.studentDetails = [];
+                $scope.credentials = {};
                 $scope.fetchStudentDetails = function() {
-                    document.getElementById('fetchForm').submit();
+                    $scope.credentials.session_id = $scope.sessionID;   
+                    $http.post('http://localhost:3000/mentor_students_fetch', $scope.credentials)
+                        .then(function(response) {
+                            $scope.studentDetails = response.data;                              
+                        })
+                        .catch(function(error) {
+                            console.error('Error fetching student details:', error);
+                        });
+
                 };
             }]);
     </script>
