@@ -66,6 +66,9 @@ app.get("/student_upload_mentor_form", async function (req, res) {
 app.get("/feedback", async function (req, res) {
   res.sendFile("/html/mentor_feedback.html", { root: "." });
 });
+app.get("/information", async function (req, res) {
+  res.sendFile("/html/information_fetch.html", { root: "." });
+});
 
 app.post("/student_signup", async function (req, res) {
   const usn = req.body.usn;
@@ -1050,6 +1053,62 @@ app.post("/mentor_validate_meeting_attendance", async function (req, res) {
   }
   res.json(GenSuccessJSON("Attendance Validated."));
   res.end();
+});
+
+app.post("/mentor_info_fetch", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json(GenErrorJSON("Invalid session id"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  const mentor_id = await db.FetchMentorIDFromSID(session_id);
+  try {
+    const results = await db.MentorFetchInformation(mentor_id);
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+
+app.post("/student_info_fetch", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsStudentInSessionSID(session_id);
+    if (!isInSession) {
+      res.json(GenErrorJSON("Invalid session id"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  const usn = await db.FetchUSNFromSID(session_id);
+  try {
+    const results = await db.StudentFetchInformation(usn);
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
 });
 
 let server = app.listen(PORT_NO, function () {
