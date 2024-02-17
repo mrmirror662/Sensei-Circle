@@ -42,15 +42,13 @@ app.get("/login", function (req, res) {
 app.get("/course_information_fill", function (req, res) {
   res.sendFile("/html/course_info_fill.html", { root: "." });
 });
-app.get("/mentor_academic_fill", function (req, res) {
-  res.sendFile("/html/mentor/mentor_academic_fill.html", { root: "." });
+app.get("/mentor_academic_details", function (req, res) {
+  res.sendFile("/html/mentor/mentor_academic_details.html", { root: "." });
 });
 app.get("/student_academic_fetch", function (req, res) {
   res.sendFile("/html/student/student_academic_fetch.html", { root: "." });
 });
-app.get("/mentor_academic_fetch", function (req, res) {
-  res.sendFile("/html/mentor/mentor_academic_fetch.html", { root: "." });
-});
+
 app.get("/mentor_register_student", async function (req, res) {
   res.sendFile("/html/mentor/mentor_register_student.html", { root: "." });
 });
@@ -80,6 +78,12 @@ app.get("/student_mentor_upload", async function (req, res) {
 });
 app.get("/mentor_form_download", async function (req, res) {
   res.sendFile("/html/mentor/mentor_download.html", { root: "." });
+});
+app.get("/student_info", async function (req, res) {
+  res.sendFile("/html/student/student_info.html", { root: "." });
+});
+app.get("/mentor_info", async function (req, res) {
+  res.sendFile("/html/mentor/mentor_info.html", { root: "." });
 });
 
 app.post("/student_signup", async function (req, res) {
@@ -1065,6 +1069,62 @@ app.post("/mentor_validate_meeting_attendance", async function (req, res) {
   }
   res.json(GenSuccessJSON("Attendance Validated."));
   res.end();
+});
+
+app.post("/mentor_info_fetch", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsMentorInSessionSID(session_id);
+    if (!isInSession) {
+      res.json(GenErrorJSON("Invalid session id"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  const mentor_id = await db.FetchMentorIDFromSID(session_id);
+  try {
+    const results = await db.MentorFetchInformation(mentor_id);
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+
+app.post("/student_info_fetch", async function (req, res) {
+  const session_id = req.body.session_id;
+  try {
+    let isInSession = await db.IsStudentInSessionSID(session_id);
+    if (!isInSession) {
+      res.json(GenErrorJSON("Invalid session id"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  const usn = await db.FetchUSNFromSID(session_id);
+  try {
+    const results = await db.StudentFetchInformation(usn);
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
 });
 
 let server = app.listen(PORT_NO, function () {

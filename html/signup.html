@@ -8,18 +8,20 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
     <title>SignUp</title>
   </head>
-  <body>
+  <body class="bg-slate-800 backdrop-blur-lg">
     <div ng-controller="MainCtrl">
-      <div class="flex items-center"> <div class="navbar mr-4 bg-gray-100 px-4 py-2"> <a href="" ng-click="setActiveContent('content1')" class="text-gray-700 hover:text-gray-900 font-bold">Mentor</a>
+      <div class="flex items-center justify-center mt-8">
+        <div class="navbar mr-4 bg-gray-100 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-500">
+          <a href="" ng-click="setActiveContent('content1')" class="text-gray-700 hover:text-gray-900 font-bold">Mentor</a>
         </div>
-        <div class="navbar bg-gray-100 px-4 py-2">
+        <div class="navbar bg-gray-100 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-500">
           <a href="" ng-click="setActiveContent('content2')" class="text-gray-700 hover:text-gray-900 font-bold">Student</a>
         </div>
       </div>
       <div class="content" ng-show="activeContent === 'content1'">
         <div class="mentor">
-          <form action="http://localhost:3000/mentor_signup" method="POST" class="pure-form pure-form-aligned" ng-submit="submitMentor">
-            <div class="flex items-center justify-center min-h-screen bg-gray-200">
+          <form class="pure-form pure-form-aligned" ng-submit="submitMentor()">
+            <div class="flex items-center justify-center">
               <div class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
                 <!-- left side -->
                 <div class="flex flex-col justify-center p-8 md:p-14">
@@ -31,13 +33,13 @@
                           <div class="flex space-x-4">
                               <div class="w-1/2">
                                   <label for="name" class="block text-gray-700 text-sm font-medium">Name</label>
-                                  <input type="text" name="name"
+                                  <input type="text" name="name" ng-model="mentorCredentials.name"
                                       class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                                       required>
                               </div>
                               <div class="w-1/2">
                                   <label for="usn" class="block text-gray-700 text-sm font-medium">Mentor ID</label>
-                                  <input type="text"  name="mentor_id"
+                                  <input type="text"  name="mentor_id" ng-model="mentorCredentials.mentor_id"
                                       class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                                       required>
                               </div>
@@ -45,21 +47,21 @@
         
                           <div class="mb-4">
                               <label for="contact" class="block text-gray-700 text-sm font-medium">Contact Number</label>
-                              <input type="text" name="phone_no"
+                              <input type="text" name="phone_no" ng-model="mentorCredentials.phone_no"
                                   class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                                   required>
                           </div>
         
                           <div class="mb-4">
                               <label for="email" class="block text-gray-700 text-sm font-medium">E-Mail</label>
-                              <input type="email"  name="email"
+                              <input type="email"  name="email" ng-model="mentorCredentials.email"
                                   class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                                   required>
                           </div>
                           <div class="flex space-x-4">  
                             <div class="w-1/3">
-                              <select name="branch_id" class="bg-white p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300">
-                                <option selected>Select Branch</option>
+                              <select name="branch_id" ng-model="mentorCredentials.branch_id" class="bg-white p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300">
+                                <option value="" selected>Select Branch</option>
                                 <option value="cse">Computer Science</option>
                                 <option value="ise">Information Science</option>
                                 <option value="mec">Mechanical</option>
@@ -76,7 +78,7 @@
                           <div class="mb-4">
                               <label for="password" class="block text-gray-700 text-sm font-medium">Create a Memorable
                                   Password</label>
-                              <input type="password" name="password"
+                              <input type="password" name="password" ng-model="mentorCredentials.password"
                                   class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                                   required>
                           </div>
@@ -85,6 +87,9 @@
                           class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                           Create
                       </button>
+                      <div class="text-center">
+                        <p ng-show="msignup.flag==404" class="text-red-500">{{ msignup.msg }}</p>
+                    </div> 
                 </div>
                  <!-- {/* right side */} -->
                 <div class="relative">
@@ -97,11 +102,9 @@
       </div>
       <div class="content" ng-show="activeContent === 'content2'">
         <div class="student">
-          <form action="http://localhost:3000/student_signup" method="POST" class="pure-form pure-form-aligned" ng-submit="submitStudent">
-            <div class="flex items-center justify-center min-h-screen bg-gray-200">
-              <div
-                class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0"
-              >
+          <form class="pure-form pure-form-aligned" ng-submit="submitStudent()">
+            <div class="flex items-center justify-center">
+              <div class="relative flex flex-col m-6 space-y-8 bg-grey-750 text-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
                 <!-- left side -->
                 <div class="flex flex-col justify-center p-8 md:p-14">
                   <h1 class="text-2xl font-semibold mb-4">Create your Account</h1>
@@ -111,36 +114,36 @@
         
                           <div class="flex space-x-4">
                               <div class="w-1/2">
-                                  <label for="name" class="block text-gray-700 text-sm font-medium">Name</label>
-                                  <input type="text"  name="name"
-                                      class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                  <label for="name" class="block text-sm font-medium">Name</label>
+                                  <input type="text"  name="name" ng-model="studentCredentials.name"
+                                      class="mt-1 p-2 w-full border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500 bg-gray-700 text-white"
                                       required>
                               </div>
                               <div class="w-1/2">
-                                  <label for="usn" class="block text-gray-700 text-sm font-medium">USN</label>
-                                  <input type="text" name="usn"
-                                      class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                                  <label for="usn" class="block text-sm font-medium">USN</label>
+                                  <input type="text" name="usn" ng-model="studentCredentials.usn"
+                                      class="mt-1 p-2 w-full border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500 bg-gray-700 text-white"
                                       required>
                               </div>
                           </div>
         
                           <div class="mb-4">
-                              <label for="contact" class="block text-gray-700 text-sm font-medium">Contact Number</label>
-                              <input type="text" name="phone_no"
-                                  class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                              <label for="contact" class="block text-sm font-medium">Contact Number</label>
+                              <input type="text" name="phone_no" ng-model="studentCredentials.phone_no"
+                                  class="mt-1 p-2 w-full border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500 bg-gray-700 text-white"
                                   required>
                           </div>
         
                           <div class="mb-4">
-                              <label for="email" class="block text-gray-700 text-sm font-medium">E-Mail</label>
-                              <input type="email" name="email"
-                                  class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                              <label for="email" class="block text-sm font-medium">E-Mail</label>
+                              <input type="email" name="email" ng-model="studentCredentials.email"
+                                  class="mt-1 p-2 w-full border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500 bg-gray-700 text-white"
                                   required>
                           </div>
                           <div class="flex space-x-4">
                             <div class="w-1/3">
-                              <select name="semester" class="bg-white p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300">
-                                <option selected>Select Semester</option>
+                              <select name="semester" ng-model="studentCredentials.semester" class="bg-slate-700 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300">
+                                <option value="" selected>Select Semester</option>
                                 <option value="1">First</option>
                                 <option value="2">Second</option>
                                 <option value="3">Third</option>
@@ -152,8 +155,8 @@
                               </select>
                             </div>  
                             <div class="w-1/3">
-                              <select name="branch_id" class="bg-white p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300">
-                                <option selected>Select Branch</option>
+                              <select name="branch_id" ng-model="studentCredentials.branch_id" class="bg-slate-700 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300">
+                                <option value="" selected>Select Branch</option>
                                 <option value="cse">Computer Science</option>
                                 <option value="ise">Information Science</option>
                                 <option value="mec">Mechanical</option>
@@ -168,10 +171,10 @@
                           <br>
         
                           <div class="mb-4">
-                              <label for="password" class="block text-gray-700 text-sm font-medium">Create a Memorable
+                              <label for="password" class="block text-sm font-medium">Create a Memorable
                                   Password</label>
-                              <input type="password" name="password"
-                                  class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                              <input type="password" name="password" ng-model="studentCredentials.password" 
+                                  class="mt-1 p-2 w-full border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500 bg-gray-700 text-white"
                                   required>
                           </div>
                       </div>
@@ -179,10 +182,13 @@
                           class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
                           Create
                       </button>
+                      <div class="text-center">
+                        <p ng-show="stsignup.flag==404" class="text-red-500">{{ stsignup.msg }}</p>
+                    </div> 
                 </div>
                  <!-- {/* right side */} -->
                 <div class="relative">
-                <div class="h-24 bg-gradient-to-r from-sky-300 via-blue-500 to-blue-900 w-[400px] h-full hidden rounded-r-2xl md:block object-cover"></div>
+                <div class="h-24 bg-gradient-to-r from-blue-900 via-blue-500 to-sky-300 w-[400px] h-full hidden rounded-r-2xl md:block object-cover"></div>
               </div>
             </div>
             </form>
@@ -192,18 +198,57 @@
     
     <script>
       angular.module('myApp', [])
-        .controller('MainCtrl', function($scope, $window) {
+        .controller('MainCtrl',['$scope', '$http', '$window', function ($scope, $http, $window) {
+          $scope.mentorCredentials = {
+            semester: ''
+          };
+          $scope.studentCredentials = {
+            semester: '',
+            branch_id : ''
+          };
           $scope.submitMentor = function() {
-            window.location.replace('http://localhost:3000/login');
+            $http.post('http://localhost:3000/mentor_signup', $scope.mentorCredentials)
+                        .then(function (response) { 
+                            $scope.msignup = response.data;
+                            const mentorsignup = response.data;
+                            console.log(mentorsignup);
+                            if (mentorsignup.flag == 200) {
+                              try {
+                                  $window.location.href = "http://localhost:3000/login";
+                              } catch (error) {
+                                  console.error('Error redirecting to mentor main page:', error);
+                              }
+                            }
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                            // Handle login failure
+                        });
           };
           $scope.submitStudent = function() {
-            window.location.replace('http://localhost:3000/login');
+            $http.post('http://localhost:3000/student_signup', $scope.studentCredentials)
+                        .then(function (response) { 
+                            $scope.stsignup = response.data;
+                            const studentsignup = response.data;
+                            console.log(studentsignup);
+                            if (studentsignup.flag == 200) {
+                              try {
+                                  $window.location.href = "http://localhost:3000/login";
+                              } catch (error) {
+                                  console.error('Error redirecting to login page:', error);
+                              }
+                            }
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                            // Handle login failure
+                        });
           };
           $scope.activeContent = 'content1'; // Default active content
           $scope.setActiveContent = function(content) {
             $scope.activeContent = content;
           };
-        });
+        }]);
     </script>
   </body>
 </html>

@@ -4,9 +4,67 @@
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <title>Mentor Feedback</title>
+    <style>
+        .tooltip {
+          position: relative;
+          display: inline-block;
+          cursor: pointer;
+        }
+        .tooltip .tooltip-text {
+          border: 2px solid rgb(107, 107, 230);
+          border-radius: 5%;
+          visibility: hidden;
+          width: max-content;
+          background-color: #fdfbfb;
+          color: #292727;
+          text-align: left;
+          padding: 15px 20px; 
+          border-radius: 8px; 
+          position: absolute;
+          z-index: 1;
+          top: calc(100% + 23px);
+          left: -110%;
+          transform: translateX(-50%);
+          opacity: 0;
+          transition: opacity 0.3s;
+          right: auto;
+          margin-right: -50%;
+        }
+        .tooltip:hover .tooltip-text {
+          visibility: visible;
+          opacity: 1;
+        }
+      </style>
   </head>
 
   <body ng-controller="myController">
+    <div>
+        <nav class="bg-blue-500 text-white p-4 flex justify-between">
+            <a href="http://localhost:3000/mentor_students_fetch" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Student pool</a>
+            <a href="http://localhost:3000/mentor_academic_details" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Academic Details</a>
+            <a href="http://localhost:3000/mentor_notifications" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Notification</a>
+            <a href="http://localhost:3000/mentor_issues" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Issues</a>
+            <a href="http://localhost:3000/mentor_feedback" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Feedback</a>
+            <a href="http://localhost:3000/mentor_form_download" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Form</a>
+            
+            <div class="ml-auto cursor-pointer">
+              <div class="tooltip  hover:bg-blue-800 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
+                <a href="http://localhost:3000/mentor_info" target="_self">
+                  <svg class="h-8 w-8 text-slate-900"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>   
+                </a>
+                <div class="tooltip-text ml-auto bg-yellow-50 text-left rounded-2xl border-solid border-blue-900 border-2" ng-show="isTooltipVisible">
+                  <div class="py-1 px-2" >
+                    <a class="py-1 hover:bg-gray-200 text-gray-800">Name : {{ mentorDetails.results[0].name }}</a></br>
+                    <a class="py-1 hover:bg-gray-200 text-gray-800">ID : {{ mentorDetails.results[0].mentor_id }}</a></br>
+                    <a class="py-1 hover:bg-gray-200 text-gray-800">Email-ID : {{ mentorDetails.results[0].email }}</a>
+                  </div>
+                </div>        
+              </div>
+            </div>
+        </nav>
+    </div>
     <div class="mx-auto max-w-md">
       <div class="bg-white shadow-md rounded px-4 py-6 mb-8">
           <h2 class="text-xl font-bold mb-4">Validate Student Attendance</h2>
@@ -24,20 +82,24 @@
                       Validate Attendance
                   </button>
               </div>
+              <div class="text-green-600" ng-show="validS.flag == '200'"> {{validS.msg}}</div>
+              <div class="text-red-600" ng-show="validS.flag == '404'"> {{validS.msg}}</div> 
           </form>
       </div>
   
       <div class="bg-white shadow-md rounded px-4 py-6">
-          <h2 class="text-xl font-bold mb-4">Get Feedback</h2>
           <button ng-click="getMentorFeedback()" type="submit" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50">
               Get Feedback
           </button>
+      </div>    
+      <div class="mt-4"  ng-repeat="feedback in mentorFeedback">
+        <div class="border-b border-gray-200 py-4" ng-repeat="res in feedback"> 
+            <div class="font-bold">USN : {{res.usn}}</div>
+            <div class="font-bold">Meeting Date : {{formatDate(res.meeting_date)}}</div>
+            <div class="font-bold">Feedback : {{res.feedback}}</div>
+        </div>
       </div>
   </div>
-  
-        <a class="font-thin">{{ validS }}</a>
-        <a class="font-thin">{{ mentorFeedback }}</a>
-
   </body>
   <script>
     angular.module('myApp', [])
@@ -73,7 +135,32 @@
                         .catch(function (error) {
                             console.error('Error', error);
                         });
-                    };
+                };
+                $scope.formatDate = function(dateString) {
+                    return moment(dateString).format('YYYY-MM-DD');
+                };
+                $scope.mentorSessionId = $window.localStorage.getItem('mentor_session_id');
+                $scope.mentorDetails = null;
+                $scope.credentials ={};
+                $scope.isTooltipVisible = false;
+                console.log('Making request to mentor_info_fetch endpoint');
+                $scope.showTooltip = function() {
+                    $scope.credentials.session_id = $scope.mentorSessionId;
+                    $http.post('http://localhost:3000/mentor_info_fetch', $scope.credentials)
+                    .then(function(response) {
+                        console.log('Received response from mentor_info_fetch endpoint:', response.data.results);
+                        $scope.mentorDetails=response.data;
+                        $scope.isTooltipVisible = true;
+                    })
+                    .catch(function(error) {
+                        console.error('Error', error);
+                    }); 
+                    
+                };
+
+                $scope.hideTooltip = function() {
+                    $scope.isTooltipVisible = false;
+                };                    
             }]);
   </script>
 </html>

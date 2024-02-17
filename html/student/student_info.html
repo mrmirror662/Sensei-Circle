@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Information</title>
+  <!-- Include AngularJS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body ng-app="myApp" ng-controller="myController" ng-init="getSInfo()" class="flex justify-center items-center h-screen bg-gray-100">
+  <div class="bg-white p-8 rounded-md shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Student Information</h2>
+    <div class="mb-4 flex items-center">
+      <p class="font-semibold mr-2">Name:</p>
+      <div class="bg-gray-100 p-2 rounded-md">{{ getS.name }}</div>
+    </div>
+    <div class="mb-4 flex items-center">
+      <p class="font-semibold mr-2">USN:</p>
+      <div class="bg-gray-100 p-2 rounded-md">{{ getS.usn }}</div>
+    </div>
+    <div class="mb-4 flex items-center">
+      <p class="font-semibold mr-2">Phone Number:</p>
+      <div class="bg-gray-100 p-2 rounded-md">{{ getS.phone_no }}</div>
+    </div>
+    <div class="mb-4 flex items-center">
+      <p class="font-semibold mr-2">Email-ID:</p>
+      <div class="bg-gray-100 p-2 rounded-md">{{ getS.email }}</div>
+    </div>
+    <div class="mb-4 flex items-center">
+      <p class="font-semibold mr-2">Branch:</p>
+      <div class="bg-gray-100 p-2 rounded-md">{{ getS.branch_id }}</div>
+    </div>
+  </div>
+  <script>
+    // Define AngularJS module
+    angular.module('myApp', [])
+      .controller('myController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+        // Retrieve sessionID from local storage
+        $scope.sessionID = $window.localStorage.getItem('student_session_id');
+        // Initialize credentials object
+        $scope.credentials = {
+          session_id: $scope.sessionID
+        };
+
+        // Define function to fetch mentor information
+        $scope.getSInfo = function() {
+          // Update session_id in credentials
+          $scope.credentials.session_id = $scope.sessionID;
+          // Send POST request to fetch mentor information
+          $http.post('http://localhost:3000/student_info_fetch', $scope.credentials)
+            .then(function(response) {
+              // Handle successful response
+              $scope.getS = response.data.results[0]; // Assign response data to $scope.getS
+              console.log($scope.getS)
+            })
+            .catch(function(error) {
+              // Handle error
+              console.error('Error fetching Student Info:', error);
+            });
+        };
+      }]);
+  </script>
+</body>
+
+</html>

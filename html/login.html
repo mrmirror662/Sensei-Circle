@@ -8,20 +8,21 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
     <title>Login</title>
   </head>
-  <body ng-controller="myController">
+  <body ng-controller="myController" class="bg-slate-800 backdrop-blur-lg">
     <div>
-      <div class="flex items-center"> <div class="navbar mr-4 bg-gray-100 px-4 py-2"> <a href="" ng-click="setActiveContent('content1')" class="text-gray-700 hover:text-gray-900 font-bold">Mentor</a>
+      <div class="flex items-center justify-center mt-8">
+        <div class="navbar mr-4 bg-gray-100 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-500">
+          <a href="" ng-click="setActiveContent('content1')" class="text-gray-700 hover:text-gray-900 font-bold">Mentor</a>
         </div>
-        <div class="navbar bg-gray-100 px-4 py-2">
+        <div class="navbar bg-gray-100 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-500">
           <a href="" ng-click="setActiveContent('content2')" class="text-gray-700 hover:text-gray-900 font-bold">Student</a>
         </div>
-      </div>
+      </div>  
       <div class="content" ng-show="activeContent === 'content1'">
         <div class="mentor">
-          <form action="http://localhost:3000/mentor_login" method="POST" ng-submit="mentor_login()">
-            <div class="flex items-center justify-center min-h-screen bg-gray-200">
-              <div
-              class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
+          <form ng-submit="mentor_login()">
+            <div class="flex items-center justify-center">
+              <div class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
               <!-- left side -->
               <div class="flex flex-col justify-center p-8 md:p-14">
                 <span class="mb-3 text-4xl font-bold">Login</span>
@@ -58,6 +59,9 @@
                   Dont'have an account?
                   <span class="font-bold text-black"><a href="http://localhost:3000/signup">Sign up</a></span>
                 </div>
+                <div class="text-center">
+                  <p ng-show="mlogin.flag==404" class="text-red-500">{{ mlogin.msg }}</p>
+              </div>
               </div>
                <!-- {/* right side */} -->
               <div class="relative">
@@ -68,12 +72,11 @@
         </div>
       </div>
      </div>
-      <div class="content" ng-show="activeContent === 'content2'">
-        <div class="student">
-          <form action="http://localhost:3000/student_login" method="POST" ng-submit="student_login()">
-            <div class="flex items-center justify-center min-h-screen bg-gray-200">
-              <div
-              class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
+     <div class="content" ng-show="activeContent === 'content2'">
+      <div class="student">
+        <form ng-submit="student_login()">
+          <div class="flex items-center justify-center">
+            <div class="relative flex flex-col m-6 space-y-8 bg-gray-750 shadow-2xl rounded-2xl text-white md:flex-row md:space-y-0">
               <!-- left side -->
               <div class="flex flex-col justify-center p-8 md:p-14">
                 <span class="mb-3 text-4xl font-bold">Login</span>
@@ -84,7 +87,7 @@
                   <span class="mb-2 text-md">USN</span>
                   <input
                     type="text"
-                    class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
+                    class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500 bg-gray-700 text-white"
                     name="usn"
                     ng-model="studentCredentials.usn"
                     id="usn"
@@ -97,29 +100,36 @@
                     name="password"
                     id="spass"
                     ng-model="studentCredentials.password"
-                    class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"/>
+                    class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500 bg-gray-700 text-white"
+                  />
                 </div>
                 <div class="flex justify-between w-full py-4">
                   <span class="font-bold text-md">Forgot password</span>
                 </div>
                 <button
-                  class="w-full bg-blue-500 text-white p-2 rounded-lg mb-6 hover:bg-white hover:text-black hover:border hover:border-gray-300" type="submit" value="login">
+                  class="w-full bg-blue-500 text-white p-2 rounded-lg mb-6 hover:bg-white hover:text-black hover:border hover:border-gray-300"
+                  type="submit"
+                  value="login"
+                >
                   Log in
                 </button>
-                <div class="text-center text-gray-400">
+                <div class="text-center text-white-400">
                   Dont'have an account?
-                  <span class="font-bold text-black"><a href="http://localhost:3000/signup">Sign up</a></span>
+                  <span class="font-bold text-white"><a href="http://localhost:3000/signup">Sign up</a></span>
+                </div>
+                <div class="text-center">
+                  <p ng-show="slogin.flag==404" class="text-red-500">{{ slogin.msg }}</p>
                 </div>
               </div>
-               <!-- {/* right side */} -->
+              <!-- {/* right side */} -->
               <div class="relative">
-              <div class="h-24 bg-gradient-to-r from-sky-300 via-blue-500 to-blue-900 w-[400px] h-full hidden rounded-r-2xl md:block object-cover"></div>
+                <div class="h-24 bg-gradient-to-r from-blue-900 via-blue-500 to-sky-300 w-[400px] h-full hidden rounded-r-2xl md:block object-cover"></div>
+              </div>
             </div>
           </div>
-          </form>
-        </div>
+        </form>
       </div>
-  
+    </div>    
     <script>
       angular.module('myApp', [])
         .controller('myController', ['$scope', '$http', '$window', function ($scope, $http, $window) {
@@ -131,8 +141,15 @@
                             const session_id = response.data.session_id;
                             // Store the sessionID in localStorage
                             localStorage.setItem('mentor_session_id', session_id);
-                            // Redirect to another page or handle the login success as needed
-                            window.location.replace('http://localhost:3000/mentor_mainpage');
+                            $scope.mlogin = response.data;
+                            const mentorlogin = response.data;
+                            if (mentorlogin.flag == 200) {
+                              try {
+                                  $window.location.href = "http://localhost:3000/mentor_students_fetch";
+                              } catch (error) {
+                                  console.error('Error redirecting to mentor main page:', error);
+                              }
+                            }
                         })
                         .catch(function (error) {
                             console.error(error);
@@ -145,8 +162,15 @@
                             const session_id = response.data.session_id;
                             // Store the sessionID in localStorage
                             localStorage.setItem('student_session_id', session_id);   
-                            // Redirect to another page or handle the login success as needed
-                            window.location.replace('http://localhost:3000/student_mainpage');
+                            $scope.slogin = response.data;
+                            const studentlogin = response.data;
+                            if (studentlogin.flag == 200) {
+                                try {
+                                    $window.location.href = "http://localhost:3000/student_academic_fetch";
+                                } catch (error) {
+                                    console.error('Error redirecting to student main page:', error);
+                                }
+                            }
                         })
                         .catch(function (error) {
                             console.error(error);
