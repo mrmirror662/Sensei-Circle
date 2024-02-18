@@ -24,7 +24,7 @@
           position: absolute;
           z-index: 1;
           top: calc(100% + 23px);
-          left: -110%;
+          left: -180%;
           transform: translateX(-50%);
           opacity: 0;
           transition: opacity 0.3s;
@@ -39,32 +39,34 @@
 </head>
 
 <body ng-controller="AcademicController" >
-    <div>
-        <nav class="bg-blue-500 text-white p-4 flex justify-between">
-            <a href="http://localhost:3000/student_academic_fetch" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Academic Details</a>
-            <a href="http://localhost:3000/student_notifications" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Notification</a>
-            <a href="http://localhost:3000/student_issues" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Issues</a>
-            <a href="http://localhost:3000/student_mentor_feedback" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Feedback</a>
-            <a href="http://localhost:3000/student_mentor_upload" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Form</a>
-            
-            <div class="ml-auto cursor-pointer">
-              <div class="tooltip  hover:bg-blue-800 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
+  <div>
+    <nav class="bg-blue-500 text-white p-4 flex justify-between">
+        <a href="http://localhost:3000/student_academic_fetch" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Academic Details</a>
+        <a href="http://localhost:3000/student_notifications" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Notification</a>
+        <a href="http://localhost:3000/student_issues" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Issues</a>
+        <a href="http://localhost:3000/student_mentor_feedback" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Feedback</a>
+        <a href="http://localhost:3000/student_mentor_upload" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Form</a>
+      
+        <div class="ml-auto flex items-center">
+            <div class="tooltip hover:bg-blue-800 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
                 <a href="http://localhost:3000/student_info" target="_self">
-                  <svg class="h-8 w-8 text-slate-900"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>   
+                    <svg class="h-8 w-8 text-white"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>   
                 </a>   
                 <div class="tooltip-text ml-auto bg-yellow-50 text-left rounded-2xl border-solid border-blue-900 border-2" ng-show="isTooltipVisible">
-                  <div class="py-1 px-2">
-                    <a class="py-1 hover:bg-gray-200 text-gray-800">Name: {{ studentDetails.results[0].name }}</a></br>
-                    <a class="py-1 hover:bg-gray-200 text-gray-800">USN: {{ studentDetails.results[0].usn }}</a></br>
-                    <a class="py-1 hover:bg-gray-200 text-gray-800">Email-ID: {{ studentDetails.results[0].email }}</a>
-                  </div>
+                    <div class="py-1 px-2">
+                        <a class="py-1 hover:bg-gray-200 text-gray-800">Name: {{ studentDetails.results[0].name }}</a></br>
+                        <a class="py-1 hover:bg-gray-200 text-gray-800">USN: {{ studentDetails.results[0].usn }}</a></br>
+                        <a class="py-1 hover:bg-gray-200 text-gray-800">Email-ID: {{ studentDetails.results[0].email }}</a>
+                    </div>
                 </div>     
-              </div>
             </div>
-          </nav>
-    </div>
+            <!-- Logout button -->
+            <a href="" ng-click="logout()" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Logout</a>
+        </div>
+    </nav>
+</div>
     <div class="container mx-auto p-4" ng-init="getSNotifications()">
       <div class="flex items-center mb-4">
           <h2 class="text-2xl font-bold mt-4 mb-4 mr-4">Notifications:</h2>
@@ -98,22 +100,16 @@
                     $http.post('http://localhost:3000/student_fetch_notification', $scope.credentials)
                         .then(function (response) {
                             $scope.getS = [];
-                            $scope.getS.push(response.data); // Assuming the response contains the updated student notifications
+                            $scope.getS.push(response.data);
                         })
                         .catch(function (error) {
                             console.error('Error fetching student notifications:', error);
                         });
                 };
-                $scope.studentSessionId = $window.localStorage.getItem('student_session_id');
-                $scope.studentDetails = null;
-                $scope.credentials ={};
-                $scope.isTooltipVisible = false;
-                console.log('Making request to mentor_info_fetch endpoint');
                 $scope.showTooltip = function() {
-                $scope.credentials.session_id = $scope.studentSessionId;
+                $scope.credentials.session_id = $scope.sessionID;
                 $http.post('http://localhost:3000/student_info_fetch', $scope.credentials)
                     .then(function(response) {
-                    console.log('Received response from mentor_info_fetch endpoint:', response.data.results);
                     $scope.studentDetails=response.data;
                     $scope.isTooltipVisible = true;
                     })
@@ -121,6 +117,14 @@
                     console.error('Error', error);
                     });     
                 
+                };
+                $scope.logout = function(){
+                    $scope.credentials.session_id = $scope.sessionID;
+                    $http.post('http://localhost:3000/student_logout', $scope.credentials)
+                        .then(function(response){
+                        $window.location.href="http://localhost:3000/login";
+                        $window.localStorage.clear();
+                        })
                 };
                 $scope.hideTooltip = function() {
                     $scope.isTooltipVisible = false;

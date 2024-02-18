@@ -23,7 +23,6 @@
           <form class="pure-form pure-form-aligned" ng-submit="submitMentor()">
             <div class="flex items-center justify-center">
               <div class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
-                <!-- left side -->
                 <div class="flex flex-col justify-center p-8 md:p-14">
                   <h1 class="text-2xl font-semibold mb-4">Create your Account</h1>
         
@@ -91,7 +90,6 @@
                         <p ng-show="msignup.flag==404" class="text-red-500">{{ msignup.msg }}</p>
                     </div> 
                 </div>
-                 <!-- {/* right side */} -->
                 <div class="relative">
                 <div class="h-24 bg-gradient-to-r from-sky-300 via-blue-500 to-blue-900 w-[400px] h-full hidden rounded-r-2xl md:block object-cover"></div>
               </div>
@@ -105,7 +103,6 @@
           <form class="pure-form pure-form-aligned" ng-submit="submitStudent()">
             <div class="flex items-center justify-center">
               <div class="relative flex flex-col m-6 space-y-8 bg-grey-750 text-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
-                <!-- left side -->
                 <div class="flex flex-col justify-center p-8 md:p-14">
                   <h1 class="text-2xl font-semibold mb-4">Create your Account</h1>
         
@@ -186,7 +183,6 @@
                         <p ng-show="stsignup.flag==404" class="text-red-500">{{ stsignup.msg }}</p>
                     </div> 
                 </div>
-                 <!-- {/* right side */} -->
                 <div class="relative">
                 <div class="h-24 bg-gradient-to-r from-blue-900 via-blue-500 to-sky-300 w-[400px] h-full hidden rounded-r-2xl md:block object-cover"></div>
               </div>
@@ -211,7 +207,6 @@
                         .then(function (response) { 
                             $scope.msignup = response.data;
                             const mentorsignup = response.data;
-                            console.log(mentorsignup);
                             if (mentorsignup.flag == 200) {
                               try {
                                   $window.location.href = "http://localhost:3000/login";
@@ -222,7 +217,6 @@
                         })
                         .catch(function (error) {
                             console.error(error);
-                            // Handle login failure
                         });
           };
           $scope.submitStudent = function() {
@@ -230,7 +224,6 @@
                         .then(function (response) { 
                             $scope.stsignup = response.data;
                             const studentsignup = response.data;
-                            console.log(studentsignup);
                             if (studentsignup.flag == 200) {
                               try {
                                   $window.location.href = "http://localhost:3000/login";
@@ -241,10 +234,10 @@
                         })
                         .catch(function (error) {
                             console.error(error);
-                            // Handle login failure
+
                         });
           };
-          $scope.activeContent = 'content1'; // Default active content
+          $scope.activeContent = 'content1'; 
           $scope.setActiveContent = function(content) {
             $scope.activeContent = content;
           };

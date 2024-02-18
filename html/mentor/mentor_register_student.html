@@ -41,14 +41,20 @@
   <body ng-controller="myController">
     <div>
       <nav class="bg-blue-500 text-white p-4 flex justify-between">
-        <a href="http://localhost:3000/mentor_students_fetch" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Student pool</a>
-        <a href="http://localhost:3000/mentor_academic_details" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Academic Details</a>
-        <a href="http://localhost:3000/mentor_notifications" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Notification</a>
-        <a href="http://localhost:3000/mentor_issues" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Issues</a>
-        <a href="http://localhost:3000/mentor_feedback" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Feedback</a>
-        <a href="http://localhost:3000/mentor_form_download" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Form</a>
-        <div class="ml-auto cursor-pointer">
-          <div class="tooltip  hover:bg-blue-800 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
+        <div class="flex items-center">
+          <a href="http://localhost:3000/mentor_students_fetch" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Student pool</a>
+          <a href="http://localhost:3000/mentor_academic_details" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Academic Details</a>
+          <a href="http://localhost:3000/mentor_notifications" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Notification</a>
+          <a href="http://localhost:3000/mentor_issues" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Issues</a>
+          <a href="http://localhost:3000/mentor_feedback" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Feedback</a>
+          <a href="http://localhost:3000/mentor_form_download" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Form</a>
+        </div>
+        
+        <div class="ml-auto flex items-center">
+  
+            <a href="http://localhost:3000/mentor_register_student"  target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#" >Register/Deregister</a>
+  
+             <div class="tooltip  hover:bg-blue-800 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
             <a href="http://localhost:3000/mentor_info" target="_self">
               <svg class="h-8 w-8 text-slate-900"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -62,8 +68,9 @@
               </div>
             </div>        
           </div>
+        <a href="" ng-click="logout()" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800">Logout</a>
         </div>
-    </nav>
+      </nav>
     </div>
       <h2 class="text-3xl font-bold text-center mt-8 mb-4">Register/Deregister Student</h2>
       <section class="flex flex-col space-y-4 justify-center items-center">
@@ -90,13 +97,10 @@
       <script>
         angular.module('myApp', [])
           .controller('myController', ['$scope', '$http', '$window', function($scope, $http, $window) {
-            // Retrieve sessionID from localStorage
             $scope.sessionID = $window.localStorage.getItem('mentor_session_id');
-      
-            // Function to register a student
             $scope.registerStudentDetails = function() {
               var data = {
-                session_id: $scope.sessionID, // Include session_id in the request body
+                session_id: $scope.sessionID, 
                 usn: $scope.usn
               };
       
@@ -108,11 +112,9 @@
                   console.error('Error registering student:', error);
                 });
             };
-      
-            // Function to deregister a student
             $scope.deregisterStudentDetails = function() {
               var data = {
-                session_id: $scope.sessionID, // Include session_id in the request body
+                session_id: $scope.sessionID, 
                 usn: $scope.deusn
               };
       
@@ -128,12 +130,10 @@
               $scope.mentorDetails = null;
               $scope.credentials ={};
               $scope.isTooltipVisible = false;
-              console.log('Making request to mentor_info_fetch endpoint');
               $scope.showTooltip = function() {
                   $scope.credentials.session_id = $scope.mentorSessionId;
                   $http.post('http://localhost:3000/mentor_info_fetch', $scope.credentials)
                   .then(function(response) {
-                      console.log('Received response from mentor_info_fetch endpoint:', response.data.results);
                       $scope.mentorDetails=response.data;
                       $scope.isTooltipVisible = true;
                   })
@@ -142,6 +142,14 @@
                   }); 
                   
               };
+              $scope.logout = function(){
+                $scope.credentials.session_id = $scope.mentorSessionId;
+                $http.post('http://localhost:3000/mentor_logout', $scope.credentials)
+                  .then(function(response){
+                    $window.location.href="http://localhost:3000/login";
+                    $window.localStorage.clear();
+                  })
+            };
 
               $scope.hideTooltip = function() {
                   $scope.isTooltipVisible = false;

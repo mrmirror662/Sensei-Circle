@@ -26,7 +26,7 @@
       position: absolute;
       z-index: 1;
       top: calc(100% + 23px);
-      left: -110%;
+      left: -180%;
       transform: translateX(-50%);
       opacity: 0;
       transition: opacity 0.3s;
@@ -43,18 +43,22 @@
 <body  ng-controller="myController">
   <div>
     <nav class="bg-blue-500 text-white p-4 flex justify-between">
-      <a href="http://localhost:3000/mentor_students_fetch" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Student pool</a>
-      <a href="http://localhost:3000/mentor_academic_details" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Academic Details</a>
-      <a href="http://localhost:3000/mentor_notifications" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Notification</a>
-      <a href="http://localhost:3000/mentor_issues" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Issues</a>
-      <a href="http://localhost:3000/mentor_feedback" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Feedback</a>
-      <a href="http://localhost:3000/mentor_form_download" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Form</a>
+      <div class="flex items-center">
+        <a href="http://localhost:3000/mentor_students_fetch" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Student pool</a>
+        <a href="http://localhost:3000/mentor_academic_details" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Academic Details</a>
+        <a href="http://localhost:3000/mentor_notifications" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Notification</a>
+        <a href="http://localhost:3000/mentor_issues" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Issues</a>
+        <a href="http://localhost:3000/mentor_feedback" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Feedback</a>
+        <a href="http://localhost:3000/mentor_form_download" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Form</a>
+      </div>
       
-      <div class="ml-auto cursor-pointer">
+      <div class="ml-auto flex items-center">
+        <a href="http://localhost:3000/mentor_register_student" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Register/Deregister</a>
+  
         <div class="tooltip  hover:bg-blue-800 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
           <a href="http://localhost:3000/mentor_info" target="_self">
             <svg class="h-8 w-8 text-slate-900"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>   
           </a>
           <div class="tooltip-text ml-auto bg-yellow-50 text-left rounded-2xl border-solid border-blue-900 border-2" ng-show="isTooltipVisible">
@@ -65,14 +69,14 @@
             </div>
           </div>        
         </div>
+        <a href="" ng-click="logout()" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800">Logout</a>
       </div>
     </nav>
   </div>
-  <div class="bg-gray-100 text-gray-700 font-sans py-8">
+  
+  <div class=" text-gray-700 font-sans py-8">
     <div class="container mx-auto px-4 max-w-lg">
       <h2 class="text-2xl font-bold mb-8">Student Academic Details</h2>
-
-      <!-- Tabs -->
       <div class="mb-8">
         <input type="radio" id="tab1" name="tab-group" ng-model="activeTab" value="fetch" checked>
         <label for="tab1" class="font-medium text-blue-500 cursor-pointer">Academic Details Fetch</label>
@@ -80,7 +84,7 @@
         <input type="radio" id="tab2" name="tab-group" ng-model="activeTab" value="fill">
         <label for="tab2" class="font-medium text-blue-500 cursor-pointer">Academic Details Fill</label>
 
-        <!-- Content for Academic Details Fetch Tab -->
+
         <div class="tab-content" id="tab1-content" ng-show="activeTab === 'fetch'">
           <form id="fetchForm" ng-submit="fetchMentorAcademicDetails()" class="mb-4">
               <label for="usn" class="block text-gray-700 font-medium mb-2">USN</label>
@@ -137,14 +141,13 @@
                                     <input type="number" name="attendance" ng-model="details.attendance" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                                   </div>
                               </div>
-                              <!-- Save button for saving edited details -->
+
                               <button type="submit" ng-click="editStudentDetails(details)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 focus:outline-none focus:shadow-outline">Save Details</button>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </form>
           <div class="mt-4">
             <p ng-show="academicFill.flag==200" class="text-green-500">{{ academicFill.msg }}</p>
             <p ng-show="academicFill.flag==404" class="text-red-500">{{ academicFill.msg }}</p>
@@ -153,7 +156,7 @@
               <p class="text-red-500">No student found!</p>
           </div>
       </div> 
-        <!-- Content for Academic Details Fill Tab -->
+
         <div class="tab-content" id="tab2-content" ng-show="activeTab === 'fill'">
 
           <form id="fillForm"  class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -219,7 +222,6 @@
   <script>
   angular.module('myApp', [])
     .controller('myController', ['$scope', '$http', '$window', function($scope, $http, $window) {
-      // Retrieve sessionID from localStorage
       $scope.sessionID = $window.localStorage.getItem('mentor_session_id');
       $scope.mentorAcademicDetails = null;
       $scope.Mflag = -1;
@@ -243,7 +245,6 @@
         };
         $http.post('http://localhost:3000/academic_details_fill', data)
           .then(function(response) {
-            console.log(response);
             $scope.academicFill = response.data;
           })
           .catch(function(error) {
@@ -271,8 +272,6 @@
             console.error('Error filling mentor academic details:', error);
           });
       };
-
-      // Function to fetch mentor academic details
       $scope.fetchMentorAcademicDetails = function() {
         $http.post('http://localhost:3000/mentor_academic_details_fetch', {
             session_id: $scope.sessionID,
@@ -290,7 +289,6 @@
             console.error('Error fetching mentor academic details:', error);
           });
       };
-      // Set active tab on page load
       $scope.setActiveTab = function(tab) {
         $scope.activeTab = tab;
       };
@@ -311,6 +309,14 @@
             console.error('Error', error);
           }); 
         
+      };
+      $scope.logout = function(){
+        $scope.credentials.session_id = $scope.mentorSessionId;
+        $http.post('http://localhost:3000/mentor_logout', $scope.credentials)
+          .then(function(response){
+            $window.location.href="http://localhost:3000/login";
+            $window.localStorage.clear();
+          })
       };
 
       $scope.hideTooltip = function() {

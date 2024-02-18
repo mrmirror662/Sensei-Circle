@@ -27,7 +27,7 @@
           position: absolute;
           z-index: 1;
           top: calc(100% + 23px);
-          left: -110%;
+          left: -180%;
           transform: translateX(-50%);
           opacity: 0;
           transition: opacity 0.3s;
@@ -42,31 +42,39 @@
 </head>
 
 <body ng-controller="myController" >
-    <nav class="bg-blue-500 text-white p-4 flex justify-between">
-        <a href="http://localhost:3000/mentor_students_fetch" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Student pool</a>
-        <a href="http://localhost:3000/mentor_academic_details" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Academic Details</a>
-        <a href="http://localhost:3000/mentor_notifications" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Notification</a>
-        <a href="http://localhost:3000/mentor_issues" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Issues</a>
-        <a href="http://localhost:3000/mentor_feedback" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Feedback</a>
-        <a href="http://localhost:3000/mentor_form_download" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Form</a>
-        
-        <div class="ml-auto cursor-pointer">
-          <div class="tooltip  hover:bg-blue-800 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
-            <a href="http://localhost:3000/mentor_info" target="_self">
-              <svg class="h-8 w-8 text-slate-900"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>   
-            </a>
-            <div class="tooltip-text ml-auto bg-yellow-50 text-left rounded-2xl border-solid border-blue-900 border-2" ng-show="isTooltipVisible">
-              <div class="py-1 px-2" >
-                <a class="py-1 hover:bg-gray-200 text-gray-800">Name : {{ mentorDetails.results[0].name }}</a></br>
-                <a class="py-1 hover:bg-gray-200 text-gray-800">ID : {{ mentorDetails.results[0].mentor_id }}</a></br>
-                <a class="py-1 hover:bg-gray-200 text-gray-800">Email-ID : {{ mentorDetails.results[0].email }}</a>
-              </div>
-            </div>        
+    <div>
+        <nav class="bg-blue-500 text-white p-4 flex justify-between">
+          <div class="flex items-center">
+            <a href="http://localhost:3000/mentor_students_fetch" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Student pool</a>
+            <a href="http://localhost:3000/mentor_academic_details" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Academic Details</a>
+            <a href="http://localhost:3000/mentor_notifications" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Notification</a>
+            <a href="http://localhost:3000/mentor_issues" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Issues</a>
+            <a href="http://localhost:3000/mentor_feedback" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Feedback</a>
+            <a href="http://localhost:3000/mentor_form_download" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Form</a>
           </div>
-        </div>
-    </nav>
+          
+          <div class="ml-auto flex items-center">
+    
+              <a href="http://localhost:3000/mentor_register_student"  target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#" >Register/Deregister</a>
+    
+               <div class="tooltip  hover:bg-blue-800 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
+              <a href="http://localhost:3000/mentor_info" target="_self">
+                <svg class="h-8 w-8 text-slate-900"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>   
+              </a>
+              <div class="tooltip-text ml-auto bg-yellow-50 text-left rounded-2xl border-solid border-blue-900 border-2" ng-show="isTooltipVisible">
+                <div class="py-1 px-2" >
+                  <a class="py-1 hover:bg-gray-200 text-gray-800">Name : {{ mentorDetails.results[0].name }}</a></br>
+                  <a class="py-1 hover:bg-gray-200 text-gray-800">ID : {{ mentorDetails.results[0].mentor_id }}</a></br>
+                  <a class="py-1 hover:bg-gray-200 text-gray-800">Email-ID : {{ mentorDetails.results[0].email }}</a>
+                </div>
+              </div>        
+            </div>
+            <a href="" ng-click="logout()" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800">Logout</a>
+          </div>
+        </nav>
+      </div>
     <div class="h-96 flex items-center justify-center">
         <div class="max-w-md py-8 px-4 bg-white shadow-lg rounded-lg">
                 <h2 class="text-2xl font-bold mb-4 text-center">Download Mentor Form</h2>
@@ -84,7 +92,6 @@
     <script>
             angular.module('myApp', [])
                     .controller('myController', ['$scope', '$http', '$window', function ($scope, $http, $window) {
-                        // Retrieve sessionID from localStorage
                         $scope.sessionID = $window.localStorage.getItem('mentor_session_id');
                         $scope.getForm = null;
                         $scope.credentials = {};
@@ -94,12 +101,9 @@
                                 .then(function(response) {
                                     var contentDispositionHeader = response.headers('Content-Disposition');
                                     var fileNameMatch = contentDispositionHeader && contentDispositionHeader.match(/filename="(.+)"/);
-
                                     var fileName = fileNameMatch ? fileNameMatch[1] : 'downloaded_file';
                                     var blob = new Blob([response.data], { type: response.headers('Content-Type') });
-
                                     if (window.navigator.msSaveOrOpenBlob) {
-                                        // For IE/Edge browsers
                                         window.navigator.msSaveOrOpenBlob(blob, fileName);
                                     } else {
                                         var link = document.createElement('a');
@@ -130,9 +134,15 @@
                             .catch(function(error) {
                                 console.error('Error', error);
                             }); 
-                            
                         };
-
+                        $scope.logout = function(){
+                          $scope.credentials.session_id = $scope.mentorSessionId;
+                          $http.post('http://localhost:3000/mentor_logout', $scope.credentials)
+                            .then(function(response){
+                              $window.location.href="http://localhost:3000/login";
+                              $window.localStorage.clear();
+                            })
+                        };
                         $scope.hideTooltip = function() {
                             $scope.isTooltipVisible = false;
                         };
