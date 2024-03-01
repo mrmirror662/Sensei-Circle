@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="myApp">
+<html>
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -7,8 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
     <title>Login</title>
+    <link rel="icon" href="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-academic-university-flaticons-flat-flat-icons-2.png" type="image/x-icon">
   </head>
-  <body ng-controller="myController" class="bg-slate-800 backdrop-blur-lg">
+  <body ng-controller="myController" ng-app="myApp" ng-style="{'background-color': bodyBackgroundColor}" class="transition-colors duration-150 ease-in-out">  
     <div>
       <div class="flex items-center justify-center mt-8">
         <div class="navbar mr-4 bg-gray-100 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-500">
@@ -58,8 +59,8 @@
                   Dont'have an account?
                   <span class="font-bold text-black"><a href="http://localhost:3000/signup">Sign up</a></span>
                 </div>
-                <div class="text-center">
-                  <p ng-show="mlogin.flag==404" class="text-red-500">{{ mlogin.msg }}</p>
+                <div class="text-center capitalize">
+                  <p ng-show="mlogin.flag==404" class="text-red-500 ">{{ mlogin.msg }}</p>
               </div>
               </div>
               <div class="relative">
@@ -74,7 +75,7 @@
       <div class="student">
         <form ng-submit="student_login()">
           <div class="flex items-center justify-center">
-            <div class="relative flex flex-col m-6 space-y-8 bg-gray-750 shadow-2xl rounded-2xl text-white md:flex-row md:space-y-0">
+            <div class="relative flex flex-col m-6 space-y-8 bg-gray-800 shadow-2xl rounded-2xl text-white md:flex-row md:space-y-0">
               <div class="flex flex-col justify-center p-8 md:p-14">
                 <span class="mb-3 text-4xl font-bold">Login</span>
                 <span class="font-light text-gray-400 mb-8">
@@ -171,7 +172,13 @@
                 };
                 $scope.activeContent = 'content1'; 
                 $scope.setActiveContent = function(content) {
-                $scope.activeContent = content;
+                  $scope.activeContent = content;
+                  if (content === 'content1') {
+                    $scope.bodyBackgroundColor = '#FFFFFF'; // White background for mentor
+                  }
+                  else {
+                    $scope.bodyBackgroundColor = '#000000'; // Black background for student
+                  }
                 };
             }]);
     </script>

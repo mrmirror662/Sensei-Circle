@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Form</title>
+    <link rel="icon" href="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-academic-university-flaticons-flat-flat-icons-2.png" type="image/x-icon">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .tooltip {
           position: relative;
@@ -15,75 +15,148 @@
           cursor: pointer;
         }
         .tooltip .tooltip-text {
-          border: 2px solid rgb(107, 107, 230);
-          border-radius: 5%;
+         
           visibility: hidden;
           width: max-content;
-          background-color: #fdfbfb;
-          color: #292727;
+          background-color: #27272a;
+          color: rgb(128, 127, 127);
           text-align: left;
           padding: 15px 20px; 
           border-radius: 8px; 
           position: absolute;
           z-index: 1;
           top: calc(100% + 23px);
-          left: -110%;
+          left: -180%;
           transform: translateX(-50%);
           opacity: 0;
           transition: opacity 0.3s;
-          right: auto;
+          right: auto;  
           margin-right: -50%;
         }
         .tooltip:hover .tooltip-text {
           visibility: visible;
           opacity: 1;
         }
+        .rotate-360 {
+        transition: transform 0.6s ease;
+        transform: rotate(360deg);
+        }
+        .overlay {
+            position: fixed;
+            top: calc(1005+50px);
+            right: -100%;
+            margin-left: auto;
+            width: 25%;
+            height: max-content;
+            transition: right 0.3s ease;
+            z-index: 1;
+        }
+        .overlay-content {
+            position: absolute;
+            right: 5%;
+            width: 100%;
+            height: max-content;
+
+        }
+        .overlay.active {
+            right: 0;
+        }
+        [ng-cloak] {
+            display: none;
+        }
       </style>
 </head>
 
-<body ng-controller="myController" >
-  <div>
-    <nav class="bg-blue-500 text-white p-4 flex justify-between">
-        <a href="http://localhost:3000/student_academic_fetch" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Academic Details</a>
-        <a href="http://localhost:3000/student_notifications" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Notification</a>
-        <a href="http://localhost:3000/student_issues" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Issues</a>
-        <a href="http://localhost:3000/student_mentor_feedback" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Feedback</a>
-        <a href="http://localhost:3000/student_mentor_upload" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Mentor Form</a>
-      
-        <div class="ml-auto flex items-center">
-            <div class="tooltip hover:bg-blue-800 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
-                <a href="http://localhost:3000/student_info" target="_self">
-                    <svg class="h-8 w-8 text-white"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>   
-                </a>   
-                <div class="tooltip-text ml-auto bg-yellow-50 text-left rounded-2xl border-solid border-blue-900 border-2" ng-show="isTooltipVisible">
-                    <div class="py-1 px-2">
-                        <a class="py-1 hover:bg-gray-200 text-gray-800">Name: {{ studentDetails.results[0].name }}</a></br>
-                        <a class="py-1 hover:bg-gray-200 text-gray-800">USN: {{ studentDetails.results[0].usn }}</a></br>
-                        <a class="py-1 hover:bg-gray-200 text-gray-800">Email-ID: {{ studentDetails.results[0].email }}</a>
-                    </div>
-                </div>     
+<body ng-cloak ng-controller="myController" class="bg-gradient-to-tr from-gray-800 via-stone-950 to-black min-h-screen">
+    <div style="position: sticky; top: 0px;">
+        <nav class="backdrop-blur-sm p-4 flex justify-between">
+            <a href="http://localhost:3000/student_academic_fetch" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 p-8 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Academic Details</a>
+            <a href="http://localhost:3000/student_notifications" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Notification</a>
+            <a href="http://localhost:3000/student_issues" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Issues</a>
+            <a href="http://localhost:3000/student_mentor_feedback" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Mentor Feedback</a>
+            <a href="http://localhost:3000/student_mentor_upload" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Mentor Form</a>
+          
+            <div class="ml-auto flex items-center">
+                <div class="tooltip hover: cursor-pointer py-2 px-2 rounded-2xl transition ease-in-out delay-100 duration-300" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
+                    <a ng-click="toggleOverlay()" target="_self">
+                        <svg class="h-8 w-8 text-white"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>   
+                    </a>   
+                    <div class="tooltip-text ml-auto bg-yellow-50 text-left shadow-inner shadow-gray-800" ng-show="isTooltipVisible">
+                        <div class="py-1 px-2">
+                            <a class="py-1 text-gray-200 font-bold ">Name: {{ studentDetails.results[0].name }}</a></br>
+                            <a class="py-1 text-gray-200 font-bold">USN: {{ studentDetails.results[0].usn }}</a></br>
+                            <a class="py-1 text-gray-200 font-bold  ">Email-ID: {{ studentDetails.results[0].email }}</a>
+                        </div>
+                    </div>     
+                </div>
+                <!-- Logout button -->
+                <a href="" ng-click="logout()" target="_self" class="bg-zinc-800 text-white transition ease-in-out delay-100 py-2 px-4 flex items-center justify-center px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold" href="#">Logout</a>
             </div>
-            <!-- Logout button -->
-            <a href="" ng-click="logout()" target="_self" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-blue-800" href="#">Logout</a>
-        </div>
-    </nav>
-</div>
-    <div class="h-96 flex items-center justify-center">
-      <div class="max-w-md p-6 bg-white rounded-lg shadow-md">
-          <h2 class="text-2xl font-bold mb-4 text-center">Upload Mentor Form</h2>
-          <form ng-submit="pushMentorForm()" enctype="multipart/form-data">
-              <div class="mb-4">
-                  <label for="mentor_form" class="block text-sm font-medium text-gray-700">Mentor Form</label>
-                  <input type="file" id="mentor_form" name="mentor_form" class="mt-1 p-2 w-full border rounded-md" required>
-              </div>
-              <div class="text-center">
-                  <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 focus:outline-none focus:bg-blue-500">Submit</button>
-              </div>
-          </form>
+        </nav>
       </div>
-  </div>
+      <div class="overlay" ng-class="{ 'active': isOverlayActive }" id="overlay">
+        <div class="overlay-content position: sticky; top: 20px; pt-2.5 px-2.5 shadow-md bg-zinc-800 rounded-2xl ">
+            <svg ng-click="toggleOverlay()" class="h-8 w-8 text-white cursor-pointer"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
+              stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            <div ng-init="getSInfo()" class="items-center text-gray-800 bg-gray-150  ">
+              <div class=" p-8 " >
+                <h2 class="text-xl text-white font-semibold mb-4">Student Information</h2>
+                  <div class="mb-4 flex items-center">
+                    <p class="font-semibold mr-2 text-white">Name:</p>
+                    <div class="bg-gray-100 p-2 rounded-md">{{ getMi.name }}</div>
+                  </div>
+                  <div class="mb-4 flex items-center">
+                    <p class="font-semibold text-w text-white mr-2">USN:</p>
+                    <div class="bg-gray-100 p-2 rounded-md">{{ getMi.usn }}</div>
+                  </div>
+                  <div class="mb-4 flex items-center">
+                    <p class="font-semibold mr-2 text-white">Phone Number:</p>
+                    <div class="bg-gray-100 p-2 rounded-md">{{ getMi.phone_no}}</div>
+                  </div>
+                  <div class="mb-6 flex items-center">
+                    <p class="font-semibold mr-3 text-white">Email-ID:</p>
+                    <div class="bg-gray-100 p-1 rounded-md">{{ getMi.email }}</div>
+                  </div>
+                  <div class="mb-4 flex items-center">
+                    <p class="font-semibold mr-2 text-white">Branch:</p>
+                    <div class="bg-gray-100 p-2 rounded-md uppercase">{{ getMi.branch_id }}</div>
+                  </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    <div class="flex justify-center items-center max-h-screen">
+        <div class="max-w-3x2 mx-auto p-7 bg-zinc-800 mt-14 rounded-xl shadow-lg form-container">
+            <h2 class="text-2xl font-bold text-gray-200 mb-4 text-center">Upload Mentor Form</h2>
+            <form ng-submit="pushMentorForm()" enctype="multipart/form-data">
+                <div class="mb-8 border-4 border-dashed border-gray-400 rounded-md p-20 relative" file-dropzone>
+                    <label for="mentor_form" class="block text-sm font-medium text-gray-200" id="dropzone">
+                        <span class="flex items-center">
+                            <svg class="h-12 w-12 text-white mr-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="16 16 12 12 8 16" />
+                                <line x1="12" y1="12" x2="12" y2="21" />
+                                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                                <polyline points="16 16 12 12 8 16" />
+                            </svg>
+                            <span id="dropzone-text">Drag & Drop files/Click to Select</span>
+                        </span>
+                    </label>
+                    <input type="file" id="mentor_form" name="mentor_form" class="hidden" required>
+                    <div id="file-name-display" class="text-gray-200 mt-2"></div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="px-6 py-3 bg-zinc-800 font-bold text-gray-200 rounded-full border border-zinc-500 hover:bg-blue-300 hover:text-black focus:outline-none focus:bg-blue-500">Submit</button>
+                </div>
+            </form>
+            <div class="text-green-600 capitalize" ng-show="pushForm.flag == '200'">{{pushForm.msg}}</div>
+            <div class="text-red-600 capitalize" ng-show="pushForm.flag == '404'">{{pushForm.msg}}</div>
+        </div>
+    </div>
+    
     <script>
         angular.module('myApp', [])
             .controller('myController', ['$scope', '$http', '$window', function ($scope, $http, $window) {
@@ -105,8 +178,21 @@
                         .catch(function(error) {
                             console.error('Error', error);
                         });    
-
+    
                 };
+                $scope.toggleOverlay = function() {
+                    $scope.isOverlayActive = !$scope.isOverlayActive;
+                };
+                $scope.getMi = [];
+                $scope.getSInfo = function () {
+                    $http.post('http://localhost:3000/student_info_fetch',  {session_id: $scope.sessionID })
+                        .then(function (response) {
+                          $scope.getMi = response.data.results[0];
+                        })
+                        .catch(function (error) {
+                          console.error('Error fetching Student Info:', error);
+                        });
+                };  
                 $scope.studentSessionId = $window.localStorage.getItem('student_session_id');
                 $scope.studentDetails = null;
                 $scope.credentials ={};
@@ -134,7 +220,49 @@
                 $scope.hideTooltip = function() {
                 $scope.isTooltipVisible = false;
                 };
-            }]);
-    </script>
+            }])
+            .directive('fileDropzone', function () {
+                return {
+                    restrict: 'A',
+                    link: function (scope, element) {
+                        var dropzone = element[0];
+                        var fileInput = document.getElementById('mentor_form');
+                        var fileNameDisplay = document.getElementById('file-name-display');
+
+                        dropzone.addEventListener('dragover', function (event) {
+                            event.preventDefault();
+                            dropzone.classList.add('dragover');
+                        });
+
+                        dropzone.addEventListener('dragleave', function () {
+                            dropzone.classList.remove('dragover');
+                        });
+
+                        dropzone.addEventListener('drop', function (event) {
+                            event.preventDefault();
+                            dropzone.classList.remove('dragover');
+                            
+                            var files = event.dataTransfer.files;
+                            fileInput.files = files;
+
+                            // Update the view to display the file name
+                            if (files.length > 0) {
+                                fileNameDisplay.textContent = files[0].name;
+                            }
+                        });
+
+                        // Handle file selection when input changes
+                        fileInput.addEventListener('change', function () {
+                            if (fileInput.files.length > 0) {
+                                fileNameDisplay.textContent = fileInput.files[0].name;
+                            }
+                        });
+                    }
+                };
+            });
+
+    
+</script>
 </body>
+
 </html>
