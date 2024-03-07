@@ -1,4 +1,0 @@
-node_modules/
-forms/
-#Ignore .env file
-*.env
