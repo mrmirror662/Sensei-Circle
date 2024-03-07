@@ -558,3 +558,26 @@ export async function MentorFetchFeedback(mentor_id) {
     throw "Error fetching feedbacks";
   }
 }
+
+export async function MentorFetchInformation(mentor_id) {
+  let q = "select * from mentor_information where mentor_id=?";
+  try {
+    const [results, fields] = await connection.query(q, [mentor_id]);
+    return results;
+  } catch (err) {
+    console.log("Error fetching mentor information.", err);
+    throw "Error fetching mentor information";
+  }
+}
+
+export async function StudentFetchInformation(mentor_id) {
+  let q = "select * from student_information where usn=?";
+  try {
+    const [results, fields] = await connection.query(q, [mentor_id]);
+    return results;
+  } catch (err) {
+    console.log("Error fetching student information.", err);
+    throw "Error fetching student information";
+  }
+}
+

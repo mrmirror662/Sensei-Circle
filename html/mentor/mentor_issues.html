@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html ng-app="academicApp">
+<head>
+  <title>Issues</title>
+  <link rel="icon" href="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-academic-university-flaticons-flat-flat-icons-2.png" type="image/x-icon">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <style>
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .tooltip .tooltip-text {
+   
+      visibility: hidden;
+      width: max-content;
+      background-color: #fdfbfb;
+      color: #292727;
+      text-align: left;
+      padding: 15px 20px; 
+      border-radius: 8px; 
+      position: absolute;
+      z-index: 1;
+      top: calc(100% + 23px);
+      left: -180%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      right: auto;
+      margin-right: -50%;
+    }
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+    .rotate-360 {
+        transition: transform 0.6s ease;
+        transform: rotate(360deg);
+    }
+    .overlay {
+        position: fixed;
+        top: calc(1005+50px);
+        right: -100%;
+        margin-left: auto;
+        width: 25%;
+        height: max-content;
+        transition: right 0.3s ease;
+        z-index: 1;
+    }
+    .overlay-content {
+        position: absolute;
+        right: 5%;
+        width: 100%;
+        height: max-content;
+
+    }
+    .overlay.active {
+        right: 0;
+    }
+    .list {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+    .show {
+        opacity: 1;
+    }[ng-cloak] {
+      display: none;
+    }
+
+  </style>
+</head>
+
+<body ng-cloak ng-controller="AcademicController" class="min-h-screen from-blue-300 via-gray-100 to-white bg-gradient-to-tr " >
+  <div style="position: sticky; top: 0px; ">
+    <nav class=" p-4 flex justify-between backdrop-blur-xl">
+      <div class="flex items-center">
+        <a href="http://localhost:3000/mentor_students_fetch" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Student pool</a>
+        <a href="http://localhost:3000/mentor_academic_details" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Academic Details</a>
+        <a href="http://localhost:3000/mentor_notifications" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Notification</a>
+        <a href="http://localhost:3000/mentor_issues" target="_self" class="py-2 px-4 mr-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Issues</a>
+        <a href="http://localhost:3000/mentor_feedback" target="_self" class="py-2 px-4 mr-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Mentor Feedback</a>
+        <a href="http://localhost:3000/mentor_form_download" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Mentor Form</a>
+      </div>
+      
+      <div class="ml-auto flex items-center">
+
+        <a href="http://localhost:3000/mentor_register_student"  target="_self" class="py-2 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#" >Register/Deregister</a>
+
+         <div ng-click="toggleOverlay()" class="tooltip  hover:bg-blue-500 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
+        <a  target="_self">
+          <svg class="h-8 w-8 text-black"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>   
+        </a>
+        <div class="tooltip-text transition-colors duration-300 ease-in-out ml-auto bg-yellow-50 text-left rounded-2xl  border-2" ng-show="isTooltipVisible">
+          <div class="py-1 px-2" >
+            <a class="py-1 hover:bg-gray-200 text-gray-800">Name : {{ mentorDetails.results[0].name }}</a></br>
+            <a class="py-1 hover:bg-gray-200 text-gray-800">ID : {{ mentorDetails.results[0].mentor_id }}</a></br>
+            <a class="py-1 hover:bg-gray-200 text-gray-800">Email-ID : {{ mentorDetails.results[0].email }}</a>
+          </div>
+        </div>        
+      </div>
+      <a href="" ng-click="logout()" target="_self" class="py-2 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold">Logout</a>
+    </div>
+  </nav>
+  </div>
+  <div class="overlay " ng-class="{ 'active': isOverlayActive }" id="overlay">
+    <div class="overlay-content position: sticky; top: 20px; pt-2.5 px-2.5 shadow-md bg-gray-200 rounded-2xl ">
+        <svg ng-click="toggleOverlay()" class="h-8 w-8 text-slate-950 cursor-pointer"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
+          stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+        <div ng-init="getMInfo()" class="items-center text-gray-800 bg-gray-150 justify-center">
+          <div class=" p-8 " >
+            <h2 class="text-xl font-bold mb-4">Mentor Information</h2>
+              <div class="mb-4 flex items-center">
+                <p class="font-semibold mr-2">Name:</p>
+                <div class="bg-gray-100 p-2 rounded-md">{{ getMi.name }}</div>
+              </div>
+              <div class="mb-4 flex items-center">
+                <p class="font-semibold mr-2">Mentor ID:</p>
+                <div class="bg-gray-100 p-2 rounded-md">{{ getMi.mentor_id }}</div>
+              </div>
+              <div class="mb-4 flex items-center">
+                <p class="font-semibold mr-2">Phone Number:</p>
+                <div class="bg-gray-100 p-2 rounded-md">{{ getMi.phone_no}}</div>
+              </div>
+              <div class="mb-4 flex items-center">
+                <p class="font-semibold mr-2">Email-ID:</p>
+                <div class="bg-gray-100 p-2 rounded-md">{{ getMi.email }}</div>
+              </div>
+              <div class="mb-4 flex items-center">
+                <p class="font-semibold mr-2">Branch:</p>
+                <div class="bg-gray-100 p-2 rounded-md uppercase">{{ getMi.branch_id }}</div>
+              </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  
+    <div class="container mx-auto p-4" ng-init="getMIssues()">
+        <div class="flex items-center justify-center mb-4">
+          <h2 class="text-2xl font-bold mt-4 mb-4 mr-4">Issues</h2>
+          <button onclick="this.classList.toggle('rotate-360')" ng-click="getMIssues()" class="flex items-center justify-center">
+            <svg class="h-6 w-6 text-slate-900" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  
+                      <path stroke="none" d="M0 0h24v24H0z"/>  
+                      <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -5v5h5" />  
+                      <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 5v-5h-5" />
+            </svg>
+          </button>
+        </div>
+    <div class="list" ng-class="{ 'show': isLoaded }">
+          <div class="mt-4" >
+          <div ng-repeat="y in getM">
+            <div class="mb-4" ng-repeat="res in y.results">
+              <div class="bg-gray-100 p-4 rounded-md">
+                <p class="font-bold text-capitalize">Msg: {{res.msg }}</p>
+                <p class="text-sm text-capitalize">Time: {{formatDate(res.time)}} </p>
+              </div>   
+            </div>
+          </div>
+        </div>
+      </div> 
+
+  </div>
+  
+  
+    <script>
+        angular.module('academicApp', [])
+                .controller('AcademicController', ['$scope', '$http', '$window','$timeout', function ($scope, $http, $window,$timeout) {
+                $scope.sessionID = $window.localStorage.getItem('mentor_session_id');
+                $scope.credentials = {};
+                $scope.getM = [];
+                $scope.credentials.session_id = $scope.sessionID;
+                $scope.mentorDetails = null;
+                $scope.credentials ={};
+                $scope.isTooltipVisible = false;
+                $scope.isOverlayActive = false;
+                $timeout(function() {
+                    $scope.isLoaded = true; 
+                }, 500);
+                $scope.getMIssues = function () {
+                    $scope.credentials.session_id = $scope.sessionID;
+                    $http.post('http://localhost:3000/mentor_fetch_issue', $scope.credentials)
+                        .then(function (response) {
+                            $scope.getM = [];
+                            $scope.getM.push(response.data); 
+                        })
+                        .catch(function (error) {
+                            console.error('Error fetching mentor issues:', error);
+                        });
+                        $scope.isLoaded = false; 
+                        $timeout(function() {
+                            $scope.isLoaded = true; 
+                        }, 500); 
+                    };
+                    $scope.toggleOverlay = function() {
+                        $scope.isOverlayActive = !$scope.isOverlayActive;
+                    };
+                    $scope.credentialID = {
+                      session_id: $scope.sessionID
+                    };
+                    $scope.getMInfo = function () {
+                      $scope.credentialID.session_id = $scope.sessionID;
+                      $http.post('http://localhost:3000/mentor_info_fetch', $scope.credentialID)
+                        .then(function (response) {
+                          $scope.getMi = response.data.results[0]; 
+                        })
+                        .catch(function (error) {
+                          console.error('Error fetching Mentor Info:', error);
+                        });
+                    };
+                    $scope.showTooltip = function() {
+                        $scope.credentials.session_id = $scope.sessionID;
+                        $http.post('http://localhost:3000/mentor_info_fetch', $scope.credentials)
+                        .then(function(response) {
+                            $scope.mentorDetails=response.data;
+                            $scope.isTooltipVisible = true;
+                        })
+                        .catch(function(error) {
+                            console.error('Error', error);
+                        });  
+                    };
+                    $scope.formatDate = function(dateString) {
+                      return moment(dateString).format('YYYY-MM-DD');
+                    };
+                    $scope.logout = function(){
+                      $scope.credentials.session_id = $scope.sessionID;
+                      $http.post('http://localhost:3000/mentor_logout', $scope.credentials)
+                        .then(function(response){
+                          $window.location.href="http://localhost:3000/login";
+                          $window.localStorage.clear();
+                      })
+                  };
+                  $scope.hideTooltip = function() {
+                    $scope.isTooltipVisible = false;
+                  };
+                }
+            ]);
+    </script>
+</body>
+</html>
