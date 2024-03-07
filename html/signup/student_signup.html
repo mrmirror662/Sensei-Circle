@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+        body {
+            padding: 20px;
+            background-color: black;
+            color: white;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #007bff;
+            /* This line is for consistency if you want the h2 color to be different */
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="submit"],
+        input[type="password"],
+        input[type="email"] {
+            width: 30%;
+            margin-bottom: 10px;
+            background-color: #343a40;
+            /* Dark gray background color */
+            color: white;
+            /* White text color */
+        }
+
+        input[type="submit"] {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Sign in</h2>
+        <form action="http://localhost:3000/student_signup" method="POST" class="pure-form pure-form-aligned">
+            <div class="form-group">
+                <label for="usn">USN</label>
+                <input type="text" id="usn" name="usn" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="phone_no">Phone Number</label>
+                <input type="text" id="phone_no" name="phone_no" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="branch_id">Branch</label>
+                <input type="text" id="branch_id" name="branch_id" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="semester">Semester</label>
+                <input type="number" id="semester" name="semester" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+
+</html>

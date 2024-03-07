@@ -21,6 +21,7 @@ const GenErrorJSON = function (msg) {
 const GenSuccessJSON = function (msg) {
   return { flag: 200, msg: msg };
 };
+
 app.get("/mentor_mainpage", async function (req, res) {
   res.sendFile("/html/mentor/mentor_mainpage.html", { root: "." });
 });
@@ -38,6 +39,22 @@ app.get("/signup", function (req, res) {
 });
 app.get("/login", function (req, res) {
   res.sendFile("/html/login.html", { root: "." });
+=======
+app.get("/home", async function (req, res) {
+  res.sendFile("/html/home.html", { root: "." });
+});
+app.get("/student_signup", function (req, res) {
+  res.sendFile("/html/signup/student_signup.html", { root: "." });
+});
+app.get("/student_login", function (req, res) {
+  res.sendFile("/html/login/student_login.html", { root: "." });
+});
+
+app.get("/mentor_signup", function (req, res) {
+  res.sendFile("/html/signup/mentor_signup.html", { root: "." });
+});
+app.get("/mentor_login", function (req, res) {
+  res.sendFile("/html/login/mentor_login.html", { root: "." });
 });
 app.get("/course_information_fill", function (req, res) {
   res.sendFile("/html/course_info_fill.html", { root: "." });
@@ -84,6 +101,32 @@ app.get("/student_info", async function (req, res) {
 });
 app.get("/mentor_info", async function (req, res) {
   res.sendFile("/html/mentor/mentor_info.html", { root: "." });
+=======
+app.get("/academic_details_fill", function (req, res) {
+  res.sendFile("/html/academic_details_fill.html", { root: "." });
+});
+app.get("/academic_details_fetch", function (req, res) {
+  res.sendFile("/html/academic_details_fetch.html", { root: "." });
+});
+app.get("/mentor_register_student", async function (req, res) {
+  res.sendFile("/html/mentor_register_student.html", { root: "." });
+});
+app.get("/mentor_students_fetch", async function (req, res) {
+  res.sendFile("/html/mentor_students_fetch.html", { root: "." });
+});
+app.get("/notifications", async function (req, res) {
+  res.sendFile("/html/notifications.html", { root: "." });
+});
+
+app.get("/issues", async function (req, res) {
+  res.sendFile("/html/issues.html", { root: "." });
+});
+app.get("/student_upload_mentor_form", async function (req, res) {
+  res.sendFile("/html/upload_file.html", { root: "." });
+});
+
+app.get("/feedback", async function (req, res) {
+  res.sendFile("/html/mentor_feedback.html", { root: "." });
 });
 
 app.post("/student_signup", async function (req, res) {
@@ -1126,6 +1169,7 @@ app.post("/student_info_fetch", async function (req, res) {
     return;
   }
 });
+
 
 let server = app.listen(PORT_NO, function () {
   let host = server.address().address;
