@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+        body {
+            padding: 20px;
+            background-color: black;
+            color: white;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #007bff;
+            /* This line is for consistency if you want the h2 color to be different */
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="submit"],
+        input[type="password"],
+        input[type="email"] {
+            width: 30%;
+            margin-bottom: 10px;
+            background-color: #343a40;
+            /* Dark gray background color */
+            color: white;
+            /* White text color */
+        }
+
+        input[type="submit"] {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form action="/admin_login" method="POST">
+            <div class="form-group">
+                <label for="admin_id">Admin ID</label>
+                <input type="text" id="admin_id" name="admin_id" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <h2>Logout</h2>
+        <form action="/admin_logout" method="POST">
+            <div class="form-group">
+                <label for="admin_id">Session ID</label>
+                <input type="text" id="session_id" name="session_id" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <h2>Get Student Information</h2>
+        <form action="/admin_fetch_student_information" method="POST">
+            <div class="form-group">
+                <label for="admin_id">Session ID</label>
+                <input type="text" id="session_id" name="session_id" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <h2>Get Mentor Information</h2>
+        <form action="/admin_fetch_mentor_information" method="POST">
+            <div class="form-group">
+                <label for="admin_id">Session ID</label>
+                <input type="text" id="session_id" name="session_id" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <h2>Get Course Information</h2>
+        <form action="/admin_get_course" method="POST">
+            <div class="form-group">
+                <label for="session_id">Session ID</label>
+                <input type="text" id="session_id" name="session_id" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <h2>Fill Course Information </h2>
+        <form action="/admin_fill_course" method="POST">
+            <div class="form-group">
+                <label for="admin_id">Session ID</label>
+                <input type="text" id="session_id" name="session_id" class="form-control">
+
+                <label for="course_id">Course ID</label>
+                <input type="text" id="course_id" name="course_id" class="form-control">
+
+                <label for="course_name">Course Name</label>
+                <input type="text" id="course_name" name="course_name" class="form-control">
+
+                <label for="sem">Semester</label>
+                <input type="text" id="sem" name="sem" class="form-control">
+
+                <label for="credits">Credits</label>
+                <input type="text" id="credits" name="credits" class="form-control">
+
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+
+</html>

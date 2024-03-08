@@ -85,6 +85,9 @@ app.get("/student_info", async function (req, res) {
 app.get("/mentor_info", async function (req, res) {
   res.sendFile("/html/mentor/mentor_info.html", { root: "." });
 });
+app.get("/admin_login", async function (req, res) {
+  res.sendFile("/html/admin_login.html", { root: "." });
+});
 
 app.post("/student_signup", async function (req, res) {
   const usn = req.body.usn;
@@ -1126,7 +1129,167 @@ app.post("/student_info_fetch", async function (req, res) {
     return;
   }
 });
+const admin_id = "admin_key_random";
+const admin_password = "thisispassword";
+let is_in_session = false;
+let current_session_token = "";
+app.post("/admin_login", async function (req, res) {
+  const admin_id_req = req.body.admin_id;
+  const password_req = req.body.password;
+  if (is_in_session) {
+    res.json(GenErrorJSON("already logged in ;)"));
+    res.end();
+    return;
+  }
+  console.log("reqp:" + req.body.admin_id + " actp:" + admin_password);
+  if (admin_id !== admin_id_req || password_req !== admin_password) {
+    res.json(GenErrorJSON("invalid credential"));
+    res.end();
+    return;
+  }
+  const session_token = db.generateSessionID();
+  current_session_token = session_token;
+  is_in_session = true;
+  res.json({ flag: 200, msg: "accound found", session_id: session_token });
+  res.end();
+});
+app.post("/admin_logout", async function (req, res) {
+  const session_id = req.body.session_id;
+  if (!is_in_session) {
+    res.json(GenErrorJSON("not in session "));
+    res.end();
+    return;
+  }
 
+  if (current_session_token !== session_id) {
+    res.json(GenErrorJSON("invalid session id"));
+    res.end();
+    return;
+  }
+  is_in_session = false;
+  res.json({ flag: 200, msg: "logged out" });
+  res.end();
+});
+app.post("/admin_fetch_student_information", async function (req, res) {
+  const session_id = req.body.session_id;
+  if (!is_in_session) {
+    res.json(GenErrorJSON("not in session "));
+    res.end();
+    return;
+  }
+
+  if (current_session_token !== session_id) {
+    res.json(GenErrorJSON("invalid session id"));
+    res.end();
+    return;
+  }
+  try {
+    const results = await db.AdminFetchAllStudent();
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+app.post("/admin_fetch_mentor_information", async function (req, res) {
+  const session_id = req.body.session_id;
+  if (!is_in_session) {
+    res.json(GenErrorJSON("not in session "));
+    res.end();
+    return;
+  }
+
+  if (current_session_token !== session_id) {
+    res.json(GenErrorJSON("invalid session id"));
+    res.end();
+    return;
+  }
+  try {
+    const results = await db.AdminFetchAllMentor();
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+app.post("/admin_fill_course", async function (req, res) {
+  const session_id = req.body.session_id;
+  const course_id = req.body.course_id;
+  const course_name = req.body.course_name;
+  const sem = Number(req.body.sem);
+  const credits = Number(req.body.credits);
+
+  if (!is_in_session) {
+    res.json(GenErrorJSON("not in session "));
+    res.end();
+    return;
+  }
+
+  if (current_session_token !== session_id) {
+    res.json(GenErrorJSON("invalid session id"));
+    res.end();
+    return;
+  }
+  try {
+    let courseExist = await db.CourseExists(course_id);
+    if (courseExist) {
+      res.json(GenErrorJSON("course already exists"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  try {
+    await db.InsertCourse({
+      course_id: course_id,
+      course_name: course_name,
+      semester: sem,
+      credits: credits,
+    });
+    res.json(GenSuccessJSON("course inserted"));
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+app.post("/admin_get_course", async function (req, res) {
+  const session_id = req.body.session_id;
+
+  if (!is_in_session) {
+    res.json(GenErrorJSON("not in session "));
+    res.end();
+    return;
+  }
+
+  if (current_session_token !== session_id) {
+    res.json(GenErrorJSON("invalid session id"));
+    res.end();
+    return;
+  }
+  try {
+    let results = await db.GetCourseList();
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
 let server = app.listen(PORT_NO, function () {
   let host = server.address().address;
   let port = server.address().port;

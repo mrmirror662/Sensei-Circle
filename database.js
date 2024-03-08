@@ -93,7 +93,7 @@ export async function StudentCheckPassword(student) {
   }
 }
 
-function generateSessionID() {
+export function generateSessionID() {
   return Math.random().toString(36).substr(2, 8);
 }
 export async function AddStudentToSession(usn) {
@@ -314,13 +314,24 @@ export async function CourseExists(course_id) {
     throw "Error checking course";
   }
 }
+export async function GetCourseList() {
+  let q_ = "select * from course_information;";
 
+  try {
+    const [results, fields] = await connection.query(q_);
+    return results;
+  } catch (err) {
+    console.error("Error fetching course", err);
+    throw "Error fetching course";
+  }
+}
 export async function InsertCourse(course) {
-  let q = "insert into course_information values(?,?,?)";
+  let q = "insert into course_information values(?,?,?,?)";
   try {
     const [results, fields] = await connection.query(q, [
       course.course_id,
       course.course_name,
+      course.credits,
       course.semester,
     ]);
   } catch (err) {
@@ -574,6 +585,28 @@ export async function StudentFetchInformation(mentor_id) {
   let q = "select * from student_information where usn=?";
   try {
     const [results, fields] = await connection.query(q, [mentor_id]);
+    return results;
+  } catch (err) {
+    console.log("Error fetching student information.", err);
+    throw "Error fetching student information";
+  }
+}
+
+export async function AdminFetchAllMentor() {
+  let q = "select * from mentor_information;";
+  try {
+    const [results, fields] = await connection.query(q);
+    return results;
+  } catch (err) {
+    console.log("Error fetching mentor information.", err);
+    throw "Error fetching mentor information";
+  }
+}
+
+export async function AdminFetchAllStudent() {
+  let q = "select * from student_information;";
+  try {
+    const [results, fields] = await connection.query(q);
     return results;
   } catch (err) {
     console.log("Error fetching student information.", err);

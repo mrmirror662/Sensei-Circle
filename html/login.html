@@ -57,7 +57,7 @@
                 </button>
                 <div class="text-center text-gray-400">
                   Dont'have an account?
-                  <span class="font-bold text-black"><a href="http://localhost:3000/signup">Sign up</a></span>
+                  <span class="font-bold text-black"><a href="/signup">Sign up</a></span>
                 </div>
                 <div class="text-center capitalize">
                   <p ng-show="mlogin.flag==404" class="text-red-500 ">{{ mlogin.msg }}</p>
@@ -113,7 +113,7 @@
                 </button>
                 <div class="text-center text-white-400">
                   Dont'have an account?
-                  <span class="font-bold text-white"><a href="http://localhost:3000/signup">Sign up</a></span>
+                  <span class="font-bold text-white"><a href="/signup">Sign up</a></span>
                 </div>
                 <div class="text-center">
                   <p ng-show="slogin.flag==404" class="text-red-500">{{ slogin.msg }}</p>
@@ -133,7 +133,7 @@
                 $scope.mentorCredentials = {};
                 $scope.studentCredentials = {};
                 $scope.mentor_login = function () {
-                    $http.post('http://localhost:3000/mentor_login', $scope.mentorCredentials)
+                    $http.post('/mentor_login', $scope.mentorCredentials)
                         .then(function (response) { 
                             const session_id = response.data.session_id;
                             localStorage.setItem('mentor_session_id', session_id);
@@ -141,7 +141,7 @@
                             const mentorlogin = response.data;
                             if (mentorlogin.flag == 200) {
                               try {
-                                  $window.location.href = "http://localhost:3000/mentor_students_fetch";
+                                  $window.location.href = "/mentor_students_fetch";
                               } catch (error) {
                                   console.error('Error redirecting to mentor main page:', error);
                               }
@@ -152,7 +152,7 @@
                         });
                 };
                 $scope.student_login = function () {
-                    $http.post('http://localhost:3000/student_login', $scope.studentCredentials)
+                    $http.post('/student_login', $scope.studentCredentials)
                         .then(function (response) { 
                             const session_id = response.data.session_id;
                             localStorage.setItem('student_session_id', session_id);   
@@ -160,7 +160,7 @@
                             const studentlogin = response.data;
                             if (studentlogin.flag == 200) {
                                 try {
-                                    $window.location.href = "http://localhost:3000/student_academic_fetch";
+                                    $window.location.href = "/student_academic_fetch";
                                 } catch (error) {
                                     console.error('Error redirecting to student main page:', error);
                                 }

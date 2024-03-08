@@ -76,17 +76,17 @@
   <div style="position: sticky; top: 0px; ">
     <nav class=" p-4 flex justify-between backdrop-blur-xl">
       <div class="flex items-center">
-        <a href="http://localhost:3000/mentor_students_fetch" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Student pool</a>
-        <a href="http://localhost:3000/mentor_academic_details" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Academic Details</a>
-        <a href="http://localhost:3000/mentor_notifications" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Notification</a>
-        <a href="http://localhost:3000/mentor_issues" target="_self" class="py-2 px-4 mr-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Issues</a>
-        <a href="http://localhost:3000/mentor_feedback" target="_self" class="py-2 px-4 mr-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Mentor Feedback</a>
-        <a href="http://localhost:3000/mentor_form_download" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Mentor Form</a>
+        <a href="/mentor_students_fetch" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Student pool</a>
+        <a href="/mentor_academic_details" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Academic Details</a>
+        <a href="/mentor_notifications" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Notification</a>
+        <a href="/mentor_issues" target="_self" class="py-2 px-4 mr-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Issues</a>
+        <a href="/mentor_feedback" target="_self" class="py-2 px-4 mr-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Mentor Feedback</a>
+        <a href="/mentor_form_download" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Mentor Form</a>
       </div>
       
       <div class="ml-auto flex items-center">
 
-          <a href="http://localhost:3000/mentor_register_student"  target="_self" class="py-2 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#" >Register/Deregister</a>
+          <a href="/mentor_register_student"  target="_self" class="py-2 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#" >Register/Deregister</a>
 
            <div ng-click="toggleOverlay()" class="tooltip  hover:bg-blue-500 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
           <a  target="_self">
@@ -199,7 +199,7 @@
                 };
                 $scope.getMInfo = function () {
                   $scope.credentialID.session_id = $scope.sessionID;
-                  $http.post('http://localhost:3000/mentor_info_fetch', $scope.credentialID)
+                  $http.post('/mentor_info_fetch', $scope.credentialID)
                     .then(function (response) {
                       $scope.getMi = response.data.results[0]; 
                     })
@@ -209,7 +209,7 @@
                 };
                 $scope.pushNotification = function () {
                     $scope.credentials.session_id = $scope.sessionID;
-                    $http.post('http://localhost:3000/mentor_push_notification', $scope.credentials)
+                    $http.post('/mentor_push_notification', $scope.credentials)
                         .then(function (response) {
                             $scope.push.push(response.data); 
                         })
@@ -220,7 +220,7 @@
 
                 $scope.getMNotifications = function () {
                     $scope.credentials.session_id = $scope.sessionID;
-                    $http.post('http://localhost:3000/mentor_fetch_notification', $scope.credentials)
+                    $http.post('/mentor_fetch_notification', $scope.credentials)
                         .then(function (response) {
                             $scope.getM=[];
                             $scope.getM.push(response.data); 
@@ -240,7 +240,7 @@
                 console.log('Making request to mentor_info_fetch endpoint');
                 $scope.showTooltip = function() {
                     $scope.credentials.session_id = $scope.mentorSessionId;
-                    $http.post('http://localhost:3000/mentor_info_fetch', $scope.credentials)
+                    $http.post('/mentor_info_fetch', $scope.credentials)
                     .then(function(response) {
                         $scope.mentorDetails=response.data;
                         $scope.isTooltipVisible = true;
@@ -252,9 +252,9 @@
                 };
                 $scope.logout = function(){
                     $scope.credentials.session_id = $scope.mentorSessionId;
-                    $http.post('http://localhost:3000/mentor_logout', $scope.credentials)
+                    $http.post('/mentor_logout', $scope.credentials)
                         .then(function(response){;
-                        $window.location.href="http://localhost:3000/login";
+                        $window.location.href="/login";
                         $window.localStorage.clear();
                         })
                 };
