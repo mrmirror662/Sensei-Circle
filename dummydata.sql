@@ -65,7 +65,8 @@ insert into student_mentor_table (mentor_id, usn) values
 
 
 insert into academic_details (usn, course_id, IA1, IA2, IA3, assignment_1, assignment_2, activity, Total_internal_marks, attendance) values 
-('1js21cs001', '21cs44', 6, 4, 7, 10, 8, 2, 37, 78), 
+('1js21cs001', '21cs44', 6, 4, 7, 10, 8, 2, 37, 78),
+('1js21cs001', '21cs22', 8, 9, 11, 15, 9, 5, 57, 88), 
 ('1js21cs002', '21cs22', 9, 19, 6, 9, 3, 1, 47, 95), 
 ('1js21cs003', '21cs51', 14, 12, 18, 2, 4, 5, 55, 65), 
 ('1js21cs004', '21cs44', 18, 17, 8, 7, 2, 2, 54, 64), 

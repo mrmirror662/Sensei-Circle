@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Details</title>
+  <link rel="icon" href="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-academic-university-flaticons-flat-flat-icons-2.png" type="image/x-icon">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      width: max-content;
+      background-color: #fdfbfb;
+      color: #292727;
+      text-align: left;
+      padding: 15px 20px; 
+      border-radius: 8px; 
+      position: absolute;
+      z-index: 1;
+      top: calc(100% + 23px);
+      left: -180%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      right: auto;
+      margin-right: -50%;
+    }
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+    .overlay {
+        position: fixed;
+        top: calc(1005+50px);
+        right: -100%;
+        margin-left: auto;
+        width: 25%;
+        height: max-content;
+        transition: right 0.3s ease;
+        z-index: 1;
+    }
+    .overlay-content {
+        position: absolute;
+        right: 5%;
+        width: 100%;
+        height: max-content;
+
+    }
+    .overlay.active {
+        right: 0;
+    }
+    [ng-cloak] {
+      display: none;
+    }
+  </style>
+</head>
+
+<body ng-cloak ng-controller="myController"  class="min-h-screen from-blue-300 via-gray-100 to-white bg-gradient-to-tr" ng-class="{ 'opacity-100': isLoaded, 'opacity-0': !isLoaded }">
+  <div style="position: sticky; top: 0px; ">
+    <nav class=" p-4 flex justify-between backdrop-blur-xl">
+      <div class="flex items-center">
+        <a href="http://localhost:3000/mentor_students_fetch" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Student pool</a>
+        <a href="http://localhost:3000/mentor_academic_details" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Academic Details</a>
+        <a href="http://localhost:3000/mentor_notifications" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Notification</a>
+        <a href="http://localhost:3000/mentor_issues" target="_self" class="py-2 px-4 mr-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Issues</a>
+        <a href="http://localhost:3000/mentor_feedback" target="_self" class="py-2 px-4 mr-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Mentor Feedback</a>
+        <a href="http://localhost:3000/mentor_form_download" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Mentor Form</a>
+      </div>
+      
+      <div class="ml-auto flex items-center">
+
+        <a href="http://localhost:3000/mentor_register_student"  target="_self" class="py-2 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#" >Register/Deregister</a>
+
+         <div ng-click="toggleOverlay()" class="tooltip  hover:bg-blue-500 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
+        <a  target="_self">
+          <svg class="h-8 w-8 text-black"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>   
+        </a>
+        <div class="tooltip-text transition-colors duration-300 ease-in-out ml-auto bg-yellow-50 text-left rounded-2xl  border-2" ng-show="isTooltipVisible">
+          <div class="py-1 px-2" >
+            <a class="py-1 hover:bg-gray-200 text-gray-800">Name : {{ mentorDetails.results[0].name }}</a></br>
+            <a class="py-1 hover:bg-gray-200 text-gray-800">ID : {{ mentorDetails.results[0].mentor_id }}</a></br>
+            <a class="py-1 hover:bg-gray-200 text-gray-800">Email-ID : {{ mentorDetails.results[0].email }}</a>
+          </div>
+        </div>        
+      </div>
+      <a href="" ng-click="logout()" target="_self" class="py-2 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold">Logout</a>
+    </div>
+  </nav>
+  </div>
+  <div class="overlay " ng-class="{ 'active': isOverlayActive }" id="overlay">
+    <div class="overlay-content position: sticky; top: 20px; pt-2.5 px-2.5 shadow-md bg-gray-200 rounded-2xl ">
+        <svg ng-click="toggleOverlay()" class="h-8 w-8 text-slate-950 cursor-pointer"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
+          stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+        <div ng-init="getMInfo()" class="items-center text-gray-800 bg-gray-150  ">
+          <div class=" p-8 " >
+            <h2 class="text-xl font-semibold mb-4">Mentor Information</h2>
+              <div class="mb-4 flex items-center">
+                <p class="font-semibold mr-2">Name:</p>
+                <div class="bg-gray-100 p-2 rounded-md">{{ getMi.name }}</div>
+              </div>
+              <div class="mb-4 flex items-center">
+                <p class="font-semibold mr-2">Mentor ID:</p>
+                <div class="bg-gray-100 p-2 rounded-md">{{ getMi.mentor_id }}</div>
+              </div>
+              <div class="mb-4 flex items-center">
+                <p class="font-semibold mr-2">Phone Number:</p>
+                <div class="bg-gray-100 p-2 rounded-md">{{ getMi.phone_no}}</div>
+              </div>
+              <div class="mb-4 flex items-center">
+                <p class="font-semibold mr-2">Email-ID:</p>
+                <div class="bg-gray-100 p-2 rounded-md">{{ getMi.email }}</div>
+              </div>
+              <div class="mb-4 flex items-center">
+                <p class="font-semibold mr-2">Branch:</p>
+                <div class="bg-gray-100 p-2 rounded-md uppercase">{{ getMi.branch_id }}</div>
+              </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="list" ng-class="{ 'show': isLoaded }">
+    <div class=" text-gray-700 font-sans py-8">
+      <h2 class="text-2xl font-bold flex items-center justify-center mb-4">Student Academic Details</h2>
+      <div class="container mx-auto px-4 max-w-2xl"> 
+        <div class="mb-4">
+          <div class="flex items-center justify-center">
+            <button ng-init="setActiveTab('fetch')" ng-click="setActiveTab('fetch')" ng-class="{ 'text-blue-500': activeTab === 'fetch', 'text-blue-500': activeTab !== 'fetch' }" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-gray-100" href="#">
+              <svg class="h-8 w-8"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>            
+            </button>
+            <button ng-click="setActiveTab('fill')" ng-class="{ 'text-blue-500': activeTab === 'fill', 'text-blue-500': activeTab !== 'fill' }" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-gray-100" href="#">
+                <svg class="h-8 w-8" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z"/>
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>          
+            </button>
+        </div>
+          <div class="tab-content" id="tab1-content" ng-show="activeTab === 'fetch'">
+            <form id="fetchForm" ng-submit="fetchMentorAcademicDetails()" class="mb-4">
+                <label for="usn" class="block text-gray-700 font-medium mb-2">Enter USN:</label>
+                <input type="text" id="usn" ng-model="usn" name="usn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 focus:outline-none focus:shadow-outline">Fetch Academic Details</button>
+            </form>
+            <div class="mt-4">
+              <p ng-show="academicFill.flag==200" class="capitalize text-green-500">{{ academicFill.msg }}</p>
+              <p ng-show="academicFill.flag==404" class="capitalize text-red-500">{{ academicFill.msg }}</p>
+            </div>
+            <div class="mt-8" ng-show="Mflag >= 1">
+              <div class="accordion">
+                <div class="accordion-item mb-4" ng-repeat="details in mentorAcademicDetails">
+                  <div class="accordion-details">
+                    <button class="accordion-header bg-blue-500 hover:bg-blue-600 text-white font-bold w-full rounded-lg mb-4 shadow-md rounded-lg p-2 md:p-4 mx-auto w-full flex justify-between items-center" ng-click="toggleAccordion($index)">
+                      <span class="text-white uppercase">{{ details.course_id }}</span>
+                      <svg class="h-6 w-6 text-white transform transition-transform" 
+                          ng-class="{'rotate-180': isOpen[$index]}" 
+                          fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <div class="accordion-panel overflow-hidden transition-max-height w-full  shadow-md " ng-show="isOpen[$index]">
+                            <div class="bg-white shadow-lg rounded-xl p-4 border border-gray-200">
+                                <div class="grid grid-cols-2 gap-4">
+                                  <input type="hidden" name="session_id" ng-value="sessionID" ng-model="sessionID">
+                                  <input type="hidden" name="usn" ng-value="details.usn" ng-model="usn">
+                                  <input type="hidden" name="course_id" ng-value="details.course_id" ng-model="course_id"> 
+                                    <div class="col-span-1">
+                                        <label for="IA1" class="block text-gray-700 font-medium mb-2">IA1</label>
+                                        <input type="number" name="IA_1" ng-model="details.IA1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div class="col-span-1">
+                                      <label for="IA2" class="block text-gray-700 font-medium mb-2">IA2</label>
+                                      <input type="number" name="IA_2" ng-model="details.IA2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div class="col-span-1">
+                                      <label for="IA3" class="block text-gray-700 font-medium mb-2">IA3</label>
+                                      <input type="number" name="IA_3" ng-model="details.IA3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div class="col-span-1">
+                                      <label for="assignment_1" class="block text-gray-700 font-medium mb-2">Assignment 1</label>
+                                      <input type="number" name="assignment_1" ng-model="details.assignment_1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div class="col-span-1">
+                                      <label for="assignment_2" class="block text-gray-700 font-medium mb-2">Assignment 2</label>
+                                      <input type="number" name="assignment_2" ng-model="details.assignment_2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div class="col-span-1">
+                                      <label for="activity" class="block text-gray-700 font-medium mb-2">Activity</label>
+                                      <input type="number" name="activity" ng-model="details.activity" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div class="col-span-1">
+                                      <label for="Total_internal_marks" class="block text-gray-700 font-medium mb-2">Total Marks</label>
+                                      <input type="number"  name="Total_internal_marks" ng-model="details.Total_internal_marks" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" readonly>
+                                    </div>
+                                    <div class="col-span-1">
+                                      <label for="attendance" class="block text-gray-700 font-medium mb-2">Attendance</label>
+                                      <input type="number" name="attendance" ng-model="details.attendance" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+  
+                                <button type="submit" ng-click="editStudentDetails(details)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 focus:outline-none focus:shadow-outline">Save Details</button>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                      </div>
+                    
+          <div class="mt-4" ng-show="Mflag == 0">
+              <p class="text-red-500">No Student Found!</p>
+          </div>
+      </div> 
+  
+        <div class="tab-content" id="tab2-content" ng-show="activeTab === 'fill'">
+          <div class="mt-4">
+            <p ng-show="academicFill.flag==200" class="capitalize text-green-500">{{ academicFill.msg }}</p>
+            <p ng-show="academicFill.flag==404" class="capitalize text-red-500">{{ academicFill.msg }}</p>
+          </div>
+  
+          <form id="fillForm"  class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <input type="hidden" name="session_id" ng-value="sessionID">
+            <div class="mb-4">
+              <label for="usn" class="block text-gray-700 font-medium mb-2">USN</label>
+              <input type="text" id="usn" name="usn" ng-model="fill_usn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+      
+            <div class="mb-4">
+              <label for="course_id" class="block text-gray-700 font-medium mb-2">Course ID</label>
+              <input type="text" id="course_id" ng-model="fill_course_id" name="course_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+      
+            <div class="grid grid-cols-3 gap-4">
+              <div class="mb-4">
+                <label for="IA_1" class="block text-gray-700 font-medium mb-2">IA 1</label>
+                <input type="number" id="IA_1" name="IA_1" ng-model="fill_IA1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              </div>
+      
+              <div class="mb-4">
+                <label for="IA_2" class="block text-gray-700 font-medium mb-2">IA 2</label>
+                <input type="number" id="IA_2" name="IA_2" ng-model="fill_IA2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              </div>
+      
+              <div class="mb-4">
+                <label for="IA_3" class="block text-gray-700 font-medium mb-2">IA 3</label>
+                <input type="number" id="IA_3" name="IA_3" ng-model="fill_IA3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              </div>
+      
+              <div class="mb-4">
+                <label for="assignment_1" class="block text-gray-700 font-medium mb-2">Assignment 1</label>
+                <input type="number" id="assignment_1" name="assignment_1" ng-model="fill_assignment_1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              </div>
+      
+              <div class="mb-4">
+                <label for="assignment_2" class="block text-gray-700 font-medium mb-2">Assignment 2</label>
+                <input type="number" id="assignment_2" name="assignment_2" ng-model="fill_assignment_2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              </div>
+      
+              <div class="mb-4">
+                <label for="activity" class="block text-gray-700 font-medium mb-2">Activity</label>
+                <input type="number" id="activity" name="activity" ng-model="fill_activity" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              </div>
+            </div>  
+              <div class="mb-4">
+                <label for="attendance" class="block text-gray-700 font-medium mb-2">Attendance</label>
+                <input type="number" id="attendance" name="attendance" ng-model="fill_attendance" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              </div>
+              <button type="submit" ng-click="fillStudentDetails()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Submit Details
+              </button> 
+        </div>
+      </div>
+    </div>
+  </div>
+</div>  
+
+  <script>
+  angular.module('myApp', [])
+    .controller('myController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+      $scope.sessionID = $window.localStorage.getItem('mentor_session_id');
+      $scope.mentorAcademicDetails = null;
+      $scope.Mflag = -1;
+      $scope.getMi=[];
+      $scope.selectedCourseIndex = 0;
+      $scope.isOpen = [];
+      $scope.isOverlayActive = false;
+      $scope.toggleOverlay = function() {
+          $scope.isOverlayActive = !$scope.isOverlayActive;
+      };
+      $scope.toggleAccordion = function(index) {
+        $scope.isOpen[index] = !$scope.isOpen[index];
+      };
+      $scope.credentialID = {
+        session_id: $scope.sessionID
+      };
+      $scope.isLoaded = false;
+      setTimeout(function () {
+                    // Set loading state to true after a delay
+                    $scope.$apply(function () {
+                        $scope.isLoaded = true;
+                    });
+                }, 300);
+      $scope.getMInfo = function () {
+        $scope.credentialID.session_id = $scope.sessionID;
+        $http.post('http://localhost:3000/mentor_info_fetch', $scope.credentialID)
+          .then(function (response) {
+            $scope.getMi = response.data.results[0]; 
+          })
+          .catch(function (error) {
+            console.error('Error fetching Mentor Info:', error);
+          });
+      };
+      $scope.fillStudentDetails = function() {
+        var data = {
+          usn: $scope.fill_usn,
+          course_id: $scope.fill_course_id,
+          session_id: $scope.sessionID,
+          IA_1: $scope.fill_IA1,
+          IA_2: $scope.fill_IA2,
+          IA_3: $scope.fill_IA3,
+          assignment_1: $scope.fill_assignment_1,
+          assignment_2: $scope.fill_assignment_2,
+          activity: $scope.fill_activity,
+          attendance: $scope.fill_attendance
+        };
+        $http.post('http://localhost:3000/academic_details_fill', data)
+          .then(function(response) {
+            $scope.academicFill = response.data;
+          })
+          .catch(function(error) {
+            console.error('Error filling mentor academic details:', error);
+          });
+      }
+      $scope.editStudentDetails = function(details) {
+        var data = {
+          usn: $scope.usn,
+          course_id: details.course_id,
+          session_id: $scope.sessionID,
+          IA_1: details.IA1,
+          IA_2: details.IA2,
+          IA_3: details.IA3,
+          assignment_1: details.assignment_1,
+          assignment_2: details.assignment_2,
+          activity: details.activity,
+          attendance: details.attendance
+        };
+        $http.post('http://localhost:3000/academic_details_fill', data)
+          .then(function(response) {
+            $scope.academicFill = response.data;
+            $scope.fetchMentorAcademicDetails();
+          })
+          .catch(function(error) {
+            console.error('Error filling mentor academic details:', error);
+          });
+      };
+      $scope.fetchMentorAcademicDetails = function() {
+        $http.post('http://localhost:3000/mentor_academic_details_fetch', {
+            session_id: $scope.sessionID,
+            usn: $scope.usn
+          })
+          .then(function(response) {
+            try {
+              $scope.mentorAcademicDetails = response.data.academic_details;
+              $scope.Mflag = response.data.academic_details.length;
+            } catch (err) {
+              $scope.Mflag = 0;
+            }
+          })
+          .catch(function(error) {
+            console.error('Error fetching mentor academic details:', error);
+          });
+      };
+      $scope.setActiveTab = function(tab) {
+        $scope.activeTab = tab;
+      };
+      $scope.mentorSessionId = $window.localStorage.getItem('mentor_session_id');
+      $scope.mentorDetails = null;
+      $scope.credentials ={};
+      $scope.isTooltipVisible = false;
+      console.log('Making request to mentor_info_fetch endpoint');
+      $scope.showTooltip = function() {
+        $scope.credentials.session_id = $scope.mentorSessionId;
+        $http.post('http://localhost:3000/mentor_info_fetch', $scope.credentials)
+          .then(function(response) {
+            console.log('Received response from mentor_info_fetch endpoint:', response.data.results);
+            $scope.mentorDetails=response.data;
+            $scope.isTooltipVisible = true;
+          })
+          .catch(function(error) {
+            console.error('Error', error);
+          }); 
+        
+      };
+      $scope.logout = function(){
+        $scope.credentials.session_id = $scope.mentorSessionId;
+        $http.post('http://localhost:3000/mentor_logout', $scope.credentials)
+          .then(function(response){
+            $window.location.href="http://localhost:3000/login";
+            $window.localStorage.clear();
+          })
+      };
+
+      $scope.hideTooltip = function() {
+        $scope.isTooltipVisible = false;
+      };
+      $scope.activeTab = 'fetch';
+    }]);
+</script>
+</body>
+
+</html>

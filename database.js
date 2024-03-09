@@ -93,7 +93,7 @@ export async function StudentCheckPassword(student) {
   }
 }
 
-function generateSessionID() {
+export function generateSessionID() {
   return Math.random().toString(36).substr(2, 8);
 }
 export async function AddStudentToSession(usn) {
@@ -314,13 +314,24 @@ export async function CourseExists(course_id) {
     throw "Error checking course";
   }
 }
+export async function GetCourseList() {
+  let q_ = "select * from course_information;";
 
+  try {
+    const [results, fields] = await connection.query(q_);
+    return results;
+  } catch (err) {
+    console.error("Error fetching course", err);
+    throw "Error fetching course";
+  }
+}
 export async function InsertCourse(course) {
-  let q = "insert into course_information values(?,?,?)";
+  let q = "insert into course_information values(?,?,?,?)";
   try {
     const [results, fields] = await connection.query(q, [
       course.course_id,
       course.course_name,
+      course.credits,
       course.semester,
     ]);
   } catch (err) {
@@ -343,8 +354,9 @@ export async function AcademiaExists(usn, course_id) {
 }
 
 export async function AcademiaInsert(academia) {
-  let q =
-    "INSERT INTO academic_details (usn, course_id, IA1, IA2, IA3, assignment_1, assignment_2, activity, Total_internal_marks,attendance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE IA1 = IFNULL(VALUES(IA1), IA1),IA2 = IFNULL(VALUES(IA2), IA2),IA3 = IFNULL(VALUES(IA3), IA3),assignment_1 = IFNULL(VALUES(assignment_1), assignment_1),assignment_2 = IFNULL(VALUES(assignment_2), assignment_2),activity = IFNULL(VALUES(activity), activity),Total_internal_marks = IFNULL(VALUES(Total_internal_marks), Total_internal_marks),attendance=IFNULL(VALUES(attendance),attendance);";
+  let q = "CALL InsertOrUpdateAcademia(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+  // "INSERT INTO academic_details (usn, course_id, IA1, IA2, IA3, assignment_1, assignment_2, activity, Total_internal_marks,attendance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE IA1 = IFNULL(VALUES(IA1), IA1),IA2 = IFNULL(VALUES(IA2), IA2),IA3 = IFNULL(VALUES(IA3), IA3),assignment_1 = IFNULL(VALUES(assignment_1), assignment_1),assignment_2 = IFNULL(VALUES(assignment_2), assignment_2),activity = IFNULL(VALUES(activity), activity),Total_internal_marks = IFNULL(VALUES(Total_internal_marks), Total_internal_marks),attendance=IFNULL(VALUES(attendance),attendance);";
   try {
     const [results, fields] = await connection.query(q, [
       academia.usn,
@@ -362,7 +374,7 @@ export async function AcademiaInsert(academia) {
     console.error("Error inserting academia", err);
     throw "Error inserting academia";
   }
-  let q_ =
+  /* let q_ =
     "UPDATE academic_details SET Total_internal_marks= ifnull(IA1,0) + ifnull(IA2,0) + ifnull(IA3,0) + ifnull(assignment_1,0) +ifnull(assignment_2,0) + ifnull(activity,0) WHERE usn=? and course_id=?;";
   try {
     const [results, fields] = await connection.query(q_, [
@@ -372,12 +384,12 @@ export async function AcademiaInsert(academia) {
   } catch (err) {
     console.error("Error checking academia", err);
     throw "Error checking academia";
-  }
+  }*/
 }
 
 export async function StudentAcademiaFetch(session_id) {
   let q =
-    "select a.* from academic_details a , student_session_info s where s.session_id=? and a.usn=s.usn";
+    "select a.*,ci.course_name from academic_details a , student_session_info s,course_information ci where s.session_id=? and a.usn=s.usn and a.course_id=ci.course_id";
   try {
     const [results, fields] = await connection.query(q, [session_id]);
     console.log(results);
@@ -389,7 +401,7 @@ export async function StudentAcademiaFetch(session_id) {
 }
 export async function MentorAcademiaFetch(session_id, usn) {
   let q =
-    "select a.* from academic_details a , mentor_session_info m, student_mentor_table sm where m.session_id=? and m.mentor_id=sm.mentor_id and sm.usn=? and sm.usn=a.usn";
+    "select a.* ,ci.course_name from academic_details a , mentor_session_info m, student_mentor_table sm,course_information ci where m.session_id=? and m.mentor_id=sm.mentor_id and sm.usn=? and sm.usn=a.usn and a.course_id=ci.course_id";
   try {
     const [results, fields] = await connection.query(q, [session_id, usn]);
     console.log(results);
@@ -400,11 +412,10 @@ export async function MentorAcademiaFetch(session_id, usn) {
   }
 }
 export async function MentorStudentExists(mentor_id, usn) {
-  let q =
-    "select mentor_id,usn from student_mentor_table where mentor_id=? and usn=?";
+  let q = "select mentor_id from student_mentor_table where usn=? ";
 
   try {
-    const [results, fields] = await connection.query(q, [mentor_id, usn]);
+    const [results, fields] = await connection.query(q, [usn]);
     if (results.length !== 0) return true;
     return false;
   } catch (err) {
@@ -489,7 +500,7 @@ export async function StudentPushIssue(usn, msg) {
 
 export async function MentorFetchIssue(mentor_id) {
   let q =
-    "select i.time , i.msg from issues i where i.usn in(select usn from student_mentor_table sm where sm.mentor_id=?) order by time desc limit 30;"; //TO:FIX (bs code)
+    "select i.time , i.msg ,i.usn from issues i where i.usn in(select usn from student_mentor_table sm where sm.mentor_id=?) order by time desc limit 30;"; //TO:FIX (bs code)
   try {
     const [results, fields] = await connection.query(q, [mentor_id]);
     return results;
@@ -578,5 +589,38 @@ export async function StudentFetchInformation(mentor_id) {
   } catch (err) {
     console.log("Error fetching student information.", err);
     throw "Error fetching student information";
+  }
+}
+
+export async function AdminFetchAllMentor() {
+  let q = "select * from mentor_information;";
+  try {
+    const [results, fields] = await connection.query(q);
+    return results;
+  } catch (err) {
+    console.log("Error fetching mentor information.", err);
+    throw "Error fetching mentor information";
+  }
+}
+
+export async function AdminFetchAllStudent() {
+  let q = "select * from student_information;";
+  try {
+    const [results, fields] = await connection.query(q);
+    return results;
+  } catch (err) {
+    console.log("Error fetching student information.", err);
+    throw "Error fetching student information";
+  }
+}
+export async function AdminFetchAllMentorStudentPool() {
+  let q =
+    "SELECT smt.mentor_id,mi.name as mentor_name, GROUP_CONCAT(smt.usn) AS usn_list,Group_CONCAT(si.name) as student_name_list FROM student_mentor_table smt join student_information si using (usn) join mentor_information mi using(mentor_id)group by smt.mentor_id;";
+  try {
+    const [results, fields] = await connection.query(q);
+    return results;
+  } catch (err) {
+    console.log("Error fetching mentor-student pool information.", err);
+    throw "Error fetching mentor-student pool information";
   }
 }

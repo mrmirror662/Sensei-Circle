@@ -21,53 +21,75 @@ const GenErrorJSON = function (msg) {
 const GenSuccessJSON = function (msg) {
   return { flag: 200, msg: msg };
 };
-app.get("/home", async function (req, res) {
-  res.sendFile("/html/home.html", { root: "." });
+app.get("/mentor_mainpage", async function (req, res) {
+  res.sendFile("/html/mentor/mentor_mainpage.html", { root: "." });
 });
-app.get("/student_signup", function (req, res) {
-  res.sendFile("/html/signup/student_signup.html", { root: "." });
+app.get("/mentor_home", async function (req, res) {
+  res.sendFile("/html/mentor/mentor_home.html", { root: "." });
 });
-app.get("/student_login", function (req, res) {
-  res.sendFile("/html/login/student_login.html", { root: "." });
+app.get("/student_mainpage", async function (req, res) {
+  res.sendFile("/html/student/student_mainpage.html", { root: "." });
 });
-
-app.get("/mentor_signup", function (req, res) {
-  res.sendFile("/html/signup/mentor_signup.html", { root: "." });
+app.get("/student_home", async function (req, res) {
+  res.sendFile("/html/student/student_home.html", { root: "." });
 });
-app.get("/mentor_login", function (req, res) {
-  res.sendFile("/html/login/mentor_login.html", { root: "." });
+app.get("/signup", function (req, res) {
+  res.sendFile("/html/signup.html", { root: "." });
+});
+app.get("/login", function (req, res) {
+  res.sendFile("/html/login.html", { root: "." });
 });
 app.get("/course_information_fill", function (req, res) {
   res.sendFile("/html/course_info_fill.html", { root: "." });
 });
-app.get("/academic_details_fill", function (req, res) {
-  res.sendFile("/html/academic_details_fill.html", { root: "." });
+app.get("/mentor_academic_details", function (req, res) {
+  res.sendFile("/html/mentor/mentor_academic_details.html", { root: "." });
 });
-app.get("/academic_details_fetch", function (req, res) {
-  res.sendFile("/html/academic_details_fetch.html", { root: "." });
+app.get("/student_academic_fetch", function (req, res) {
+  res.sendFile("/html/student/student_academic_fetch.html", { root: "." });
 });
+
 app.get("/mentor_register_student", async function (req, res) {
-  res.sendFile("/html/mentor_register_student.html", { root: "." });
+  res.sendFile("/html/mentor/mentor_register_student.html", { root: "." });
 });
 app.get("/mentor_students_fetch", async function (req, res) {
-  res.sendFile("/html/mentor_students_fetch.html", { root: "." });
+  res.sendFile("/html/mentor/mentor_students_fetch.html", { root: "." });
 });
-app.get("/notifications", async function (req, res) {
-  res.sendFile("/html/notifications.html", { root: "." });
+app.get("/student_notifications", async function (req, res) {
+  res.sendFile("/html/student/student_notifications.html", { root: "." });
 });
-
-app.get("/issues", async function (req, res) {
-  res.sendFile("/html/issues.html", { root: "." });
+app.get("/mentor_notifications", async function (req, res) {
+  res.sendFile("/html/mentor/mentor_notifications.html", { root: "." });
 });
-app.get("/student_upload_mentor_form", async function (req, res) {
-  res.sendFile("/html/upload_file.html", { root: "." });
+app.get("/student_issues", async function (req, res) {
+  res.sendFile("/html/student/student_issues.html", { root: "." });
 });
-
-app.get("/feedback", async function (req, res) {
-  res.sendFile("/html/mentor_feedback.html", { root: "." });
+app.get("/mentor_issues", async function (req, res) {
+  res.sendFile("/html/mentor/mentor_issues.html", { root: "." });
+});
+app.get("/mentor_feedback", async function (req, res) {
+  res.sendFile("/html/mentor/mentor_feedback.html", { root: "." });
+});
+app.get("/student_mentor_feedback", async function (req, res) {
+  res.sendFile("/html/student/student_mentor_feedback.html", { root: "." });
+});
+app.get("/student_mentor_upload", async function (req, res) {
+  res.sendFile("/html/student/student_upload.html", { root: "." });
+});
+app.get("/mentor_form_download", async function (req, res) {
+  res.sendFile("/html/mentor/mentor_download.html", { root: "." });
+});
+app.get("/student_info", async function (req, res) {
+  res.sendFile("/html/student/student_info.html", { root: "." });
+});
+app.get("/mentor_info", async function (req, res) {
+  res.sendFile("/html/mentor/mentor_info.html", { root: "." });
 });
 app.get("/information", async function (req, res) {
   res.sendFile("/html/information_fetch.html", { root: "." });
+});
+app.get("/admin_login", async function (req, res) {
+  res.sendFile("/html/admin_login.html", { root: "." });
 });
 
 app.post("/student_signup", async function (req, res) {
@@ -1111,6 +1133,194 @@ app.post("/student_info_fetch", async function (req, res) {
   }
 });
 
+const admin_id = "admin_key_random";
+const admin_password = "thisispassword";
+let is_in_session = false;
+let current_session_token = "";
+app.post("/admin_login", async function (req, res) {
+  const admin_id_req = req.body.admin_id;
+  const password_req = req.body.password;
+  if (is_in_session) {
+    res.json(GenErrorJSON("already logged in ;)"));
+    res.end();
+    return;
+  }
+  console.log("reqp:" + req.body.admin_id + " actp:" + admin_password);
+  if (admin_id !== admin_id_req || password_req !== admin_password) {
+    res.json(GenErrorJSON("invalid credential"));
+    res.end();
+    return;
+  }
+  const session_token = db.generateSessionID();
+  current_session_token = session_token;
+  is_in_session = true;
+  res.json({ flag: 200, msg: "accound found", session_id: session_token });
+  res.end();
+});
+app.post("/admin_logout", async function (req, res) {
+  const session_id = req.body.session_id;
+  if (!is_in_session) {
+    res.json(GenErrorJSON("not in session "));
+    res.end();
+    return;
+  }
+
+  if (current_session_token !== session_id) {
+    res.json(GenErrorJSON("invalid session id"));
+    res.end();
+    return;
+  }
+  is_in_session = false;
+  res.json({ flag: 200, msg: "logged out" });
+  res.end();
+});
+app.post("/admin_fetch_student_information", async function (req, res) {
+  const session_id = req.body.session_id;
+  if (!is_in_session) {
+    res.json(GenErrorJSON("not in session "));
+    res.end();
+    return;
+  }
+
+  if (current_session_token !== session_id) {
+    res.json(GenErrorJSON("invalid session id"));
+    res.end();
+    return;
+  }
+  try {
+    const results = await db.AdminFetchAllStudent();
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+app.post("/admin_fetch_mentor_information", async function (req, res) {
+  const session_id = req.body.session_id;
+  if (!is_in_session) {
+    res.json(GenErrorJSON("not in session "));
+    res.end();
+    return;
+  }
+
+  if (current_session_token !== session_id) {
+    res.json(GenErrorJSON("invalid session id"));
+    res.end();
+    return;
+  }
+  try {
+    const results = await db.AdminFetchAllMentor();
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+app.post("/admin_fill_course", async function (req, res) {
+  const session_id = req.body.session_id;
+  const course_id = req.body.course_id;
+  const course_name = req.body.course_name;
+  const sem = Number(req.body.sem);
+  const credits = Number(req.body.credits);
+
+  if (!is_in_session) {
+    res.json(GenErrorJSON("not in session "));
+    res.end();
+    return;
+  }
+
+  if (current_session_token !== session_id) {
+    res.json(GenErrorJSON("invalid session id"));
+    res.end();
+    return;
+  }
+  try {
+    let courseExist = await db.CourseExists(course_id);
+    if (courseExist) {
+      res.json(GenErrorJSON("course already exists"));
+      res.end();
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+  try {
+    await db.InsertCourse({
+      course_id: course_id,
+      course_name: course_name,
+      semester: sem,
+      credits: credits,
+    });
+    res.json(GenSuccessJSON("course inserted"));
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+app.post("/admin_get_course", async function (req, res) {
+  const session_id = req.body.session_id;
+
+  if (!is_in_session) {
+    res.json(GenErrorJSON("not in session "));
+    res.end();
+    return;
+  }
+
+  if (current_session_token !== session_id) {
+    res.json(GenErrorJSON("invalid session id"));
+    res.end();
+    return;
+  }
+  try {
+    let results = await db.GetCourseList();
+    res.json({ flag: 200, results });
+    res.end();
+  } catch (err) {
+    console.error(err);
+    res.json(GenErrorJSON(err));
+    res.end();
+    return;
+  }
+});
+app.post(
+  "/admin_fetch_mentor_student_pool_information",
+  async function (req, res) {
+    const session_id = req.body.session_id;
+    if (!is_in_session) {
+      res.json(GenErrorJSON("not in session "));
+      res.end();
+      return;
+    }
+
+    if (current_session_token !== session_id) {
+      res.json(GenErrorJSON("invalid session id"));
+      res.end();
+      return;
+    }
+    try {
+      const results = await db.AdminFetchAllMentorStudentPool();
+      res.json({ flag: 200, results });
+      res.end();
+    } catch (err) {
+      console.error(err);
+      res.json(GenErrorJSON(err));
+      res.end();
+      return;
+    }
+  }
+);
 let server = app.listen(PORT_NO, function () {
   let host = server.address().address;
   let port = server.address().port;
