@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="adminPoolApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Pool</title>
+    <link rel="icon" href="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-academic-university-flaticons-flat-flat-icons-2.png" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body ng-controller="AdminController" class="min-h-screen bg-gradient-to-tr from-blue-300 via-gray-100 to-white">
+    <div style="position: sticky; top: 0px;">
+        <nav class="p-4 flex justify-between backdrop-blur-xl">
+            <div class="flex items-center">
+                <a href="/admin_pool" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Admin Pool</a>
+                <a href="/admin_mentors" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Mentors</a>
+                <a href="/admin_students" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Students</a>
+                <a href="/admin_courses" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Courses</a>
+            </div>
+
+            <div class="ml-auto flex items-center">
+                <a href="" ng-click="logout()" target="_self" class="py-2 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Logout</a>
+            </div>
+        </nav>
+    </div>
+    <div ng-init="getPool()" class="p-8">
+        <h1 class="text-2xl font-bold mb-4">Mentor-Student Pool Information</h1>
+        <div class="grid grid-cols-1 gap-4">
+            <div ng-repeat="mentor in poolData.results" class="bg-gray-100 p-4 rounded-lg shadow-md">
+                <h2 class="text-lg font-semibold"><strong>{{ mentor.mentor_name }}</strong></h2>
+                <p class="text-gray-600 font-semibold">Mentor ID: {{ mentor.mentor_id }}</p>
+                <p class="text-gray-600 font-semibold">Students:</p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li ng-repeat="student in mentor.student_name_list.split(',')" class="ml-4">{{ student }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        var app = angular.module('adminPoolApp', []);
+        app.controller('AdminController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+            $scope.sessionID = $window.localStorage.getItem('admin_session_id');
+            $scope.credentials = {};
+            $scope.getPool = function() {
+                $scope.credentials.session_id = $scope.sessionID;
+                $http.post('/admin_fetch_mentor_student_pool_information', $scope.credentials)
+                    .then(function (response) {
+                        $scope.poolData = response.data;
+                    })
+                    .catch(function (error) {
+                        console.error('Error', error);
+                    });
+            };
+            $scope.logout = function() {
+                $scope.credentials.session_id = $scope.sessionID;
+                $http.post('/admin_logout', $scope.credentials)
+                    .then(function(response) {
+                        $window.location.href = "/login";
+                        $window.localStorage.clear();
+                    })
+            };
+        }]);
+    </script>
+</body>
+</html>

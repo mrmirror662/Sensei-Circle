@@ -27,3 +27,33 @@ create table if not exists notification(mentor_id char(10),time timestamp,msg te
 create table if not exists issues(usn char(10),time timestamp,msg text, primary key(usn,time));
 
 create table if not exists meeting_feedback(usn char(10),meeting_date date,feedback text,attended tinyint(1) default 0,primary key(usn,meeting_date));
+
+DELIMITER //
+
+CREATE PROCEDURE InsertOrUpdateAcademia(academia_usn CHAR(10), academia_course_id CHAR(10), academia_ia_1 INT, academia_ia_2 INT, academia_ia_3 INT, academia_assignment_1 INT, academia_assignment_2 INT, academia_activity INT, academia_total INT, academia_attendance INT)
+BEGIN
+  INSERT INTO academic_details (usn, course_id, IA1, IA2, IA3, assignment_1, assignment_2, activity, Total_internal_marks, attendance)
+  VALUES (academia_usn, academia_course_id, academia_ia_1, academia_ia_2, academia_ia_3, academia_assignment_1, academia_assignment_2, academia_activity, academia_total, academia_attendance)
+  ON DUPLICATE KEY UPDATE
+    IA1 = IFNULL(VALUES(IA1), IA1),
+    IA2 = IFNULL(VALUES(IA2), IA2),
+    IA3 = IFNULL(VALUES(IA3), IA3),
+    assignment_1 = IFNULL(VALUES(assignment_1), assignment_1),
+    assignment_2 = IFNULL(VALUES(assignment_2), assignment_2),
+    activity = IFNULL(VALUES(activity), activity),
+    Total_internal_marks = IFNULL(VALUES(Total_internal_marks), Total_internal_marks),
+    attendance = IFNULL(VALUES(attendance), attendance);
+END //
+
+DELIMITER ;
+
+CREATE TRIGGER CalculateTotalMarks
+BEFORE INSERT ON academic_details
+FOR EACH ROW
+SET NEW.Total_internal_marks = COALESCE(NEW.IA1, 0) + COALESCE(NEW.IA2, 0) + COALESCE(NEW.IA3, 0) + COALESCE(NEW.assignment_1, 0) + COALESCE(NEW.assignment_2, 0) + COALESCE(NEW.activity, 0);
+
+CREATE TRIGGER CalculateTotalMarksUpdate
+BEFORE UPDATE ON academic_details
+FOR EACH ROW
+SET NEW.Total_internal_marks = COALESCE(NEW.IA1, 0) + COALESCE(NEW.IA2, 0) + COALESCE(NEW.IA3, 0) + COALESCE(NEW.assignment_1, 0) + COALESCE(NEW.assignment_2, 0) + COALESCE(NEW.activity, 0);
+

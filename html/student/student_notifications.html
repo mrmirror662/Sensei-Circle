@@ -76,11 +76,11 @@
 <body ng-cloak ng-controller="AcademicController" class="bg-gradient-to-tr from-gray-800 via-stone-950 to-black min-h-screen">
     <div style="position: sticky; top: 0px;">
         <nav class="backdrop-blur-sm p-4 flex justify-between">
-            <a href="http://localhost:3000/student_academic_fetch" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 p-8 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Academic Details</a>
-            <a href="http://localhost:3000/student_notifications" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Notification</a>
-            <a href="http://localhost:3000/student_issues" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Issues</a>
-            <a href="http://localhost:3000/student_mentor_feedback" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Mentor Feedback</a>
-            <a href="http://localhost:3000/student_mentor_upload" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Mentor Form</a>
+            <a href="/student_academic_fetch" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 p-8 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Academic Details</a>
+            <a href="/student_notifications" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Notification</a>
+            <a href="/student_issues" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Issues</a>
+            <a href="/student_mentor_feedback" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Mentor Feedback</a>
+            <a href="/student_mentor_upload" target="_self" class="bg-zinc-800 text-white mr-4 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-300 text-gray-700 hover:text-gray-900 font-bold flex items-center justify-center" href="#">Mentor Form</a>
           
             <div class="ml-auto flex items-center">
                 <div class="tooltip hover: cursor-pointer py-2 px-2 rounded-2xl transition ease-in-out delay-100 duration-300" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
@@ -167,7 +167,7 @@
                 $scope.getS = [];
                 $scope.getSNotifications = function () {
                     $scope.credentials.session_id = $scope.sessionID;
-                    $http.post('http://localhost:3000/student_fetch_notification', $scope.credentials)
+                    $http.post('/student_fetch_notification', $scope.credentials)
                         .then(function (response) {
                             $scope.getS = [];
                             $scope.getS.push(response.data);
@@ -185,7 +185,7 @@
                 };
                 $scope.getMi = [];
                 $scope.getSInfo = function () {
-                    $http.post('http://localhost:3000/student_info_fetch',  {session_id: $scope.sessionID })
+                    $http.post('/student_info_fetch',  {session_id: $scope.sessionID })
                         .then(function (response) {
                           $scope.getMi = response.data.results[0];
                         })
@@ -195,7 +195,7 @@
                 };
                 $scope.showTooltip = function() {
                 $scope.credentials.session_id = $scope.sessionID;
-                $http.post('http://localhost:3000/student_info_fetch', $scope.credentials)
+                $http.post('/student_info_fetch', $scope.credentials)
                     .then(function(response) {
                     $scope.studentDetails=response.data;
                     $scope.isTooltipVisible = true;
@@ -207,9 +207,9 @@
                 };
                 $scope.logout = function(){
                     $scope.credentials.session_id = $scope.sessionID;
-                    $http.post('http://localhost:3000/student_logout', $scope.credentials)
+                    $http.post('/student_logout', $scope.credentials)
                         .then(function(response){
-                        $window.location.href="http://localhost:3000/login";
+                        $window.location.href="/login";
                         $window.localStorage.clear();
                         })
                 };

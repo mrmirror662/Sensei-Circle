@@ -66,69 +66,69 @@
   <div style="position: sticky; top: 0px; ">
     <nav class=" p-4 flex justify-between backdrop-blur-xl">
       <div class="flex items-center">
-        <a href="http://localhost:3000/mentor_students_fetch" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Student pool</a>
-        <a href="http://localhost:3000/mentor_academic_details" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Academic Details</a>
-        <a href="http://localhost:3000/mentor_notifications" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Notification</a>
-        <a href="http://localhost:3000/mentor_issues" target="_self" class="py-2 px-4 mr-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Issues</a>
-        <a href="http://localhost:3000/mentor_feedback" target="_self" class="py-2 px-4 mr-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Mentor Feedback</a>
-        <a href="http://localhost:3000/mentor_form_download" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Mentor Form</a>
+        <a href="/mentor_students_fetch" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Student pool</a>
+        <a href="/mentor_academic_details" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Academic Details</a>
+        <a href="/mentor_notifications" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Notification</a>
+        <a href="/mentor_issues" target="_self" class="py-2 px-4 mr-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Issues</a>
+        <a href="/mentor_feedback" target="_self" class="py-2 px-4 mr-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Mentor Feedback</a>
+        <a href="/mentor_form_download" target="_self" class="py-2 mr-4 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#">Mentor Form</a>
       </div>
       
       <div class="ml-auto flex items-center">
 
-        <a href="http://localhost:3000/mentor_register_student"  target="_self" class="py-2 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#" >Register/Deregister</a>
+          <a href="/mentor_register_student"  target="_self" class="py-2 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold" href="#" >Register/Deregister</a>
 
-         <div ng-click="toggleOverlay()" class="tooltip  hover:bg-blue-500 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
-        <a  target="_self">
-          <svg class="h-8 w-8 text-black"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>   
-        </a>
-        <div class="tooltip-text transition-colors duration-300 ease-in-out ml-auto bg-yellow-50 text-left rounded-2xl  border-2" ng-show="isTooltipVisible">
-          <div class="py-1 px-2" >
-            <a class="py-1 hover:bg-gray-200 text-gray-800">Name : {{ mentorDetails.results[0].name }}</a></br>
-            <a class="py-1 hover:bg-gray-200 text-gray-800">ID : {{ mentorDetails.results[0].mentor_id }}</a></br>
-            <a class="py-1 hover:bg-gray-200 text-gray-800">Email-ID : {{ mentorDetails.results[0].email }}</a>
-          </div>
-        </div>        
-      </div>
-      <a href="" ng-click="logout()" target="_self" class="py-2 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold">Logout</a>
-    </div>
-  </nav>
-  </div>
-  <div class="overlay " ng-class="{ 'active': isOverlayActive }" id="overlay">
-    <div class="overlay-content position: sticky; top: 20px; pt-2.5 px-2.5 shadow-md bg-gray-200 rounded-2xl ">
-        <svg ng-click="toggleOverlay()" class="h-8 w-8 text-slate-950 cursor-pointer"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-          stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  
-          <line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
-        <div ng-init="getMInfo()" class="items-center text-gray-800 bg-gray-150  ">
-          <div class=" p-8 " >
-            <h2 class="text-xl font-semibold mb-4">Mentor Information</h2>
-              <div class="mb-4 flex items-center">
-                <p class="font-semibold mr-2">Name:</p>
-                <div class="bg-gray-100 p-2 rounded-md">{{ getMi.name }}</div>
-              </div>
-              <div class="mb-4 flex items-center">
-                <p class="font-semibold mr-2">Mentor ID:</p>
-                <div class="bg-gray-100 p-2 rounded-md">{{ getMi.mentor_id }}</div>
-              </div>
-              <div class="mb-4 flex items-center">
-                <p class="font-semibold mr-2">Phone Number:</p>
-                <div class="bg-gray-100 p-2 rounded-md">{{ getMi.phone_no}}</div>
-              </div>
-              <div class="mb-4 flex items-center">
-                <p class="font-semibold mr-2">Email-ID:</p>
-                <div class="bg-gray-100 p-2 rounded-md">{{ getMi.email }}</div>
-              </div>
-              <div class="mb-4 flex items-center">
-                <p class="font-semibold mr-2">Branch:</p>
-                <div class="bg-gray-100 p-2 rounded-md uppercase">{{ getMi.branch_id }}</div>
-              </div>
-          </div>
+           <div ng-click="toggleOverlay()" class="tooltip  hover:bg-blue-500 cursor-pointer py-2 px-2 rounded-2xl" ng-mouseenter="showTooltip()" ng-mouseleave="hideTooltip()">
+          <a  target="_self">
+            <svg class="h-8 w-8 text-black"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>   
+          </a>
+          <div class="tooltip-text transition-colors duration-300 ease-in-out ml-auto bg-yellow-50 text-left rounded-2xl  border-2" ng-show="isTooltipVisible">
+            <div class="py-1 px-2" >
+              <a class="py-1 hover:bg-gray-200 text-gray-800">Name : {{ mentorDetails.results[0].name }}</a></br>
+              <a class="py-1 hover:bg-gray-200 text-gray-800">ID : {{ mentorDetails.results[0].mentor_id }}</a></br>
+              <a class="py-1 hover:bg-gray-200 text-gray-800">Email-ID : {{ mentorDetails.results[0].email }}</a>
+            </div>
+          </div>        
         </div>
-    </div>
+        <a href="" ng-click="logout()" target="_self" class="py-2 px-4 flex  items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900  hover:bg-blue-500 font-bold">Logout</a>
+      </div>
+    </nav>
   </div>
+      <div class="overlay " ng-class="{ 'active': isOverlayActive }" id="overlay">
+        <div class="overlay-content position: sticky; top: 20px; pt-2.5 px-2.5 shadow-md bg-gray-200 rounded-2xl ">
+            <svg ng-click="toggleOverlay()" class="h-8 w-8 text-slate-950 cursor-pointer"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
+              stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            <div ng-init="getMInfo()" class="flex items-center justify-center text-gray-800 bg-gray-150  ">
+              <div class=" p-8 " >
+                <h2 class="text-xl font-bold mb-4">Mentor Information</h2>
+                  <div class="mb-4 flex items-center">
+                    <p class="font-semibold mr-2">Name:</p>
+                    <div class="bg-gray-100 p-2 rounded-md">{{ getMi.name }}</div>
+                  </div>
+                  <div class="mb-4 flex items-center">
+                    <p class="font-semibold mr-2">Mentor ID:</p>
+                    <div class="bg-gray-100 p-2 rounded-md">{{ getMi.mentor_id }}</div>
+                  </div>
+                  <div class="mb-4 flex items-center">
+                    <p class="font-semibold mr-2">Phone Number:</p>
+                    <div class="bg-gray-100 p-2 rounded-md">{{ getMi.phone_no}}</div>
+                  </div>
+                  <div class="mb-4 flex items-center">
+                    <p class="font-semibold mr-2">Email-ID:</p>
+                    <div class="bg-gray-100 p-2 rounded-md">{{ getMi.email }}</div>
+                  </div>
+                  <div class="mb-4 flex items-center">
+                    <p class="font-semibold mr-2">Branch:</p>
+                    <div class="bg-gray-100 p-2 rounded-md uppercase">{{ getMi.branch_id }}</div>
+                  </div>
+              </div>
+            </div>
+        </div>
+      </div>
   <div class="list" ng-class="{ 'show': isLoaded }">
     <div class=" text-gray-700 font-sans py-8">
       <h2 class="text-2xl font-bold flex items-center justify-center mb-4">Student Academic Details</h2>
@@ -163,7 +163,7 @@
                 <div class="accordion-item mb-4" ng-repeat="details in mentorAcademicDetails">
                   <div class="accordion-details">
                     <button class="accordion-header bg-blue-500 hover:bg-blue-600 text-white font-bold w-full rounded-lg mb-4 shadow-md rounded-lg p-2 md:p-4 mx-auto w-full flex justify-between items-center" ng-click="toggleAccordion($index)">
-                      <span class="text-white uppercase">{{ details.course_id }}</span>
+                      <span class="text-white uppercase">{{ details.course_name }}  ({{ details.course_id }})</span>
                       <svg class="h-6 w-6 text-white transform transition-transform" 
                           ng-class="{'rotate-180': isOpen[$index]}" 
                           fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -275,7 +275,7 @@
             </div>  
               <div class="mb-4">
                 <label for="attendance" class="block text-gray-700 font-medium mb-2">Attendance</label>
-                <input type="number" id="attendance" name="attendance" ng-model="fill_activity" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="number" id="attendance" name="attendance" ng-model="fill_attendance" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
               </div>
               <button type="submit" ng-click="fillStudentDetails()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                 Submit Details
@@ -314,7 +314,7 @@
                 }, 300);
       $scope.getMInfo = function () {
         $scope.credentialID.session_id = $scope.sessionID;
-        $http.post('http://localhost:3000/mentor_info_fetch', $scope.credentialID)
+        $http.post('/mentor_info_fetch', $scope.credentialID)
           .then(function (response) {
             $scope.getMi = response.data.results[0]; 
           })
@@ -335,7 +335,7 @@
           activity: $scope.fill_activity,
           attendance: $scope.fill_attendance
         };
-        $http.post('http://localhost:3000/academic_details_fill', data)
+        $http.post('/academic_details_fill', data)
           .then(function(response) {
             $scope.academicFill = response.data;
           })
@@ -356,7 +356,7 @@
           activity: details.activity,
           attendance: details.attendance
         };
-        $http.post('http://localhost:3000/academic_details_fill', data)
+        $http.post('/academic_details_fill', data)
           .then(function(response) {
             $scope.academicFill = response.data;
             $scope.fetchMentorAcademicDetails();
@@ -366,7 +366,7 @@
           });
       };
       $scope.fetchMentorAcademicDetails = function() {
-        $http.post('http://localhost:3000/mentor_academic_details_fetch', {
+        $http.post('/mentor_academic_details_fetch', {
             session_id: $scope.sessionID,
             usn: $scope.usn
           })
@@ -392,7 +392,7 @@
       console.log('Making request to mentor_info_fetch endpoint');
       $scope.showTooltip = function() {
         $scope.credentials.session_id = $scope.mentorSessionId;
-        $http.post('http://localhost:3000/mentor_info_fetch', $scope.credentials)
+        $http.post('/mentor_info_fetch', $scope.credentials)
           .then(function(response) {
             console.log('Received response from mentor_info_fetch endpoint:', response.data.results);
             $scope.mentorDetails=response.data;
@@ -405,9 +405,9 @@
       };
       $scope.logout = function(){
         $scope.credentials.session_id = $scope.mentorSessionId;
-        $http.post('http://localhost:3000/mentor_logout', $scope.credentials)
+        $http.post('/mentor_logout', $scope.credentials)
           .then(function(response){
-            $window.location.href="http://localhost:3000/login";
+            $window.location.href="/login";
             $window.localStorage.clear();
           })
       };

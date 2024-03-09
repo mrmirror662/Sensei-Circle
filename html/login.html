@@ -13,6 +13,9 @@
     <div>
       <div class="flex items-center justify-center mt-8">
         <div class="navbar mr-4 bg-gray-100 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-500">
+          <a href="" ng-click="setActiveContent('content3')" class="text-gray-700 hover:text-gray-900 font-bold">Admin</a>
+        </div>
+        <div class="navbar mr-4 bg-gray-100 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-500">
           <a href="" ng-click="setActiveContent('content1')" class="text-gray-700 hover:text-gray-900 font-bold">Mentor</a>
         </div>
         <div class="navbar bg-gray-100 px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-500">
@@ -57,7 +60,7 @@
                 </button>
                 <div class="text-center text-gray-400">
                   Dont'have an account?
-                  <span class="font-bold text-black"><a href="http://localhost:3000/signup">Sign up</a></span>
+                  <span class="font-bold text-black"><a href="/signup">Sign up</a></span>
                 </div>
                 <div class="text-center capitalize">
                   <p ng-show="mlogin.flag==404" class="text-red-500 ">{{ mlogin.msg }}</p>
@@ -113,7 +116,7 @@
                 </button>
                 <div class="text-center text-white-400">
                   Dont'have an account?
-                  <span class="font-bold text-white"><a href="http://localhost:3000/signup">Sign up</a></span>
+                  <span class="font-bold text-white"><a href="/signup">Sign up</a></span>
                 </div>
                 <div class="text-center">
                   <p ng-show="slogin.flag==404" class="text-red-500">{{ slogin.msg }}</p>
@@ -126,14 +129,59 @@
           </div>
         </form>
       </div>
+    </div>
+    <div class="content" ng-show="activeContent === 'content3'">
+      <div class="mentor">
+        <form ng-submit="admin_login()">
+          <div class="flex items-center justify-center">
+            <div class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
+            <div class="flex flex-col justify-center p-8 md:p-14">
+              <span class="mb-3 text-4xl font-bold">Login</span>
+              <span class="font-light text-gray-400 mb-8">
+                Welcome back! Please enter your details
+              </span>
+              <div class="py-4">
+                <span class="mb-2 text-md">Admin ID</span>
+                <input
+                  type="text"
+                  class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
+                  name="mentor_id"
+                  ng-model="adminCredentials.admin_id"
+                  id="mentor_id"
+                />
+              </div>
+              <div class="py-4">
+                <span class="mb-2 text-md">Password</span>
+                <input
+                  type="password"
+                  name="password"
+                  id="mpass"
+                  ng-model="adminCredentials.password"
+                  class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"/>
+              </div>
+              <button
+                class="w-full bg-blue-500 text-white p-2 rounded-lg mb-6 hover:bg-white hover:text-black hover:border hover:border-gray-300" type="submit" value="login">
+                Log in
+              </button>
+              <div class="text-center capitalize">
+                <p ng-show="alogin.flag==404" class="text-red-500 ">{{ alogin.msg }}</p>
+            </div>
+            </div>
+            <div class="relative">
+            <div class="h-24 bg-gradient-to-r from-sky-300 via-blue-500 to-blue-900 w-[400px] h-full hidden rounded-r-2xl md:block object-cover"></div>
+          </div>
+        </div>
+        </form>
+      </div>
     </div>    
     <script>
       angular.module('myApp', [])
         .controller('myController', ['$scope', '$http', '$window', function ($scope, $http, $window) {
+                $window.localStorage.clear();
                 $scope.mentorCredentials = {};
                 $scope.studentCredentials = {};
                 $scope.mentor_login = function () {
-                    $http.post('http://localhost:3000/mentor_login', $scope.mentorCredentials)
+                    $http.post('/mentor_login', $scope.mentorCredentials)
                         .then(function (response) { 
                             const session_id = response.data.session_id;
                             localStorage.setItem('mentor_session_id', session_id);
@@ -141,7 +189,26 @@
                             const mentorlogin = response.data;
                             if (mentorlogin.flag == 200) {
                               try {
-                                  $window.location.href = "http://localhost:3000/mentor_students_fetch";
+                                  $window.location.href = "/mentor_students_fetch";
+                              } catch (error) {
+                                  console.error('Error redirecting to mentor main page:', error);
+                              }
+                            }
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                        });
+                };
+                $scope.admin_login = function () {
+                    $http.post('/admin_login', $scope.adminCredentials)
+                        .then(function (response) { 
+                            const session_id = response.data.session_id;
+                            localStorage.setItem('admin_session_id', session_id);
+                            $scope.alogin = response.data;
+                            const adminlogin = response.data;
+                            if (adminlogin.flag == 200) {
+                              try {
+                                  $window.location.href = "/admin_pool";
                               } catch (error) {
                                   console.error('Error redirecting to mentor main page:', error);
                               }
@@ -152,7 +219,7 @@
                         });
                 };
                 $scope.student_login = function () {
-                    $http.post('http://localhost:3000/student_login', $scope.studentCredentials)
+                    $http.post('/student_login', $scope.studentCredentials)
                         .then(function (response) { 
                             const session_id = response.data.session_id;
                             localStorage.setItem('student_session_id', session_id);   
@@ -160,7 +227,7 @@
                             const studentlogin = response.data;
                             if (studentlogin.flag == 200) {
                                 try {
-                                    $window.location.href = "http://localhost:3000/student_academic_fetch";
+                                    $window.location.href = "/student_academic_fetch";
                                 } catch (error) {
                                     console.error('Error redirecting to student main page:', error);
                                 }

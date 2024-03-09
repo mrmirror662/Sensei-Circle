@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="adminPoolApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Pool</title>
+    <link rel="icon" href="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-academic-university-flaticons-flat-flat-icons-2.png" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body ng-controller="AdminController" class="min-h-screen bg-gradient-to-tr from-blue-300 via-gray-100 to-white">
+    <div style="position: sticky; top: 0px;">
+        <nav class="p-4 flex justify-between backdrop-blur-xl">
+            <div class="flex items-center">
+                <a href="/admin_pool" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Admin Pool</a>
+                <a href="/admin_mentors" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Mentors</a>
+                <a href="/admin_students" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Students</a>
+                <a href="/admin_courses" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Courses</a>
+            </div>
+
+            <div class="ml-auto flex items-center">
+                <a href="" ng-click="logout()" target="_self" class="py-2 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Logout</a>
+            </div>
+        </nav>
+    </div>
+    <div class="max-w-lg mx-auto mt-8">
+        <div class="flex items-center justify-center">
+            <button ng-init="setActiveTab('course-info')" ng-click="setActiveTab('course-info')" ng-class="{ 'text-blue-500': activeTab === 'course-info', 'text-blue-500': activeTab !== 'course-info' }" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-gray-100" href="#">
+                <svg class="h-8 w-8"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  
+                    <path stroke="none" d="M0 0h24v24H0z"/>  
+                    <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />  
+                    <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />  
+                    <line x1="3" y1="6" x2="3" y2="19" />  
+                    <line x1="12" y1="6" x2="12" y2="19" />  
+                    <line x1="21" y1="6" x2="21" y2="19" />
+                </svg>           
+            </button>
+            <button ng-click="setActiveTab('fill-course')" ng-class="{ 'text-blue-500': activeTab === 'fill-course', 'text-blue-500': activeTab !== 'fill-course' }" class="py-2 px-4 flex items-center justify-center cursor-pointer rounded-2xl hover:text-opacity-75 hover:bg-gray-100" href="#">
+                <svg class="h-8 w-8" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z"/>
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>          
+            </button>
+        </div>        
+
+        <div ng-show="activeTab === 'course-info'">
+            <div ng-init="getcourse()" class="container mx-auto py-8">
+                <h2 class="text-2xl font-semibold mb-4">Course Information</h2>
+                <div class="grid grid-cols-1 gap-4">
+                    <div ng-repeat="course in courseinfo.results" class="bg-white p-4 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold uppercase">{{ course.course_name }}</h3>
+                        <p class="text-gray-600">Course ID: {{ course.course_id }}</p>
+                        <p class="text-gray-600">Credits: {{ course.course_credits }}</p>
+                        <p class="text-gray-600">Semester: {{ course.semester }}</p>
+                    </div>
+                </div>
+            </div>            
+        </div>
+        <div ng-show="activeTab === 'fill-course'">
+            <div class="container mx-auto py-8">
+                <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                    <h2 class="text-xl font-semibold mb-4">Fill Course Information</h2>
+                    <form ng-submit="addcourse()" class="space-y-4">
+                        <input type="hidden" id="session_id" name="session_id">
+            
+                        <div class="flex flex-col space-y-2">
+                            <label for="course_id" class="font-semibold">Course ID</label>
+                            <input type="text" id="course_id" name="course_id" class="border border-gray-300 rounded-md p-2">
+                        </div>
+            
+                        <div class="flex flex-col space-y-2">
+                            <label for="course_name" class="font-semibold">Course Name</label>
+                            <input type="text" id="course_name" name="course_name" class="border border-gray-300 rounded-md p-2">
+                        </div>
+            
+                        <div class="flex flex-col space-y-2">
+                            <label for="sem" class="font-semibold">Semester</label>
+                            <input type="text" id="sem" name="sem" class="border border-gray-300 rounded-md p-2">
+                        </div>
+            
+                        <div class="flex flex-col space-y-2">
+                            <label for="credits" class="font-semibold">Credits</label>
+                            <input type="text" id="credits" name="credits" class="border border-gray-300 rounded-md p-2">
+                        </div>
+            
+                        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">Submit</button>
+                    </form>
+                </div>
+                <div class="text-green-500 capitalize" ng-show="courseadd.flag==200">{{courseadd.msg}}</div>
+                <div class="text-red-500 capitalize" ng-show="courseadd.flag==404">{{courseadd.msg}}</div>
+            </div>            
+        </div>
+    </div>
+
+    <script>
+        var app = angular.module('adminPoolApp', []);
+        app.controller('AdminController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+            $scope.selectedTab = 'course-info';
+
+            $scope.selectTab = function(tabName) {
+                $scope.selectedTab = tabName;
+            };
+
+            $scope.sessionID = $window.localStorage.getItem('admin_session_id');
+            $scope.credentials = {};
+
+            $scope.getcourse = function() {
+                $scope.credentials.session_id = $scope.sessionID;
+                $http.post('/admin_get_course', $scope.credentials)
+                    .then(function(response) {
+                        $scope.courseinfo = response.data;
+                    })
+                    .catch(function(error) {
+                        console.error('Error', error);
+                    });
+            };
+
+            $scope.addcourse = function() {
+                $scope.credentials.session_id = $scope.sessionID;
+                $http.post('/admin_fill_course', $scope.credentials)
+                    .then(function(response) {
+                        $scope.courseadd = response.data;
+                    })
+                    .catch(function(error) {
+                        console.error('Error', error);
+                    });
+            };
+            $scope.setActiveTab = function(tab) {
+                $scope.activeTab = tab;
+            };
+            $scope.logout = function() {
+                $scope.credentials.session_id = $scope.sessionID;
+                $http.post('/admin_logout', $scope.credentials)
+                    .then(function(response) {
+                        $window.location.href = "/login";
+                        $window.localStorage.clear();
+                    })
+            };
+        }]);
+    </script>
+</body>
+
+</html>
