@@ -1,3 +1,4 @@
-/node_modules
-.env
-/forms
+node_modules/
+forms/
+#Ignore .env file
+*.env

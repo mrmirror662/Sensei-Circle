@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="adminPoolApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Academia</title>
+    <link rel="icon" href="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-academic-university-flaticons-flat-flat-icons-2.png" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body ng-controller="AdminController" class="min-h-screen bg-gradient-to-tr from-blue-300 via-gray-100 to-white">
+    <div style="position: sticky; top: 0px;">
+        <nav class="p-4 flex justify-between backdrop-blur-xl">
+            <div class="flex items-center">
+                <a href="/admin_pool" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Admin Pool</a>
+                <a href="/admin_mentors" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Mentors</a>
+                <a href="/admin_students" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Students</a>
+                <a href="/admin_courses" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Courses</a>
+                <a href="/admin_academia" target="_self" class="py-2 mr-4 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Academic Details</a>
+            </div>
+
+            <div class="ml-auto flex items-center">
+                <a href="" ng-click="logout()" target="_self" class="py-2 px-4 flex items-center bg-white transition-colors duration-300 ease-in-out justify-center cursor-pointer rounded-full text-gray-700 hover:text-gray-900 hover:bg-blue-500 font-bold">Logout</a>
+            </div>
+        </nav>
+        <div class="flex justify-center items-center">
+            <div class="p-8 bg-white rounded-lg shadow-lg w-full max-w-xl">
+                <h1 class="text-2xl font-bold mb-8 text-center">Student Academic Information</h1>
+                <div class="flex items-center mb-6">
+                    <input type="text" ng-model="credentials.usn" name="usn" class="w-96 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 placeholder-gray-400 mr-4" placeholder="Enter USN...">
+                    <button ng-click="getAcademia()" class="w-20 p-2 bg-blue-500 text-white rounded-lg focus:outline-none hover:bg-blue-600">Submit</button>
+                </div>
+                <div class="mt-4" ng-repeat="result in results">
+                    <div class="accordion-panel overflow-hidden transition-max-height text-left rounded-lg shadow-md mb-4">
+                        <button class="bg-gray-100 px-4 py-2 rounded-lg w-full flex items-center justify-between focus:outline-none hover:bg-gray-100" ng-click="toggleAccordion($index)">
+                            <span class="uppercase font-semibold">{{ result.course_name }} ({{ result.course_id }})</span>
+                            <svg class="h-6 w-6 text-black transform transition-transform" ng-class="{'rotate-180': isOpen[$index]}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div ng-if="isOpen[$index]" class="bg-white p-4 rounded-lg">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="col-span-1 px-2 py-1 border rounded-lg">
+                                    <p class="block text-gray-700 font-medium mb-2">IA1: {{ result.IA1 }}</p>
+                                </div>
+                                <div class="col-span-1 px-2 py-1 border rounded-lg">
+                                    <p class="block text-gray-700 font-medium mb-2">IA2: {{ result.IA2 }}</p>
+                                </div>
+                                <div class="col-span-1 px-2 py-1 border rounded-lg">
+                                    <p class="block text-gray-700 font-medium mb-2">IA3: {{ result.IA3 }}</p>
+                                </div>
+                                <div class="col-span-1 px-2 py-1 border rounded-lg">
+                                    <p class="block text-gray-700 font-medium mb-2">Assignment 1: {{ result.assignment_1 }}</p>
+                                </div>
+                                <div class="col-span-1 px-2 py-1 border rounded-lg">
+                                    <p class="block text-gray-700 font-medium mb-2">Assignment 2: {{ result.assignment_2 }}</p>
+                                </div>
+                                <div class="col-span-1 px-2 py-1 border rounded-lg">
+                                    <p class="block text-gray-700 font-medium mb-2">Activity: {{ result.activity }}</p>
+                                </div>
+                                <div class="col-span-1 px-2 py-1 border rounded-lg">
+                                    <p class="block text-gray-700 font-medium mb-2">Total Internal Marks: {{ result.Total_internal_marks }}</p>
+                                </div>
+                                <div class="col-span-1 px-2 py-1 border rounded-lg">
+                                    <p class="block text-gray-700 font-medium mb-2">Attendance: {{ result.attendance }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4" ng-show="$scope.results.length === 0">
+                    <p class="text-red-500 text-center">No Students Found!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var app = angular.module('adminPoolApp', []);
+        app.controller('AdminController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+            $scope.sessionID = $window.localStorage.getItem('admin_session_id');
+            $scope.credentials = {};
+            $scope.results = []; // Initialize results array
+            $scope.isOpen = []; // Array to track accordion state
+
+            $scope.toggleAccordion = function(index) {
+                $scope.isOpen[index] = !$scope.isOpen[index];
+            };
+
+            $scope.getAcademia = function() {
+                $scope.credentials.session_id = $scope.sessionID;
+                $http.post('/admin_fetch_student_academia', $scope.credentials)
+                    .then(function(response) {
+                        $scope.results = response.data.results; // Assign response data to results
+                    })
+                    .catch(function(error) {
+                        console.error('Error', error);
+                    });
+            };
+
+            $scope.logout = function() {
+                $scope.credentials.session_id = $scope.sessionID;
+                $http.post('/admin_logout', $scope.credentials)
+                    .then(function(response) {
+                        $window.location.href = "/login";
+                        $window.localStorage.clear();
+                    })
+                    .catch(function(error) {
+                        console.error('Error', error);
+                    });
+            };
+        }]);
+    </script>
+</body>
+
+</html>
