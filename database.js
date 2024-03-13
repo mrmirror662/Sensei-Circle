@@ -624,3 +624,14 @@ export async function AdminFetchAllMentorStudentPool() {
     throw "Error fetching mentor-student pool information";
   }
 }
+export async function AdminFetchStudentAcademia(usn) {
+  let q =
+    " select a.*,ci.course_name from academic_details a,course_information ci where  a.course_id=ci.course_id and a.usn=?;";
+  try {
+    const [results, fields] = await connection.query(q, [usn]);
+    return results;
+  } catch (err) {
+    console.log("Error fetching student academia.", err);
+    throw "Error fetching student academia.";
+  }
+}
