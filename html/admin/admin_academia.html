@@ -70,8 +70,11 @@
                         </div>
                     </div>
                 </div>
+                <div class="text-center">
+                    <p ng-show="check.flag==404" class="text-red-500 capitalize">{{ check.msg }}</p>
+                  </div>
                 <div class="mt-4" ng-show="$scope.results.length === 0">
-                    <p class="text-red-500 text-center">No Students Found!</p>
+                    <p class="text-red-500 text-center capitalize">No Students Found!</p>
                 </div>
             </div>
         </div>
@@ -93,6 +96,7 @@
                 $http.post('/admin_fetch_student_academia', $scope.credentials)
                     .then(function(response) {
                         $scope.results = response.data.results; // Assign response data to results
+                        const check = response.data;
                     })
                     .catch(function(error) {
                         console.error('Error', error);
